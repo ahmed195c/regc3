@@ -6,5 +6,15 @@
     {{ceonumber}}
 </h1>
 
+{% for k in alllogs %}
+<div>
+    {{k.Logs_car_ins.carNumber}}
+    {{k.Logs_employee_ins.ceoNumber}}
+    {{k.Logs_employee_ins.ceoName}}
+    {{k.created_at}}
+    {{k.ended_at}}
+</div>
+{% endfor %}
+
 {% endblock %}
 
