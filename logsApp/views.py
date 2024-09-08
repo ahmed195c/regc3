@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django import forms
-from logsApp.models import InUseCars , RegistredCars , EmployesInfo
+from logsApp.models import  RegistredCars , EmployesInfo,InUseCars
 # Create your views here.
 
 
@@ -9,30 +9,36 @@ def index(request):
 
 
 def registerCar(request):
+    allInUseCars = InUseCars.objects.all()
     if request.method == "POST":
         ceoN = request.POST["ceoNumber"]
         carnumberreq = request.POST.get("carNumber")  # Use .get() to avoid KeyError if carNumber is not in POST
         allregscars = RegistredCars.objects.all()
-        employe = EmployesInfo.objects.get(ceoNumber=ceoN)
-
+        print(allInUseCars)
         if carnumberreq:
             try:
-                car = RegistredCars.objects.get(carNumber=carnumberreq)
+                caro = RegistredCars.objects.get(carNumber=carnumberreq)
+                employeo = EmployesInfo.objects.get(ceoNumber=ceoN)
                 # If a car with this number exists, you can work with 'car'
-                newInuseCar = InUseCars(ceoNumber=ceoN,
-                                        carNumber=carnumberreq,
-                                        instance=employe)
-                newInuseCar.save()
+                if carnumberreq:
+                    try:
+                        inusecart = InUseCars.objects.get(car=caro)
+                        print("car is in use")
+                    except InUseCars.DoesNotExist:
+                        print("")
+                        new = InUseCars(car=caro,employee=employeo)
+                        new.save()
+                
                 print("Car found")
-                return render(request,"logsApp/registerCar.html",{"car":car, "em":employe})
+                return render(request,"logsApp/registerCar.html",{"car":caro, "em":employeo,"l":allInUseCars })
                 # Do something with 'car'
             except RegistredCars.DoesNotExist:
                 # Handle the case where the car number doesn't exist
                 print("Car not found")
 
-        return render(request, "logsApp/registerCar.html",{"all":allregscars})
+        return render(request, "logsApp/registerCar.html",{"all":allregscars,"l":allInUseCars})
     
-    return render(request, "logsApp/registerCar.html",)
+    return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
 
 
 def logsfunc(request):

@@ -14,15 +14,39 @@
         <input type="number" name="carNumber" id="carNumber" required>
         <input type="submit" value="add">
     </form>
-
-    <div>
-        <h1>in use cars data</h1>
-    </div>
     {% for i in all %}
     <h1>{{i.carNumber}}</h1>
     {% endfor %}
+    
+    {% if l %}
+    {% for n in l %}
+    <div class="c">
+        <h1>in use cars</h1>
+        <div class="a">
+            <h1>
+                اسم المستخدم:
+                {{n.employee.ceoName}}
+            </h1>
+            <h2>
+                {{n.car.carName}}
+                :اسم السياره
+            </h2>
+            <h2>
+                رقم اللوحه
+                {{n.car.carNumber}}
+            </h2>
+            <h1> time : 
+                
+                {{ n.created_at }}
+            </h1>
+        </div>
+    </div>
+    {% endfor %}
+    {% else%}
+    
+    <h1>no cars</h1>
+    {% endif %}
 
-    <h1> car is {{car.carNumber}} user is : {{em.ceoName}}</h1>
 </div>
 
 {% endblock %}
