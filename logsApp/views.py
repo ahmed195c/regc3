@@ -13,9 +13,8 @@ def registerCar(request):
     allInUseCars = InUseCars.objects.all()
     if request.method == "POST":
         ceoN = request.POST["ceoNumber"]
-        carnumberreq = request.POST.get("carNumber")  # Use .get() to avoid KeyError if carNumber is not in POST
-        allregscars = RegistredCars.objects.all()
-        print(allInUseCars)
+        carnumberreq = request.POST.get("carNumber")
+
         if carnumberreq:
             try:
                 caro = RegistredCars.objects.get(carNumber=carnumberreq)
@@ -23,8 +22,8 @@ def registerCar(request):
                 # If a car with this number exists, you can work with 'car'
                 if carnumberreq:
                     try:
-                        inusecart = InUseCars.objects.get(car=caro)
-                        print("car is in use")
+                        inusecart = InUseCars.objects.get(car=caro,employee=employeo)
+                        print("car is not in use")
                     except InUseCars.DoesNotExist:
                         print("")
                         new = InUseCars(car=caro,employee=employeo)
