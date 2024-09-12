@@ -2,42 +2,48 @@
 
 {% block body %}
 <div>
-    
-    <form action="{% url 'logsApp:add' %}" dir="rtl" method="post">
-        {% csrf_token %}
-        <label for="ceoNumber">الرقم الاداري</label>
-        <input type="number" name="ceoNumber" id="ceoNumber" required>
-        <label for="carNumber">رقم السياره</label>
-        <input type="number" name="carNumber" id="carNumber" required>
-        <input type="submit" value="add">
-    </form>
-   
-    <form action="{% url 'logsApp:ret' %}" method="post">
-        {% csrf_token %}
-        <label for="ceonumber">
-            الرقم الاداري
-        </label>
-        <input type="number" name="ceonumber" id="ceonumber">
-        <input type="submit" value="submit">
-    </form>
-    {% for i in all %}
-    <h1>{{i.carNumber}}</h1>
-    {% endfor %}
-    
-    {% if l %}
-    {% for n in l %}
-    <div class="c">
-        <h1>in use cars</h1>
-        <div class="a">
-            <h1>
-                اسم المستخدم:
-                {{n.employee.ceoName}}
-            </h1>
-            <h2>
+
+    <div class="forms-cont">
+        <div>
+            <form action="{% url 'logsApp:add' %}" dir="rtl" method="post">
+                {% csrf_token %}
+                <label for="ceoNumber">الرقم الاداري</label>
+                <input type="number" name="ceoNumber" id="ceoNumber" required>
+                <label for="carNumber">رقم السياره</label>
+                <input type="number" name="carNumber" id="carNumber" required>
+                <input type="submit" value="add">
+            </form>
+        </div>
+        <form action="{% url 'logsApp:ret' %}" method="post">
+            {% csrf_token %}
+            <label for="ceonumber">
                 الرقم الاداري
-                {{n.employee.ceoNumber}}</h2>
-            <h2>
-                {{n.car.carName}}
+            </label>
+            <input type="number" name="ceonumber" id="ceonumber">
+            <input type="submit" value="submit">
+        </form>
+
+    </div>
+        {% for i in all %}
+        <h1>{{i.carNumber}}</h1>
+        {% endfor %}
+        
+        {% if l %}
+        {% for n in l %}
+        <div class="c">
+            <h1>in use cars</h1>
+            <div class="a">
+                {{n.pk}}
+                
+                <h1>
+                    اسم المستخدم:
+                    {{n.employee.ceoName}}
+                </h1>
+                <h2>
+                    الرقم الاداري
+                    {{n.employee.ceoNumber}}</h2>
+                    <h2>
+                        {{n.car.carName}}
                 :اسم السياره
             </h2>
             <h2>

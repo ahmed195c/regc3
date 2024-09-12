@@ -2,11 +2,13 @@ from django.shortcuts import render
 from django import forms
 from django.utils import timezone
 from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
+
 # Create your views here.
 
 
 def index(request):
     return render(request, "logsApp/layout.html")
+
 
 
 def registerCar(request):
@@ -26,9 +28,11 @@ def registerCar(request):
                         print("car is not in use")
                     except InUseCars.DoesNotExist:
                         print("")
+                        
                         new = InUseCars(car=caro,employee=employeo)
                         new.save()
-                        newL = LogsC(Logs_car_ins=caro,Logs_employee_ins=employeo)
+                        inst = InUseCars.objects(employee=employeo)
+                        newL = LogsC(Logs_car_ins=caro,Logs_employee_ins=employeo,inusecarin=inst)
                         newL.save()
                 print("Car found")
                 return render(request,"logsApp/registerCar.html",{"car":caro, "em":employeo,"l":allInUseCars })
@@ -37,7 +41,7 @@ def registerCar(request):
                 # Handle the case where the car number doesn't exist
                 print("Car not found")
 
-        return render(request, "logsApp/registerCar.html",{"all":allregscars,"l":allInUseCars})
+        return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
     
     return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
 
@@ -48,8 +52,9 @@ def returncar(request):
         allInUseCars = InUseCars.objects.all()
         empinstance = EmployesInfo.objects.get(ceoNumber=ceonumberq)
         inusecatinstance = InUseCars.objects.get(employee=empinstance)
+        print(inusecatinstance)
         print(inusecatinstance.employee)
-        inusecarinstance = LogsC.objects.get(Logs_employee_ins=inusecatinstance.employee )
+        inusecarinstance = LogsC.objects.get(inusecarin=inusecatinstance)
         print(inusecarinstance)
         inusecarinstance.ended_at = timezone.now()
         inusecarinstance.save()
