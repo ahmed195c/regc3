@@ -1,82 +1,60 @@
-{% extends "logsApp/layout.html" %}
-
-{% block body %}
+{% extends "logsApp/layout.html" %} {% block body %}
 <div>
-
-    <h1>{{inUseErr}}</h1>
-    <div class="forms-cont">
+  <h1>{{inUseErr}}</h1>
+  <div class="forms-cont">
+    <div>
+      <form action="{% url 'logsApp:add' %}" dir="rtl" method="post">
+        {% csrf_token %}
         <div>
-            <form action="{% url 'logsApp:add' %}" dir="rtl" method="post">
-                {% csrf_token %}
-                <div>
-                    <label for="ceoNumber">الرقم الاداري</label>
-                    <input type="number" name="ceoNumber" id="ceoNumber" required>
-                    {% if EmpErr%}
-                    <h3>{{EmpErr}}</h3>
-                    {% endif %}
-                </div>
-                <div>
-                    <label for="carNumber">رقم السياره</label>
-                    <input type="number" name="carNumber" id="carNumber" required>
-                    {% if carErr  %}
-                    <h3>{{carErr}}</h3>
-                    {% endif %}
-                    <input type="submit" value="add">
-                </div>
-            </form>
+          <label for="ceoNumber">الرقم الاداري</label>
+          <input type="number" name="ceoNumber" id="ceoNumber" required />
+          {% if EmpErr%}
+          <h3>{{EmpErr}}</h3>
+          {% endif %}
         </div>
-        <form action="{% url 'logsApp:ret' %}" method="post">
-            {% csrf_token %}
-            <label for="ceonumber">
-                الرقم الاداري
-            </label>
-            <input type="number" name="ceonumber" id="ceonumber">
-            <input type="submit" value="submit">
-        </form>
-
-        {% if message %}
-        <h1> message</h1>
-        {% endif %}
-
-    </div>
-        {% for i in all %}
-        <h1>{{i.carNumber}}</h1>
-        {% endfor %}
-        
-        {% if l %}
-        {% for n in l %}
-        <div class="c">
-            <h1>in use cars</h1>
-            <div class="a">
-                {{n.pk}}
-                
-                <h1>
-                    اسم المستخدم:
-                    {{n.employee.ceoName}}
-                </h1>
-                <h2>
-                    الرقم الاداري
-                    {{n.employee.ceoNumber}}</h2>
-                    <h2>
-                        {{n.car.carName}}
-                :اسم السياره
-            </h2>
-            <h2>
-                رقم اللوحه
-                {{n.car.carNumber}}
-            </h2>
-            <h1> time : 
-                
-                {{ n.created_at }}
-            </h1>
+        <div>
+          <label for="carNumber">رقم السياره</label>
+          <input type="number" name="carNumber" id="carNumber" required />
+          {% if carErr %}
+          <h3>{{carErr}}</h3>
+          {% endif %}
+          <input type="submit" value="add" />
         </div>
+      </form>
     </div>
-    {% endfor %}
-    {% else%}
-    
-    <h1>no cars</h1>
+    <form action="{% url 'logsApp:ret' %}" method="post">
+      {% csrf_token %}
+      <label for="ceonumber"> الرقم الاداري </label>
+      <input type="number" name="ceonumber" id="ceonumber" />
+      <input type="submit" value="submit" />
+    </form>
+
+    {% if message %}
+    <h1>message</h1>
     {% endif %}
+  </div>
+  {% for i in all %}
+  <h1>{{i.carNumber}}</h1>
+  {% endfor %} {% if l %} {% for n in l %}
 
+  <div class="car-details">
+    <h1>in use cars</h1>
+    <div class="details">
+      <div class="info">
+        <h1 class="employee-name">اسم المستخدم: {{n.employee.ceoName}}</h1>
+        <p class="employee-number">الرقم الاداري {{n.employee.ceoNumber}}</p>
+        <h2 class="car-name">{{n.car.carName}} :اسم السياره</h2>
+        <div class="car-plate">
+          <h2>رقم اللوحه {{n.car.carNumber}}</h2>
+        </div>
+        <h1 class="created-at">time : {{ n.created_at }}</h1>
+      </div>
+    </div>
+  </div>
+  {% endfor %} {% else%}
+
+  <h1>no cars</h1>
+  {% endif %}
 </div>
 
 {% endblock %}

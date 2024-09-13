@@ -1,10 +1,59 @@
-.c{
-    margin:100px;
-    background-color: rgb(235, 232, 232);
-    border: 1px solid black;
+/* General styling for the container */
+.car-details {
+  width: 400px;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.a{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+
+/* Styling for the heading */
+.car-details h1 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Styling for the details section */
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Styling for each piece of information */
+.info p,
+.info h2 {
+  margin: 0;
+  padding: 5px 0;
+  color: #555;
+}
+
+/* Styling for the car plate */
+.car-plate {
+  background-color: #fff;
+  border: 2px solid #000;
+  border-radius: 5px;
+  padding: 10px;
+  display: inline-block;
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Adjusting specific parts */
+.pk,
+.employee-name,
+.employee-number,
+.car-name,
+.created-at {
+  font-size: 16px;
+}
+
+.created-at {
+  font-size: 18px;
+  font-weight: bold;
 }
