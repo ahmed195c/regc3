@@ -23,6 +23,10 @@
             <input type="submit" value="submit">
         </form>
 
+        {% if message %}
+        <h1> message</h1>
+        {% endif %}
+
     </div>
         {% for i in all %}
         <h1>{{i.carNumber}}</h1>
