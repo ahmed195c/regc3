@@ -3,15 +3,26 @@
 {% block body %}
 <div>
 
+    <h1>{{inUseErr}}</h1>
     <div class="forms-cont">
         <div>
             <form action="{% url 'logsApp:add' %}" dir="rtl" method="post">
                 {% csrf_token %}
-                <label for="ceoNumber">الرقم الاداري</label>
-                <input type="number" name="ceoNumber" id="ceoNumber" required>
-                <label for="carNumber">رقم السياره</label>
-                <input type="number" name="carNumber" id="carNumber" required>
-                <input type="submit" value="add">
+                <div>
+                    <label for="ceoNumber">الرقم الاداري</label>
+                    <input type="number" name="ceoNumber" id="ceoNumber" required>
+                    {% if EmpErr%}
+                    <h3>{{EmpErr}}</h3>
+                    {% endif %}
+                </div>
+                <div>
+                    <label for="carNumber">رقم السياره</label>
+                    <input type="number" name="carNumber" id="carNumber" required>
+                    {% if carErr  %}
+                    <h3>{{carErr}}</h3>
+                    {% endif %}
+                    <input type="submit" value="add">
+                </div>
             </form>
         </div>
         <form action="{% url 'logsApp:ret' %}" method="post">

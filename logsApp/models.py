@@ -36,7 +36,6 @@ class LogsC(models.Model):
     Logs_employee_ins = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now=True)
     ended_at = models.DateTimeField(null=True, blank=True)
-    inusecarin = models.ForeignKey(InUseCars,  on_delete=models.CASCADE,null=True)
     carIsInUse =  models.BooleanField(default=True)
     def __str__(self):
         return str(f" name: {self.Logs_car_ins.carNumber}  ceo nam: {self.Logs_employee_ins.ceoName} carIsINuSE: {self.carIsInUse}")

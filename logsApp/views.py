@@ -16,33 +16,34 @@ def registerCar(request):
     if request.method == "POST":
         ceoNmberInput = request.POST["ceoNumber"]
         carNumperInput = request.POST.get("carNumber")
-
-        if ceoNmberInput or carNumperInput:
-            try:
-                caro = RegistredCars.objects.get(carNumber=carNumperInput,carIsInparking=True)
-                employeo = EmployesInfo.objects.get(ceoNumber=ceoNmberInput,EmpHaveCar=False)
-                # If a car with this number exists, you can work with 'car'
-            except EmployesInfo.DoesNotExist:
-               print("emp or car are in use")
-            return render(request,"logsApp/registerCar.html",{ "message":"car no ceo numberworng","l":allInUseCars })
-        
-        
-             
         try:
-                inusecart = InUseCars.objects.get(car=caro,employee=employeo)
-                print("car is in use")
+            print("ceo number 1")
+            employeeNumperCheck = EmployesInfo.objects.get(ceoNumber=ceoNmberInput,EmpHaveCar=False)
+        except EmployesInfo.DoesNotExist:
+            employeeNumperNotFoundErrorMessage = "الرقم الاداري غير صحيح او مستخدم من قبل"
+            return render(request,"logsApp/registerCar.html",{"EmpErr":employeeNumperNotFoundErrorMessage,"l":allInUseCars})
+        try:
+            print("carnumber 1")
+            registredCarCheck = RegistredCars.objects.get(carNumber=carNumperInput,carIsInparking=True)
+        except RegistredCars.DoesNotExist:
+            carNotFoundErrorMessage = " رقم السيارة المدخل غير صحيح او مستخدم"
+            return render(request, "logsApp/registerCar.html",{"carErr":carNotFoundErrorMessage,"l":allInUseCars})
+        try:
+            InUseCarCheck = InUseCars.objects.get(car=registredCarCheck,employee=employeeNumperCheck)
+            print("in use car 1")
+            
+            return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
         except InUseCars.DoesNotExist:
-                print("")
-                employeo.EmpHaveCar = True
-                caro.carIsInparking = False
-                caro.save()
-                employeo.save()
-                new = InUseCars(car=caro,employee=employeo)
-                new.save()
-                newL = LogsC(Logs_car_ins=caro,Logs_employee_ins=employeo)
-                newL.save()
-        print("Car found")
-        return render(request,"logsApp/registerCar.html",{"car":caro, "em":employeo,"l":allInUseCars })
+            newInuseCarTemp = InUseCars(car=registredCarCheck,employee=employeeNumperCheck)
+            newInuseCarTemp.save()
+            newLog = LogsC(Logs_employee_ins=employeeNumperCheck,Logs_car_ins=registredCarCheck)
+            newLog.save()
+            employeeNumperCheck.EmpHaveCar = True
+            employeeNumperCheck.save()
+            registredCarCheck.carIsInparking = False
+            registredCarCheck.save()
+            return render(request, "logsApp/registerCar.html",{"l":allInUseCars})    
+
     
     return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
 
