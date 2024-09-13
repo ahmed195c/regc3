@@ -43,12 +43,6 @@ def registerCar(request):
                 newL.save()
         print("Car found")
         return render(request,"logsApp/registerCar.html",{"car":caro, "em":employeo,"l":allInUseCars })
-            # Do something with 'car'
-    except RegistredCars.DoesNotExist:
-            # Handle the case where the car number doesn't exist
-        print("Car not found")
-
-        return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
     
     return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
 
