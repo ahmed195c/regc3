@@ -35,8 +35,13 @@
   </div>
   {% for i in all %}
   <h1>{{i.carNumber}}</h1>
-  {% endfor %} {% if l %} {% for n in l %}
-
+  {% endfor %} {% if l %} {% for n in l %} {% if rr%}
+  <div>
+    <h1>car is in use from cont</h1>
+    <div>{{rr.car.carNumber}} {{rr.employee.ceoName}}</div>
+  </div>
+  {% endif %}
+  <!-- in use cars cont -->
   <div class="car-details">
     <h1>in use cars</h1>
     <div class="details">

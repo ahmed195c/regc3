@@ -17,9 +17,9 @@ def registerCar(request):
         ceoNmberInput = request.POST["ceoNumber"]
         carNumperInput = request.POST.get("carNumber")
         try:
-            print("ceo number 1")
-            employeeNumperCheck = EmployesInfo.objects.get(ceoNumber=ceoNmberInput,EmpHaveCar=False)
-        except EmployesInfo.DoesNotExist:
+           print("ceo number 1")
+           employeeNumperCheck = EmployesInfo.objects.get(ceoNumber=ceoNmberInput,EmpHaveCar=False)
+        except EmployesInfo.DoesNotExist:  
             employeeNumperNotFoundErrorMessage = "الرقم الاداري غير صحيح او مستخدم من قبل"
             return render(request,"logsApp/registerCar.html",{"EmpErr":employeeNumperNotFoundErrorMessage,"l":allInUseCars})
         try:
@@ -43,8 +43,7 @@ def registerCar(request):
             registredCarCheck.carIsInparking = False
             registredCarCheck.save()
             return render(request, "logsApp/registerCar.html",{"l":allInUseCars})    
-
-    
+        
     return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
 
 
