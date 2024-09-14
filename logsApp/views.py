@@ -22,24 +22,26 @@ def registerCar(request):
         except EmployesInfo.DoesNotExist:  
             employeeNumperNotFoundErrorMessage = "الرقم الاداري غير صحيح او مستخدم من قبل"
             return render(request,"logsApp/registerCar.html",{"EmpErr":employeeNumperNotFoundErrorMessage,"l":allInUseCars})
+        
         try:
             print("carnumber 1")
             registredCarCheck = RegistredCars.objects.get(carNumber=carNumperInput,carIsInparking=True)
         except RegistredCars.DoesNotExist:
             carNotFoundErrorMessage = " رقم السيارة المدخل غير صحيح او مستخدم"
             return render(request, "logsApp/registerCar.html",{"carErr":carNotFoundErrorMessage,"l":allInUseCars})
+        
         try:
             InUseCarCheck = InUseCars.objects.get(car=registredCarCheck,employee=employeeNumperCheck)
             print("in use car 1")
             
             return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
         except InUseCars.DoesNotExist:
-            newInuseCarTemp = InUseCars(car=registredCarCheck,employee=employeeNumperCheck)
-            newInuseCarTemp.save()
-            newLog = LogsC(Logs_employee_ins=employeeNumperCheck,Logs_car_ins=registredCarCheck)
-            newLog.save()
+            InUseCars.objects.create(car=registredCarCheck, employee=employeeNumperCheck)
+            LogsC.objects.create(Logs_employee_ins=employeeNumperCheck, Logs_car_ins=registredCarCheck)
+
             employeeNumperCheck.EmpHaveCar = True
             employeeNumperCheck.save()
+
             registredCarCheck.carIsInparking = False
             registredCarCheck.save()
             return render(request, "logsApp/registerCar.html",{"l":allInUseCars})    
@@ -51,8 +53,17 @@ def returncar(request):
     if request.method == "POST":
         ceonumberq = request.POST.get("ceonumber")
         allInUseCars = InUseCars.objects.all()
-        empinstance = EmployesInfo.objects.get(ceoNumber=ceonumberq)
-        inusecatinstance = InUseCars.objects.get(employee=empinstance)
+        try:
+           empinstance = EmployesInfo.objects.get(ceoNumber=ceonumberq)
+        except EmployesInfo.DoesNotExist:
+             f = True
+             return render(request,"logsApp/registerCar.html", {"f":f,"l":allInUseCars})
+        try:
+          inusecatinstance = InUseCars.objects.get(employee=empinstance)
+        except InUseCars.DoesNotExist:
+            g = True
+            q = EmployesInfo.objects.get()
+            return render(request,"logsApp/registerCar.html", {"g":g,"l":allInUseCars})
         registerCarinst = RegistredCars.objects.get(carNumber=inusecatinstance.car.carNumber)
         print(inusecatinstance)
         print(inusecatinstance.employee)
@@ -73,3 +84,4 @@ def returncar(request):
 def logsfunc(request):
     alllogs = LogsC.objects.all()
     return render(request, "logsApp/logs.html",{"alllogs":alllogs})
+

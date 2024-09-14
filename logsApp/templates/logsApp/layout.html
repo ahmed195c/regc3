@@ -1,36 +1,31 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{% static 'logsApp/layout.css'%}" rel="stylesheet" >
-    <link href="{% static 'logsApp/reg.css'%}" rel="stylesheet" >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{% static 'logsApp/layout.css'%}" rel="stylesheet" />
+    <link href="{% static 'logsApp/reg.css'%}" rel="stylesheet" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <h1>برنامج التسليم و الاستلام </h1>
-        <div>
-            <ul class="nav-links">
-                <li>
-                    <a href="{% url 'logsApp:add' %}">استلام و ارجاع المركبه</a>
-                </li>
-                <li>
-                    <a href="{% url 'logsApp:logslink'%}">سجل الاستلام والتسليم</a>
-                </li>
-                <li>
-                    <a href="#"></a>
-                </li>
-            </ul>
-        </div>
+      <h1>برنامج التسليم و الاستلام</h1>
+      <div>
+        <ul class="nav-links">
+          <li>
+            <a href="{% url 'logsApp:add' %}">استلام و ارجاع المركبه</a>
+          </li>
+          <li>
+            <a href="{% url 'logsApp:logslink'%}">سجل الاستلام والتسليم</a>
+          </li>
+          <li>
+            <a href="/admin">Admin page</a>
+          </li>
+        </ul>
+      </div>
     </header>
-    <main>    
-        {% block body%}
-        {% endblock %}
-    </main>
-    <footer class="">
-        
-    </footer>
-</body>
+    <main>{% block body%} {% endblock %}</main>
+    <footer class=""></footer>
+  </body>
 </html>

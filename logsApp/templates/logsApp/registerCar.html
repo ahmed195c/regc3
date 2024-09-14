@@ -24,7 +24,13 @@
     </div>
     <form action="{% url 'logsApp:ret' %}" method="post">
       {% csrf_token %}
+      <h3>تسليم المركبه</h3>
       <label for="ceonumber"> الرقم الاداري </label>
+      {% if f %}
+      <h3>الرقم الاداري غير صحيح</h3>
+      {% endif %} {% if g %}
+      <h3>الرقم الاداري لايحمل</h3>
+      {% endif %}
       <input type="number" name="ceonumber" id="ceonumber" />
       <input type="submit" value="submit" />
     </form>
@@ -33,9 +39,11 @@
     <h1>message</h1>
     {% endif %}
   </div>
+
   {% for i in all %}
   <h1>{{i.carNumber}}</h1>
   {% endfor %} {% if l %} {% for n in l %} {% if rr%}
+
   <div>
     <h1>car is in use from cont</h1>
     <div>{{rr.car.carNumber}} {{rr.employee.ceoName}}</div>
@@ -46,6 +54,7 @@
     <h1>in use cars</h1>
     <div class="details">
       <div class="info">
+        <h2>رقم الهاتف : {{n.employee.phoneNumber}}</h2>
         <h1 class="employee-name">اسم المستخدم: {{n.employee.ceoName}}</h1>
         <p class="employee-number">الرقم الاداري {{n.employee.ceoNumber}}</p>
         <h2 class="car-name">{{n.car.carName}} :اسم السياره</h2>
@@ -58,7 +67,7 @@
   </div>
   {% endfor %} {% else%}
 
-  <h1>no cars</h1>
+  <h1>لاتوجد مركبات قيد الاستخدام</h1>
   {% endif %}
 </div>
 
