@@ -1,35 +1,33 @@
-{% extends "logsApp/layout.html" %}
-
-{% block body %}
+{% extends "logsApp/layout.html" %} {% block body %}
 <h1>logs</h1>
-<h1>
-    {{ceonumber}}
-</h1>
+<h1>{{ceonumber}}</h1>
 
 <div>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Car Number</th>
-                <th>CEO Number</th>
-                <th>CEO Name</th>
-                <th> وقت استلام المركبه</th>
-                <th>Ended At</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for k in alllogs %}
-            <tr>
-                <td>{{k.Logs_car_ins.carNumber}}</td>
-                <td>{{k.Logs_employee_ins.ceoNumber}}</td>
-                <td>{{k.Logs_employee_ins.ceoName}}</td>
-                <td>{{k.created_at}}</td>
-                <td>{{k.ended_at}}</td>
-                <td>{{k.pk}}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>رقم السياره</th>
+        <th>الرقم الاداري</th>
+        <th>الاسم</th>
+        <th>تاريخ الاستلام</th>
+        <th>وقت الاتسلام</th>
+        <th>وقت التسليم</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for k in alllogs %}
+      <tr>
+        <td>{{k.Logs_car_ins.carNumber}}</td>
+        <td>{{k.Logs_employee_ins.ceoNumber}}</td>
+        <td class="ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
+        <td>{{k.created_at|date:"Y-m-d"}}</td>
+        <td>{{k.created_at|date:"h:i A"}}</td>
+        <td>{{k.ended_at}}</td>
+        <td>{{k.pk}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
 {% endblock %}

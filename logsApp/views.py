@@ -17,17 +17,20 @@ def registerCar(request):
         ceoNmberInput = request.POST["ceoNumber"]
         carNumperInput = request.POST.get("carNumber")
         try:
-           print("ceo number 1")
            employeeNumperCheck = EmployesInfo.objects.get(ceoNumber=ceoNmberInput,EmpHaveCar=False)
-        except EmployesInfo.DoesNotExist:  
-            employeeNumperNotFoundErrorMessage = "الرقم الاداري غير صحيح او مستخدم من قبل"
-            return render(request,"logsApp/registerCar.html",{"EmpErr":employeeNumperNotFoundErrorMessage,"l":allInUseCars})
+        except EmployesInfo.DoesNotExist:
+            EmpMErr = "الرقم الاداري غير صحيح او مستخم"
+            return render(request,"logsApp/registerCar.html",{"EmpMErr":EmpMErr,"l":allInUseCars})
         
         try:
             print("carnumber 1")
             registredCarCheck = RegistredCars.objects.get(carNumber=carNumperInput,carIsInparking=True)
         except RegistredCars.DoesNotExist:
-            carNotFoundErrorMessage = " رقم السيارة المدخل غير صحيح او مستخدم"
+            try:
+                 INuse = InUseCars.objects.get(employee=ceoNmberInput)
+            except InUseCars.DoesNotExist:
+                carNotFoundErrorMessage = " رقم السيارة المدخل غير صحيح او مستخدم"
+                
             return render(request, "logsApp/registerCar.html",{"carErr":carNotFoundErrorMessage,"l":allInUseCars})
         
         try:
@@ -62,7 +65,7 @@ def returncar(request):
           inusecatinstance = InUseCars.objects.get(employee=empinstance)
         except InUseCars.DoesNotExist:
             g = True
-            q = EmployesInfo.objects.get()
+            q = EmployesInfo.objects.get(ceoNumber=ceonumberq)
             return render(request,"logsApp/registerCar.html", {"g":g,"l":allInUseCars})
         registerCarinst = RegistredCars.objects.get(carNumber=inusecatinstance.car.carNumber)
         print(inusecatinstance)
@@ -84,4 +87,3 @@ def returncar(request):
 def logsfunc(request):
     alllogs = LogsC.objects.all()
     return render(request, "logsApp/logs.html",{"alllogs":alllogs})
-

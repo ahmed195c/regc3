@@ -8,8 +8,8 @@
         <div>
           <label for="ceoNumber">الرقم الاداري</label>
           <input type="number" name="ceoNumber" id="ceoNumber" required />
-          {% if EmpErr%}
-          <h3>{{EmpErr}}</h3>
+          {% if EmpMErr %}
+          <h3>{{EmpMErr}}</h3>
           {% endif %}
         </div>
         <div>
@@ -29,7 +29,7 @@
       {% if f %}
       <h3>الرقم الاداري غير صحيح</h3>
       {% endif %} {% if g %}
-      <h3>الرقم الاداري لايحمل</h3>
+      <h3>لاتوجد مركبه مرتبطه بل رقم الاداري</h3>
       {% endif %}
       <input type="number" name="ceonumber" id="ceonumber" />
       <input type="submit" value="submit" />
@@ -40,16 +40,8 @@
     {% endif %}
   </div>
 
-  {% for i in all %}
-  <h1>{{i.carNumber}}</h1>
-  {% endfor %} {% if l %} {% for n in l %} {% if rr%}
-
-  <div>
-    <h1>car is in use from cont</h1>
-    <div>{{rr.car.carNumber}} {{rr.employee.ceoName}}</div>
-  </div>
-  {% endif %}
   <!-- in use cars cont -->
+  {% if l %} {% for n in l %}
   <div class="car-details">
     <h1>in use cars</h1>
     <div class="details">
@@ -61,11 +53,11 @@
         <div class="car-plate">
           <h2>رقم اللوحه {{n.car.carNumber}}</h2>
         </div>
-        <h1 class="created-at">time : {{ n.created_at }}</h1>
+        <h1 class="created-at">{{ n.created_at|date:"Y-m-d / h:i A" }}</h1>
       </div>
     </div>
   </div>
-  {% endfor %} {% else%}
+  {% endfor %} {% else %}
 
   <h1>لاتوجد مركبات قيد الاستخدام</h1>
   {% endif %}
