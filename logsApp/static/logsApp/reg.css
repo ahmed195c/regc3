@@ -1,6 +1,12 @@
 /* General styling for the container */
+
+.inUsCont {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
 .car-details {
-  width: 400px;
+  width: 200px;
   font-family: Arial, sans-serif;
   padding: 20px;
   background-color: #f9f9f9;
@@ -56,4 +62,30 @@
 .created-at {
   font-size: 18px;
   font-weight: bold;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+  -webkit-appearance: none; /* Chrome, Safari, and newer versions of Edge */
+  appearance: none; /* Modern browsers */
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.regCont {
+  display: flex;
+  justify-content: right;
 }

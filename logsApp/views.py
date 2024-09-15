@@ -2,9 +2,11 @@ from django.shortcuts import render
 from django import forms
 from django.utils import timezone
 from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
-
+import re
 # Create your views here.
-
+def remove_non_numeric(s):
+    # Use regular expression to replace all non-numeric characters with an empty string
+    return re.sub(r'\D', '', s)
 
 def index(request):
     return render(request, "logsApp/layout.html")
@@ -12,50 +14,45 @@ def index(request):
 
 
 def registerCar(request):
-    allInUseCars = InUseCars.objects.all()
+    allnUseCars = InUseCars.objects.all()
     if request.method == "POST":
-        ceoNmberInput = request.POST["ceoNumber"]
-        carNumperInput = request.POST.get("carNumber")
+        ceoNInput = int(remove_non_numeric(request.POST["ceoNumber"]))
+        carNInput = int(remove_non_numeric(request.POST.get("carNumber")))
+        
+        # check if emp exists and dose not have a car
         try:
-           employeeNumperCheck = EmployesInfo.objects.get(ceoNumber=ceoNmberInput,EmpHaveCar=False)
+            #if emp dosenot have a car and exists skip the except
+            empExists = EmployesInfo.objects.get(ceoNumber=ceoNInput,EmpHaveCar=False)
         except EmployesInfo.DoesNotExist:
-            EmpMErr = "الرقم الاداري غير صحيح او مستخم"
-            return render(request,"logsApp/registerCar.html",{"EmpMErr":EmpMErr,"l":allInUseCars})
+            # if emp dosent exists or do have a car return a message to not him about that
+            empDoseNotEXISTS = "الرقم الاداري غير صحصح او مستخدم"
+            return render(request, "logsApp/registerCar.html",{"empDoseNotEXISTS":empDoseNotEXISTS,"l":allnUseCars})
         
         try:
-            print("carnumber 1")
-            registredCarCheck = RegistredCars.objects.get(carNumber=carNumperInput,carIsInparking=True)
+            carExists = RegistredCars.objects.get(carNumber=carNInput,carIsInparking=True)
         except RegistredCars.DoesNotExist:
-            try:
-                 INuse = InUseCars.objects.get(employee=ceoNmberInput)
-            except InUseCars.DoesNotExist:
-                carNotFoundErrorMessage = " رقم السيارة المدخل غير صحيح او مستخدم"
-                
-            return render(request, "logsApp/registerCar.html",{"carErr":carNotFoundErrorMessage,"l":allInUseCars})
+            carDNE = "رقم السياره المدخل خاطء او السياره قيد الاستخدام"
+            return render(request, "logsApp/registerCar.html",{"carDNE":carDNE,"l":allnUseCars})
         
-        try:
-            InUseCarCheck = InUseCars.objects.get(car=registredCarCheck,employee=employeeNumperCheck)
-            print("in use car 1")
-            
-            return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
-        except InUseCars.DoesNotExist:
-            InUseCars.objects.create(car=registredCarCheck, employee=employeeNumperCheck)
-            LogsC.objects.create(Logs_employee_ins=employeeNumperCheck, Logs_car_ins=registredCarCheck)
+        InUseCars.objects.create(car=carExists, employee=empExists)
+        LogsC.objects.create(Logs_employee_ins=empExists, Logs_car_ins=carExists)
 
-            employeeNumperCheck.EmpHaveCar = True
-            employeeNumperCheck.save()
+        empExists.EmpHaveCar = True
+        empExists.save()
 
-            registredCarCheck.carIsInparking = False
-            registredCarCheck.save()
-            return render(request, "logsApp/registerCar.html",{"l":allInUseCars})    
+        carExists.carIsInparking = False
+        carExists.save()
+        return render(request, "logsApp/registerCar.html",{"l":allnUseCars})    
         
-    return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
+    return render(request, "logsApp/registerCar.html",{"l":allnUseCars})
 
 
 def returncar(request):
     if request.method == "POST":
-        ceonumberq = request.POST.get("ceonumber")
+        ceonumberq = int(request.POST.get("ceonumber"))
+        empnote = request.POST.get("empnote")
         allInUseCars = InUseCars.objects.all()
+
         try:
            empinstance = EmployesInfo.objects.get(ceoNumber=ceonumberq)
         except EmployesInfo.DoesNotExist:
@@ -65,7 +62,6 @@ def returncar(request):
           inusecatinstance = InUseCars.objects.get(employee=empinstance)
         except InUseCars.DoesNotExist:
             g = True
-            q = EmployesInfo.objects.get(ceoNumber=ceonumberq)
             return render(request,"logsApp/registerCar.html", {"g":g,"l":allInUseCars})
         registerCarinst = RegistredCars.objects.get(carNumber=inusecatinstance.car.carNumber)
         print(inusecatinstance)
@@ -74,6 +70,7 @@ def returncar(request):
         print(inusecarinstance)
         inusecarinstance.ended_at = timezone.now()
         inusecarinstance.carIsInUse = False
+        inusecarinstance.carNote = empnote
         registerCarinst.carIsInparking = True
         empinstance.EmpHaveCar = False
         empinstance.save()

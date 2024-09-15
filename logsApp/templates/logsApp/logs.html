@@ -23,7 +23,11 @@
         <td>{{k.created_at|date:"Y-m-d"}}</td>
         <td>{{k.created_at|date:"h:i A"}}</td>
         <td>{{k.ended_at}}</td>
-        <td>{{k.pk}}</td>
+        {% if k.carNote %}
+        <td>{{k.carNote}}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
       </tr>
       {% endfor %}
     </tbody>

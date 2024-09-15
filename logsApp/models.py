@@ -37,5 +37,6 @@ class LogsC(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     ended_at = models.DateTimeField(null=True, blank=True)
     carIsInUse =  models.BooleanField(default=True)
+    carNote = models.CharField(default=None,null=True, max_length=200)
     def __str__(self):
         return str(f" name: {self.Logs_car_ins.carNumber}  ceo nam: {self.Logs_employee_ins.ceoName} carIsINuSE: {self.carIsInUse}")
