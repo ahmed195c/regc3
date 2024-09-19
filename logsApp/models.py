@@ -12,7 +12,7 @@ class RegistredCars(models.Model):
     vType = models.TextField(max_length=100,null=True)
     carIsInparking = models.BooleanField(default=True)
     def __str__(self):
-        return str(f" carIsInparking : {self.carIsInparking } car number: {self.carNumber} car name: {self.carName}")
+        return str(f" carIsInparking : {self.carIsInparking } car number: {self.carNumber} car name: {self.vType}")
    
     
 

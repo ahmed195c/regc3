@@ -8,22 +8,20 @@
         <div class="input-container">
           <label for="ceoNumber">الرقم الاداري</label>
           <input
-          class="input"
-          type="text"
-          name="ceoNumber"
-          id="ceoNumber"
-          required
-          placeholder="الرقم الاداري"
+            class="input"
+            type="text"
+            name="ceoNumber"
+            id="ceoNumber"
+            required
+            placeholder="الرقم الاداري"
           />
-          {{carDNE}}
-          {{empDoseNotEXISTS}}
-          {% if EmpMErr %}
+          {{carDNE}} {{empDoseNotEXISTS}} {% if EmpMErr %}
           <h3>{{EmpMErr}}</h3>
           {% endif %} {% if InUseCar_exists %} {{InUseCar_exists}} {% endif %}
         </div>
         <div>
           <label for="carNumber">رقم السياره</label>
-          <input type="number" name="carNumber" id="carNumber" required />
+          <input type="text" name="carNumber" id="carNumber" required />
           {% if inuse %}
           <h3>{{inuse}}</h3>
           {% else %}

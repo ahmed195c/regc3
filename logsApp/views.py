@@ -17,8 +17,8 @@ def index(request):
 def registerCar(request):
     allnUseCars = InUseCars.objects.all()
     if request.method == "POST":
-        ceoNInput = int(remove_non_numeric(request.POST["ceoNumber"]))
-        carNInput = int(remove_non_numeric(request.POST.get("carNumber")))
+        ceoNInput = request.POST["ceoNumber"]
+        carNInput = request.POST.get("carNumber")
         
         # check if emp exists and dose not have a car
         try:
@@ -92,7 +92,16 @@ def logsfunc(request):
 def seedCars(request):
     # print(carsList)
     for i in carsList:
-        print(i.vnumber)
-
-    # new = RegistredCars.create()
+        carOEMPN = i["empid"] 
+        l = int(carOEMPN)
+        new = RegistredCars.objects.create(carYear=i["Myear"],
+                                    cownerEmpNumber=l,
+                                    cownerName=i["empName"],
+                                    cownerPhone=i["tel"],
+                                    section=i["section"],
+                                    carNumber=i["vnumber"],
+                                    vType=i["vType"],
+                                    )
+    
+    new.save()
     return render(request, "logsApp/logs.html")
