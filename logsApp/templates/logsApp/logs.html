@@ -3,6 +3,16 @@
 <h1>{{ceonumber}}</h1>
 
 <div>
+  <form method="get">
+    {{ form.as_p }}
+    <button type="submit">Filter</button>
+  </form>
+</div>
+
+<div><a href="{% url 'logsApp:seedcars' %}">seed</a></div>
+
+<div>{% for o in ll %} {{o.dateFilter}} {% endfor %}</div>
+<div>
   <table border="1">
     <thead>
       <tr>
@@ -12,6 +22,7 @@
         <th>تاريخ الاستلام</th>
         <th>وقت الاتسلام</th>
         <th>وقت التسليم</th>
+        <th>ملاحظات</th>
       </tr>
     </thead>
     <tbody>

@@ -3,6 +3,7 @@ from django import forms
 from django.utils import timezone
 from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
 import re
+from .cars import carsList
 # Create your views here.
 def remove_non_numeric(s):
     # Use regular expression to replace all non-numeric characters with an empty string
@@ -63,6 +64,7 @@ def returncar(request):
         except InUseCars.DoesNotExist:
             g = True
             return render(request,"logsApp/registerCar.html", {"g":g,"l":allInUseCars})
+        
         registerCarinst = RegistredCars.objects.get(carNumber=inusecatinstance.car.carNumber)
         print(inusecatinstance)
         print(inusecatinstance.employee)
@@ -77,10 +79,20 @@ def returncar(request):
         inusecarinstance.save()
         registerCarinst.save()
         inusecatinstance.delete()
-        return render(request, "logsApp/registerCar.html", {"l":allInUseCars})
+        return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
 
 
 
 def logsfunc(request):
     alllogs = LogsC.objects.all()
-    return render(request, "logsApp/logs.html",{"alllogs":alllogs})
+    fil = LogsC.objects.filter(dateFilter="2024-09-12")
+    return render(request, "logsApp/logs.html",{"ll":fil,"alllogs":alllogs})
+
+
+def seedCars(request):
+    # print(carsList)
+    for i in carsList:
+        print(i.vnumber)
+
+    # new = RegistredCars.create()
+    return render(request, "logsApp/logs.html")

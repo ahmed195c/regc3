@@ -7,4 +7,5 @@ urlpatterns = [
     path('add/',views.registerCar,name="add"),
     path("logs/",views.logsfunc,name="logslink"),
     path("ret/",views.returncar, name="ret"),
+    path("seedcars/", views.seedCars, name="seedcars")
 ]
