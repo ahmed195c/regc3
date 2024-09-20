@@ -1,9 +1,13 @@
 /* General styling for the container */
 
 .inUsCont {
+  padding-top:120px ;
+  margin: auto;
+  width: 80%;
   display: flex;
   gap: 20px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 .car-details {
   width: 250px;

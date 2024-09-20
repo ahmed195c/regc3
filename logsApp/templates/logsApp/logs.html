@@ -11,6 +11,7 @@
         <th>الاسم</th>
         <th>تاريخ الاستلام</th>
         <th>وقت الاتسلام</th>
+        <th>تاريخ التسليم</th>
         <th>وقت التسليم</th>
         <th>ملاحظات</th>
       </tr>
@@ -23,7 +24,8 @@
         <td class="ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
         <td>{{k.created_at|date:"Y-m-d"}}</td>
         <td>{{k.created_at|date:"h:i A"}}</td>
-        <td>{{k.ended_at}}</td>
+        <td>{{k.return_date}}</td>
+        <td>{{k.return_time}}</td>
         {% if k.carNote %}
         <td>{{k.carNote}}</td>
         {% else %}

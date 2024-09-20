@@ -43,9 +43,9 @@ class LogsC(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     taken_date = models.DateField(auto_now=True, null=True)
     taken_time = models.TimeField(auto_now=True,null=True)
+    ended_at = models.DateTimeField(null=True, blank=True)
     return_date = models.DateField(null=True, blank=True)
     return_time = models.TimeField(null=True, blank=True)
-    ended_at = models.DateTimeField(null=True, blank=True)
     carIsInUse =  models.BooleanField(default=True)
     carNote = models.CharField(default=None,null=True, max_length=200,blank=True)
     def __str__(self):

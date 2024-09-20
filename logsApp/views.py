@@ -1,12 +1,10 @@
-from django.shortcuts import render ,redirect
-from django import forms
+from django.shortcuts import render 
 from django.utils import timezone
 from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
 import re
 
 from django.http import HttpResponse
 import pandas as pd
-from datetime import datetime
 # Create your views here.
 def remove_non_numeric(s):
     # Use regular expression to replace all non-numeric characters with an empty string
@@ -74,8 +72,11 @@ def returncar(request):
         inusecarinstance = LogsC.objects.get(Logs_employee_ins=empinstance,carIsInUse=True)
         print(inusecarinstance)
         inusecarinstance.ended_at = timezone.now()
+        print(inusecarinstance.ended_at)
         inusecarinstance.return_date = timezone.now().date()
+        print(inusecarinstance.return_date)
         inusecarinstance.return_time = timezone.now().time()
+        print(inusecarinstance.return_time)
         inusecarinstance.carIsInUse = False
         inusecarinstance.carNote = empnote
         registerCarinst.carIsInparking = True
