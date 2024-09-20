@@ -98,8 +98,13 @@ def export_to_excel(request):
     data = LogsC.objects.all().values()
     
     df = pd.DataFrame(data)
-    
-
+    print(df.dtypes)
+    df["created_at"] = df["created_at"].apply(lambda dt: dt and dt.replace(tzinfo=None))
+    df["taken_time"] = df["taken_time"].apply(lambda dt: dt and dt.replace(tzinfo=None))
+    df["return_time"] = df["return_time"].apply(lambda dt: dt and dt.replace(tzinfo=None))
+    df["ended_at"] = df["ended_at"].apply(lambda dt: dt and dt.replace(tzinfo=None))
+      
+    print(df)
     # Create an HTTP response with the Excel file
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="your_model_data.xlsx"'
