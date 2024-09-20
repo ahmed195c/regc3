@@ -6,7 +6,7 @@
   justify-content: center;
 }
 .car-details {
-  width: 200px;
+  width: 250px;
   font-family: Arial, sans-serif;
   padding: 20px;
   background-color: #f9f9f9;
@@ -27,7 +27,9 @@
   flex-direction: column;
   gap: 10px;
 }
-
+.info{
+  width: 100%;
+}
 /* Styling for each piece of information */
 .info p,
 .info h2 {
@@ -38,11 +40,12 @@
 
 /* Styling for the car plate */
 .car-plate {
+ 
+  display: flex;
   background-color: #fff;
   border: 2px solid #000;
   border-radius: 5px;
   padding: 10px;
-  display: inline-block;
   font-weight: bold;
   font-size: 18px;
   letter-spacing: 2px;
@@ -69,6 +72,7 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 input[type="number"] {
   -moz-appearance: textfield;
 }

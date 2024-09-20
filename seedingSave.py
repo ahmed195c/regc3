@@ -10,3 +10,20 @@
 #                                         carNumber=i["vnumber"],
 #                                         vType=i["vType"],
 #                                         )
+
+
+
+# savin multi emp info 
+
+# def seedCars(request):
+#     # print(carsList)
+#     for i in empInfo:
+        
+#         new = EmployesInfo.objects.create(ceoNumber=i["empId"],
+#                                     ceoName=i["empName"],
+#                                     phoneNumber=i["tel"],
+#                                     section=i["Sections"],
+#                                     position=i["job"]
+#                                     )
+#         new.save()
+#     return  redirect('logslink')

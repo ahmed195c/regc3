@@ -3,8 +3,10 @@ from django import forms
 from django.utils import timezone
 from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
 import re
-from .cars import carsList
-from .empinfo import empInfo
+
+from django.http import HttpResponse
+import pandas as pd
+from datetime import datetime
 # Create your views here.
 def remove_non_numeric(s):
     # Use regular expression to replace all non-numeric characters with an empty string
@@ -20,7 +22,7 @@ def registerCar(request):
     if request.method == "POST":
         ceoNInput = request.POST["ceoNumber"]
         carNInput = request.POST.get("carNumber")
-        
+        print(ceoNInput)
         # check if emp exists and dose not have a car
         try:
             #if emp dosenot have a car and exists skip the except
@@ -44,7 +46,7 @@ def registerCar(request):
 
         carExists.carIsInparking = False
         carExists.save()
-        return redirect(request, "logsApp/registerCar.html",{"l":allnUseCars})    
+        return render(request, "logsApp/registerCar.html",{"l":allnUseCars})    
         
     return render(request, "logsApp/registerCar.html",{"l":allnUseCars})
 
@@ -72,6 +74,8 @@ def returncar(request):
         inusecarinstance = LogsC.objects.get(Logs_employee_ins=empinstance,carIsInUse=True)
         print(inusecarinstance)
         inusecarinstance.ended_at = timezone.now()
+        inusecarinstance.return_date = timezone.now().date()
+        inusecarinstance.return_time = timezone.now().time()
         inusecarinstance.carIsInUse = False
         inusecarinstance.carNote = empnote
         registerCarinst.carIsInparking = True
@@ -86,26 +90,20 @@ def returncar(request):
 
 def logsfunc(request):
     alllogs = LogsC.objects.all()
-    fil = LogsC.objects.filter(dateFilter="2024-09-12")
-    return render(request, "logsApp/logs.html",{"ll":fil,"alllogs":alllogs})
+    return render(request, "logsApp/logs.html",{"alllogs":alllogs})
 
 
-def seedCars(request):
-    # print(carsList)
-    for i in empInfo:
-        if i["empid"] == "":
-            print(f"{i["vnumber"]} emte")
-        else:
-            ceon = i["empid"]
-            int(ceon)
-            new = EmployesInfo.objects.create(carYear=i["Myear"],
-                                        cownerEmpNumber=ceon,
-                                        cownerName=i["empName"],
-                                        cownerPhone=i["tel"],
-                                        section=i["section"],
-                                        carNumber=i["vnumber"],
-                                        vType=i["vType"],
-                                        )
-        
-        new.save()
-    return redirect(request, "logsApp/logs.html")
+def export_to_excel(request):
+    # Fetch data from the model
+    data = LogsC.objects.all().values()
+    
+    df = pd.DataFrame(data)
+    
+
+    # Create an HTTP response with the Excel file
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="your_model_data.xlsx"'
+
+    # Write the DataFrame to the response
+    df.to_excel(response, index=False, engine='openpyxl')
+    return response
