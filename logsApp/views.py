@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render ,redirect
 from django import forms
 from django.utils import timezone
 from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
 import re
 from .cars import carsList
+from .empinfo import empInfo
 # Create your views here.
 def remove_non_numeric(s):
     # Use regular expression to replace all non-numeric characters with an empty string
@@ -43,7 +44,7 @@ def registerCar(request):
 
         carExists.carIsInparking = False
         carExists.save()
-        return render(request, "logsApp/registerCar.html",{"l":allnUseCars})    
+        return redirect(request, "logsApp/registerCar.html",{"l":allnUseCars})    
         
     return render(request, "logsApp/registerCar.html",{"l":allnUseCars})
 
@@ -91,17 +92,20 @@ def logsfunc(request):
 
 def seedCars(request):
     # print(carsList)
-    for i in carsList:
-        carOEMPN = i["empid"] 
-        l = int(carOEMPN)
-        new = RegistredCars.objects.create(carYear=i["Myear"],
-                                    cownerEmpNumber=l,
-                                    cownerName=i["empName"],
-                                    cownerPhone=i["tel"],
-                                    section=i["section"],
-                                    carNumber=i["vnumber"],
-                                    vType=i["vType"],
-                                    )
-    
-    new.save()
-    return render(request, "logsApp/logs.html")
+    for i in empInfo:
+        if i["empid"] == "":
+            print(f"{i["vnumber"]} emte")
+        else:
+            ceon = i["empid"]
+            int(ceon)
+            new = EmployesInfo.objects.create(carYear=i["Myear"],
+                                        cownerEmpNumber=ceon,
+                                        cownerName=i["empName"],
+                                        cownerPhone=i["tel"],
+                                        section=i["section"],
+                                        carNumber=i["vnumber"],
+                                        vType=i["vType"],
+                                        )
+        
+        new.save()
+    return redirect(request, "logsApp/logs.html")

@@ -21,7 +21,10 @@ class EmployesInfo(models.Model):
     EmpHaveCar = models.BooleanField(default=False)
     ceoNumber = models.IntegerField(default=0)
     ceoName = models.CharField(max_length=100)
-    phoneNumber = models.IntegerField( default='0000000000')
+    phoneNumber = models.TextField( default='0000000000')
+    position = models.TextField()
+    section = models.TextField()
+    phone = models.TextField()
     email = models.EmailField(default='example@example.com')
     def __str__(self):
         return str(f" have a car: {self.EmpHaveCar}  name: {self.ceoNumber}   ceo number: {self.ceoName} ")
