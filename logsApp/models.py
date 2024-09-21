@@ -12,7 +12,7 @@ class RegistredCars(models.Model):
     vType = models.TextField(max_length=100,null=True)
     carIsInparking = models.BooleanField(default=True)
     def __str__(self):
-        return str(f" carIsInparking : {self.carIsInparking } car number: {self.carNumber} car name: {self.vType}")
+        return str(f" car number: {self.carNumber}")
    
     
 
@@ -26,7 +26,7 @@ class EmployesInfo(models.Model):
     section = models.TextField(default="القسم")
     email = models.EmailField(default='example@example.com')
     def __str__(self):
-        return str(f" have a car : {self.EmpHaveCar}  name: {self.ceoNumber}   ceo number: {self.ceoName} ")
+        return str(f"  الرقم الاداري: {self.ceoNumber}  :الاسم {self.ceoName} ")
 
 
     
@@ -40,9 +40,9 @@ class InUseCars(models.Model):
 class LogsC(models.Model):
     Logs_car_ins = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
     Logs_employee_ins = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now=True)
-    taken_date = models.DateField(auto_now=True, null=True)
-    taken_time = models.TimeField(auto_now=True,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    taken_date = models.DateField(auto_now_add=True)
+    taken_time = models.TimeField(auto_now_add=True)
     ended_at = models.DateTimeField(null=True, blank=True)
     return_date = models.DateField(null=True, blank=True)
     return_time = models.TimeField(null=True, blank=True)
@@ -50,3 +50,5 @@ class LogsC(models.Model):
     carNote = models.CharField(default=None,null=True, max_length=200,blank=True)
     def __str__(self):
         return str(f" name: {self.Logs_car_ins.carNumber}  ceo nam: {self.Logs_employee_ins.ceoName} carIsINuSE: {self.carIsInUse}")
+    
+    

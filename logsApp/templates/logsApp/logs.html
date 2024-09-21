@@ -3,6 +3,19 @@
 <h1>{{ceonumber}}</h1>
 
 <div>
+  <div>
+    <form action="">
+      {% csrf_token %}
+      <input type="date" name="" id="" />
+      <input type="time" name="dd" id="" />
+    </form>
+  </div>
+</div>
+
+<div>
+  <button><a href="{% url 'logsApp:export_to_excel'%}">تحميل السجل </a></button>
+</div>
+<div>
   <table border="1">
     <thead>
       <tr>

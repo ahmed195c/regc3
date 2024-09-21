@@ -44,6 +44,12 @@
       <label for="note">ملاحظه على السياره</label>
       <input type="text" id="note" name="empnote" />
       <input type="submit" value="submit" />
+      <div>
+        <select name="carCd" id="carCd">
+          <option value="crash">crash</option>
+          <option value="fine">fine</option>
+        </select>
+      </div>
     </form>
 
     {% if message %}
@@ -61,7 +67,8 @@
           <p class="employee-number">الرقم الاداري {{n.employee.ceoNumber}}</p>
           <p class="car-name">{{n.car.carName}} :اسم السياره</p>
           <div class="car-plate">
-            <p>{{n.car.carNumber}}</p> <p>رقم اللوحه</p>
+            <p>{{n.car.carNumber}}</p>
+            <p>رقم اللوحه</p>
           </div>
           <p class="created-at">{{ n.created_at|date:"Y-m-d / h:i A" }}</p>
         </div>

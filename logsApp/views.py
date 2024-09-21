@@ -4,6 +4,14 @@ from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
 import re
 
 from django.http import HttpResponse
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, PatternFill
+import pytz
+
+# Get the Asia/Dubai timezone
+dubai_tz = pytz.timezone('Asia/Dubai')
+
+from django.http import HttpResponse
 import pandas as pd
 # Create your views here.
 def remove_non_numeric(s):
@@ -51,8 +59,10 @@ def registerCar(request):
 
 def returncar(request):
     if request.method == "POST":
-        ceonumberq = int(request.POST.get("ceonumber"))
+        ceonumberq = remove_non_numeric(request.POST.get("ceonumber")).strip()
         empnote = request.POST.get("empnote")
+        carCondq = request.POST.get("carCd")
+        print(carCondq)
         allInUseCars = InUseCars.objects.all()
 
         try:
@@ -71,12 +81,10 @@ def returncar(request):
         print(inusecatinstance.employee)
         inusecarinstance = LogsC.objects.get(Logs_employee_ins=empinstance,carIsInUse=True)
         print(inusecarinstance)
-        inusecarinstance.ended_at = timezone.now()
-        print(inusecarinstance.ended_at)
-        inusecarinstance.return_date = timezone.now().date()
-        print(inusecarinstance.return_date)
-        inusecarinstance.return_time = timezone.now().time()
-        print(inusecarinstance.return_time)
+        inusecarinstance.ended_at = timezone.now().astimezone(dubai_tz)
+        inusecarinstance.return_date = timezone.now().astimezone(dubai_tz).date()
+        inusecarinstance.return_time = timezone.now().astimezone(dubai_tz).time()
+        inusecarinstance.carCondition = carCondq
         inusecarinstance.carIsInUse = False
         inusecarinstance.carNote = empnote
         registerCarinst.carIsInparking = True
@@ -91,25 +99,86 @@ def returncar(request):
 
 def logsfunc(request):
     alllogs = LogsC.objects.all()
+    logs = LogsC.objects.all()
+    for log in logs:
+        print(log.created_at, log.taken_date, log.ended_at)
     return render(request, "logsApp/logs.html",{"alllogs":alllogs})
 
 
 def export_to_excel(request):
-    # Fetch data from the model
-    data = LogsC.objects.all().values()
-    
-    df = pd.DataFrame(data)
-    print(df.dtypes)
-    df["created_at"] = df["created_at"].apply(lambda dt: dt and dt.replace(tzinfo=None))
-    df["taken_time"] = df["taken_time"].apply(lambda dt: dt and dt.replace(tzinfo=None))
-    df["return_time"] = df["return_time"].apply(lambda dt: dt and dt.replace(tzinfo=None))
-    df["ended_at"] = df["ended_at"].apply(lambda dt: dt and dt.replace(tzinfo=None))
-      
-    print(df)
+    # Define the Dubai timezone
+    dubai_tz = pytz.timezone('Asia/Dubai')
+
+    # Fetch data from the model with related fields
+    data = LogsC.objects.select_related('Logs_employee_ins', 'Logs_car_ins').all()
+
+    export_data = []
+    for log in data:
+        created_at_dubai = log.created_at.astimezone(dubai_tz)
+        taken_date_dubai = log.taken_date
+        taken_time_dubai = (log.taken_time.replace(tzinfo=dubai_tz) if log.taken_time else None)
+        ended_at_dubai = log.ended_at.astimezone(dubai_tz) if log.ended_at else None
+        return_date_dubai = log.return_date
+        return_time_dubai = (log.return_time.replace(tzinfo=dubai_tz) if log.return_time else None)
+
+        export_data.append({
+            'ID': log.id,
+            'رقم السياره': log.Logs_car_ins.carNumber,
+            'الاسم': log.Logs_employee_ins.ceoName,
+            'الرقم الاداري': log.Logs_employee_ins.ceoNumber,
+            'تاريخ ووقت الاستلام': created_at_dubai.strftime('%Y-%m-%d %I:%M %p'),
+            'تاريخ الاستلام': taken_date_dubai,
+            'وقت الاستلام': taken_time_dubai.strftime('%I:%M %p') if taken_time_dubai else None,
+            'تاريخ و وقت التسليم': ended_at_dubai.strftime('%Y-%m-%d %I:%M %p') if ended_at_dubai else None,
+            'تاريخ التسليم': return_date_dubai,
+            'وقت التسليم': return_time_dubai.strftime('%I:%M %p') if return_time_dubai else None,
+            'ملاحظه على المركبه': log.carNote,
+        })
+
+    # Create a DataFrame from the export data
+    df = pd.DataFrame(export_data)
+
     # Create an HTTP response with the Excel file
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename="your_model_data.xlsx"'
+    response['Content-Disposition'] = 'attachment; filename="logs_data.xlsx"'
 
-    # Write the DataFrame to the response
-    df.to_excel(response, index=False, engine='openpyxl')
+    # Use Pandas to write to a temporary Excel file
+    with pd.ExcelWriter(response, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Logs Data')
+
+        # Get the workbook and the active worksheet
+        workbook = writer.book
+        worksheet = writer.sheets['Logs Data']
+
+        # Define styles
+        header_font = Font(size=16, bold=True, color='000000')  # Black header font
+        header_fill = PatternFill(start_color='B7E1A1', end_color='B7E1A1', fill_type='solid')  # Olive green accent 3 lighter 40%
+        cell_font = Font(size=16)  # Font for all cells
+        center_alignment = Alignment(horizontal='center')
+
+        # Style the header row
+        for cell in worksheet[1]:
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = center_alignment
+
+        # Apply font style to all cells and keep original width adjustment
+        for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
+            for cell in row:
+                cell.font = cell_font
+                cell.alignment = center_alignment  # Center align all cells
+
+        # Set column widths based on content
+        for column in worksheet.columns:
+            max_length = 0
+            column_letter = column[0].column_letter  # Get the column name
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(cell.value)
+                except:
+                    pass
+            adjusted_width = (max_length + 4)
+            worksheet.column_dimensions[column_letter].width = adjusted_width
+
     return response
