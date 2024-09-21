@@ -1,14 +1,16 @@
 /* General styling for the container */
 
 .inUsCont {
-  padding-top:120px ;
+  padding-top: 120px;
   margin: auto;
   width: 80%;
   display: flex;
   gap: 20px;
   justify-content: center;
   flex-wrap: wrap;
+  grid-row-start: 1;
 }
+
 .car-details {
   width: 250px;
   font-family: Arial, sans-serif;
@@ -31,9 +33,11 @@
   flex-direction: column;
   gap: 10px;
 }
-.info{
+
+.info {
   width: 100%;
 }
+
 /* Styling for each piece of information */
 .info p,
 .info h2 {
@@ -44,7 +48,6 @@
 
 /* Styling for the car plate */
 .car-plate {
- 
   display: flex;
   background-color: #fff;
   border: 2px solid #000;
@@ -93,7 +96,60 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+.input-cont {
+  display: flex;
+  flex-direction: column;
+}
+
+.inpute {
+  padding: 5px;
+  width: 250px;
+  height: 40px;
+  border: 2px solid #4e6b31;
+}
+
+.forms-cont {
+  margin-top: 30px;
+  grid-row-start: 1;
+  grid-row-end: 2;
+  grid-column-end: 3;
+}
+
+.labels {
+  padding-bottom: 5px;
+  font-weight: bold;
+}
+
 .regCont {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(253, 253, 253);
+  border: 2px solid #c1c1c1;
+  width: 350px;
+  height: 250px;
+  margin-bottom: 30px;
+}
+
+.submit-btn {
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  margin-top: 10px;
+  background-color: #4e6b31;
+  height: 40px;
+}
+.return-cont {
+  display: flex;
   justify-content: right;
+  background-color: rgb(253, 253, 253);
+  border: 2px solid rgb(214, 209, 209);
+  width: 350px;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: [first]75% [line2]25%;
 }

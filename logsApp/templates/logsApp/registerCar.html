@@ -1,56 +1,67 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 <div class="main">
   <h1>{{inUseErr}}</h1>
+
   <div class="forms-cont">
     <div class="regCont">
+      <h2>لاستلام المركبه</h2>
       <form action="{% url 'logsApp:add' %}" dir="rtl" method="post">
         {% csrf_token %}
-        <div class="input-container">
-          <label for="ceoNumber">الرقم الاداري</label>
+        <div class="input-cont">
+          <label class="labels" for="ceoNumber">الرقم الاداري</label>
           <input
-            class="input"
+            class="inpute"
             type="text"
             name="ceoNumber"
             id="ceoNumber"
             required
-            placeholder="الرقم الاداري"
+            placeholder="مثال: 23945"
           />
           {{carDNE}} {{empDoseNotEXISTS}} {% if EmpMErr %}
           <h3>{{EmpMErr}}</h3>
           {% endif %} {% if InUseCar_exists %} {{InUseCar_exists}} {% endif %}
         </div>
-        <div>
-          <label for="carNumber">رقم السياره</label>
-          <input type="text" name="carNumber" id="carNumber" required />
+        <div class="input-cont">
+          <label class="labels" for="carNumber">رقم السياره</label>
+          <input
+            class="inpute"
+            type="text"
+            name="carNumber"
+            id="carNumber"
+            placeholder="1-46793"
+            required
+          />
           {% if inuse %}
           <h3>{{inuse}}</h3>
           {% else %}
           <h1>{{inuse}}</h1>
           {% endif %}
-          <input type="submit" value="add" />
+          <input class="submit-btn" type="submit" value="تسجيل المركبه" />
         </div>
       </form>
     </div>
-    <form action="{% url 'logsApp:ret' %}" method="post">
-      {% csrf_token %}
-      <h3>تسليم المركبه</h3>
-      {% if f %}
-      <h3>الرقم الاداري غير صحيح</h3>
-      {% endif %} {% if g %}
-      <h3>لاتوجد مركبه مرتبطه بل رقم الاداري</h3>
-      {% endif %}
-      <label for="ceonumber"> الرقم الاداري </label>
-      <input type="number" name="ceonumber" id="ceonumber" />
-      <label for="note">ملاحظه على السياره</label>
-      <input type="text" id="note" name="empnote" />
-      <input type="submit" value="submit" />
-      <div>
-        <select name="carCd" id="carCd">
-          <option value="crash">crash</option>
-          <option value="fine">fine</option>
-        </select>
-      </div>
-    </form>
+    <div class="regCont">
+      <form action="{% url 'logsApp:ret' %}" dir="rtl" method="post">
+        {% csrf_token %}
+        <h2>لإعادة المركبه</h2>
+
+        <div class="input-cont">
+          <label class="labels" for="ceonumber"> الرقم الاداري </label>
+          <input class="inpute" type="number" name="ceonumber" id="ceonumber" />
+          {% if f %}
+          <h3>الرقم الاداري غير صحيح</h3>
+          {% endif %}
+        </div>
+        <div class="input-cont">
+          <label class="labels" for="note">ملاحظه على السياره</label>
+          <input class="inpute" type="text" id="note" name="empnote" />
+          {% if g %}
+          <h3>لاتوجد مركبه مرتبطه بل رقم الاداري</h3>
+          {% endif %}
+          <input class="submit-btn" type="submit" value="إعادة المركبه" />
+        </div>
+      </form>
+    </div>
 
     {% if message %}
     <h1>message</h1>
@@ -65,7 +76,11 @@
         <div class="info">
           <p class="employee-name">اسم المستخدم: {{n.employee.ceoName}}</p>
           <p class="employee-number">الرقم الاداري {{n.employee.ceoNumber}}</p>
-          <p class="car-name">{{n.car.carName}} :اسم السياره</p>
+          <div>
+            <p>قسم</p>
+            <p>{{n.employee.section}}</p>
+          </div>
+          <p class="car-name">{{n.car.vType}} :اسم السياره</p>
           <div class="car-plate">
             <p>{{n.car.carNumber}}</p>
             <p>رقم اللوحه</p>

@@ -1,21 +1,54 @@
-a{
-    text-decoration: none;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Ensures padding and border are included in element's total width and height */
 }
 
-.nav-links{
-    font-weight: bold;
-    list-style: none;
-    display: flex;
-    gap: 30px;
-    text-decoration: none;
+a {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+}
+body {
+  padding: 0;
+  background-color: #f2f2f2;
+}
+.header-cont {
+  margin: 0;
+  display: flex;
+  background-color: #fcfbfb;
+  justify-content: space-between;
+  align-items: center;
+  height: 100px;
 }
 
+img {
+  width: 20%;
+}
+.nav-links {
+  font-weight: bold;
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  text-decoration: none;
+}
+
+.nav-link-btn {
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #4e6b31;
+  color: rgb(255, 255, 255);
+  width: 200px;
+  height: 60px;
+  border: 8px;
+  border-radius: 8px;
+}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type=number] {
-    -moz-appearance: textfield;
-  }
+input[type="number"] {
+  -moz-appearance: textfield;
+}

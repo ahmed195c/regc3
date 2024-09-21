@@ -11,20 +11,30 @@
     <title>Document</title>
   </head>
   <body>
-    <header>
-      <h1>برنامج التسليم و الاستلام</h1>
-      <div>
-        <ul class="nav-links">
-          <li>
-            <a href="{% url 'logsApp:add' %}">استلام و ارجاع المركبه</a>
-          </li>
-          <li>
-            <a href="{% url 'logsApp:logslink'%}">سجل الاستلام والتسليم</a>
-          </li>
-          <li>
-            <a href="/admin">Admin page</a>
-          </li>
-        </ul>
+    <header class="dd">
+      <div class="header-cont">
+        <div class="logo-cont">
+          <img class="logo" src="{% static 'logsApp\imgs\sm-logo.png' %}" alt="" />
+        </div>
+        <div class="navs-cont">
+          <ul class="nav-links">
+            <li>
+              <button class="nav-link-btn ">حصر المخالفات</button>
+            </li>
+            <li>
+              <button class="nav-link-btn" onclick="window.location='{% url 'logsApp:logslink' %}'">
+                سجل الاستلام والتسليم
+              </button>
+            </li>
+            <li>
+              <button class="nav-link-btn "   onclick="window.location='{% url 'logsApp:add' %}'">
+               استلام و ارجاع المركبه
+              </button>
+              </li>
+          </ul>
+        </div>
+      </div>
+        
       </div>
     </header>
     <main>{% block body%} {% endblock %}</main>

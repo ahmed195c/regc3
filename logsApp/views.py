@@ -133,6 +133,7 @@ def export_to_excel(request):
             'تاريخ التسليم': return_date_dubai,
             'وقت التسليم': return_time_dubai.strftime('%I:%M %p') if return_time_dubai else None,
             'ملاحظه على المركبه': log.carNote,
+            'قسم الموظف':log.Logs_employee_ins.section
         })
 
     # Create a DataFrame from the export data
