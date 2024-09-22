@@ -183,3 +183,37 @@ def export_to_excel(request):
             worksheet.column_dimensions[column_letter].width = adjusted_width
 
     return response
+
+
+
+def fineC(request):
+    if request.method == "POST":
+        fine_date = request.POST.get('finedate')
+        fine_time = request.POST.get('finetime')
+        fine_car_number = request.POST.get('finecar')
+
+        print(f"Fine date is: {fine_date}")
+        print(f"Fine time is: {fine_time}")
+
+        # Combine date and time into a single datetime object
+        dubai_tz = pytz.timezone('Asia/Dubai')
+        combined_fine_datetime = dubai_tz.localize(timezone.datetime.strptime(f"{fine_date} {fine_time}", '%Y-%m-%d %H:%M'))
+        print(combined_fine_datetime.time())
+        try:
+            car_ins = RegistredCars.objects.get(carNumber=fine_car_number)
+
+            # Query logs based on combined datetime
+            finon = LogsC.objects.get(
+                taken_date__gte=combined_fine_datetime.date(),
+                return_date__lte=combined_fine_datetime.date(),
+                taken_time__gte=combined_fine_datetime.time(),
+                return_time__lte=combined_fine_datetime.time(),
+                Logs_car_ins=car_ins
+            )
+            print(finon)
+            # Handle the result of the finon query as needed
+        except RegistredCars.DoesNotExist:
+            print(f"Car with number {fine_car_number} does not exist.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+    return render(request,"logsApp/finespage.html",)

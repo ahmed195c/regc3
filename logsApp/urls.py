@@ -8,5 +8,6 @@ urlpatterns = [
     path('add/',views.registerCar,name="add"),
     path("logs/",views.logsfunc,name='logslink'),
     path("ret/",views.returncar, name="ret"),
+    path("finec",views.fineC,name='finec'),
     path('export/excel/', views.export_to_excel, name='export_to_excel'),
 ]

@@ -69,22 +69,26 @@
   </div>
 
   <!-- in use cars cont -->
+  <h1>مركبات قيد الاستخدام</h1>
   <div class="inUsCont">
     {% if l %} {% for n in l %}
     <div class="car-details">
       <div class="details">
         <div class="info">
-          <p class="employee-name">اسم المستخدم: {{n.employee.ceoName}}</p>
-          <p class="employee-number">الرقم الاداري {{n.employee.ceoNumber}}</p>
+          <p class="info-p">اسم المستخدم: {{n.employee.ceoName}}</p>
+          <div class="br"></div>
+          <p class="info-p">الرقم الاداري: {{n.employee.ceoNumber}}</p>
+          <div class="br"></div>
           <div>
-            <p>قسم</p>
             <p>{{n.employee.section}}</p>
           </div>
-          <p class="car-name">{{n.car.vType}} :اسم السياره</p>
+          <div class="br"></div>
           <div class="car-plate">
             <p>{{n.car.carNumber}}</p>
             <p>رقم اللوحه</p>
           </div>
+          <div class="br"></div>
+          <p>تاريخ و وقت الاستلام</p>
           <p class="created-at">{{ n.created_at|date:"Y-m-d / h:i A" }}</p>
         </div>
       </div>

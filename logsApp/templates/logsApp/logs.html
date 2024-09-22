@@ -15,10 +15,10 @@
 <div>
   <button><a href="{% url 'logsApp:export_to_excel'%}">تحميل السجل </a></button>
 </div>
-<div>
+<div class="mainlog">
   <table border="1">
     <thead>
-      <tr>
+      <tr class="headtr">
         <th>رقم السياره</th>
         <th>الرقم الاداري</th>
         <th>الاسم</th>
@@ -37,9 +37,15 @@
         <td class="ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
         <td>{{k.created_at|date:"Y-m-d"}}</td>
         <td>{{k.created_at|date:"h:i A"}}</td>
-        <td>{{k.return_date}}</td>
+        {% if k.return_date %}
+        <td>{{k.return_date|date:"Y-m-d"}}</td>
+        {% else %}
+        <td></td>
+        {%endif%} {% if k.return_time %}
         <td>{{k.return_time}}</td>
-        {% if k.carNote %}
+        {%else%}
+        <td></td>
+        {%endif%} {% if k.carNote %}
         <td>{{k.carNote}}</td>
         {% else %}
         <td></td>

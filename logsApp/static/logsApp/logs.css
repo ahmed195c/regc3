@@ -1,3 +1,43 @@
 .ceoNameS {
   overflow: hidden;
 }
+.mainlog {
+  margin: auto 0;
+  height: 100%;
+}
+.headtr {
+  background-color: green;
+}
+
+table {
+  margin: 0 auto; /* Center the table */
+  border-collapse: collapse; /* Merge borders */
+  width: 80%; /* Optional: Set the table width */
+}
+
+th {
+  background-color: #4e6b31; /* Header background color */
+  color: white; /* Header text color */
+  padding: 10px; /* Padding for better spacing */
+}
+
+td {
+  padding: 10px; /* Padding for table cells */
+  text-align: center;
+}
+
+/* Alternating row colors */
+tbody tr:nth-child(even) td {
+  background-color: #e3e3e3; /* Color for even rows */
+}
+
+tbody tr:nth-child(odd) td {
+  background-color: white; /* Color for odd rows */
+}
+
+/* Optional: Add a border to the table and cells */
+table,
+th,
+td {
+  border: 1px solid #ccc; /* Border color */
+}
