@@ -1,14 +1,17 @@
-/* General styling for the container */
-
 .inUsCont {
   padding: 30px 0 0 0;
   margin: auto;
   width: 80%;
   display: flex;
   gap: 20px;
-  justify-content: flex-end;
+  justify-content: center;
   flex-wrap: wrap;
   grid-row-start: 1;
+  height: 85vh;
+  overflow-y: scroll;
+  border: 2px solid black;
+  border-radius: 8px;
+  font-weight: bold;
 }
 
 .car-details {
@@ -22,14 +25,12 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Styling for the heading */
 .car-details h1 {
   font-size: 24px;
   color: #333;
   margin-bottom: 20px;
 }
 
-/* Styling for the details section */
 .details {
   display: flex;
   align-items: right;
@@ -61,7 +62,7 @@
   width: 90%;
   color: #000;
 }
-/* Styling for the car plate */
+
 .car-plate {
   display: flex;
   background-color: #fff;
@@ -76,7 +77,6 @@
   gap: 20px;
 }
 
-/* Adjusting specific parts */
 .pk,
 .employee-name,
 .employee-number,
@@ -101,9 +101,9 @@ input[type="number"] {
 }
 
 input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
-  -webkit-appearance: none; /* Chrome, Safari, and newer versions of Edge */
-  appearance: none; /* Modern browsers */
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -169,8 +169,4 @@ input[type="number"]::-webkit-outer-spin-button {
 .main {
   display: grid;
   grid-template-columns: [first]75% [line2]25%;
-}
-
-.inUsCont {
-  font-weight: bold;
 }

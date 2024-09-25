@@ -10,36 +10,35 @@
 }
 
 table {
-  margin: 0 auto; /* Center the table */
-  border-collapse: collapse; /* Merge borders */
-  width: 80%; /* Optional: Set the table width */
+  margin: 0 auto; 
+  border-collapse: collapse; 
+  width: 80%; 
 }
 
 th {
-  background-color: #4e6b31; /* Header background color */
-  color: white; /* Header text color */
-  padding: 10px; /* Padding for better spacing */
+  background-color: #4e6b31; 
+  color: white; 
+  padding: 10px; 
 }
 
 td {
-  padding: 10px; /* Padding for table cells */
+  padding: 10px; 
   text-align: center;
 }
 
-/* Alternating row colors */
+
 tbody tr:nth-child(even) td {
-  background-color: #e3e3e3; /* Color for even rows */
+  background-color: #e3e3e3; 
 }
 
 tbody tr:nth-child(odd) td {
-  background-color: white; /* Color for odd rows */
+  background-color: white; 
 }
 
-/* Optional: Add a border to the table and cells */
 table,
 th,
 td {
-  border: 1px solid #ccc; /* Border color */
+  border: 1px solid #ccc; 
 }
 
 .d-btn {
