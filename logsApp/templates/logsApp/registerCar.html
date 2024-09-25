@@ -17,7 +17,39 @@
             required
             placeholder="مثال: 23945"
           />
-          {{carDNE}} {{empDoseNotEXISTS}} {% if EmpMErr %}
+
+          <div class="msg-cont">
+            {% if empDoseNotEXISTS %}
+            <div
+              id="error-message"
+              style="
+                background-color: #f8d7da;
+                color: #721c24;
+                padding: 10px;
+                border: 1px solid #f5c6cb;
+                border-radius: 5px;
+                margin-bottom: 20px;
+              "
+            >
+              {{ empDoseNotEXISTS }}
+            </div>
+
+            <script>
+              // Function to fade out the message
+              setTimeout(function () {
+                var message = document.getElementById("error-message");
+                if (message) {
+                  message.style.transition = "opacity 1s ease-out";
+                  message.style.opacity = 0;
+                  setTimeout(function () {
+                    message.style.display = "none";
+                  }, 1000);
+                }
+              }, 5000);
+            </script>
+            {% endif %}
+          </div>
+          {% if EmpMErr %}
           <h3>{{EmpMErr}}</h3>
           {% endif %} {% if InUseCar_exists %} {{InUseCar_exists}} {% endif %}
         </div>
@@ -31,12 +63,80 @@
             placeholder="1-46793"
             required
           />
+
+          <div class="msg-cont">
+            {% if carDNE %}
+            <div
+              id="error-message-car"
+              style="
+                background-color: #f8d7da;
+                color: #721c24;
+                padding: 10px;
+                border: 1px solid #f5c6cb;
+                border-radius: 5px;
+                margin-bottom: 20px;
+              "
+            >
+              {{carDNE}}
+            </div>
+
+            <script>
+              // Function to fade out the message
+              setTimeout(function () {
+                var message = document.getElementById("error-message-car");
+                if (message) {
+                  message.style.transition = "opacity 1s ease-out";
+                  message.style.opacity = 0;
+                  setTimeout(function () {
+                    message.style.display = "none";
+                  }, 1000);
+                }
+              }, 5000);
+            </script>
+            {% endif %}
+          </div>
+
           {% if inuse %}
           <h3>{{inuse}}</h3>
           {% else %}
           <h1>{{inuse}}</h1>
           {% endif %}
           <input class="submit-btn" type="submit" value="تسجيل المركبه" />
+
+          <div>
+            <div class="msg-cont">
+              {% if sucssuMessge %}
+              <div
+                id="reg-succ-message"
+                style="
+                  background-color: #d4edda; /* Light green background */
+                  color: #155724; /* Dark green text */
+                  padding: 10px;
+                  border: 1px solid #c3e6cb; /* Light green border */
+                  border-radius: 5px;
+                  margin-bottom: 20px;
+                  transition: opacity 1s ease-out; /* Transition for fade-out */
+                "
+              >
+                {{sucssuMessge}}
+              </div>
+              
+              <script>
+                // Function to fade out the message
+                setTimeout(function () {
+                  var message = document.getElementById("reg-succ-message");
+                  if (message) {
+                    message.style.transition = "opacity 1s ease-out";
+                    message.style.opacity = 0;
+                    setTimeout(function () {
+                      message.style.display = "none";
+                    }, 1000);
+                  }
+                }, 5000);
+              </script>
+              {% endif %}
+            </div>
+          </div>
         </div>
       </form>
     </div>
@@ -68,35 +168,36 @@
     {% endif %}
   </div>
 
-  
   <h1>مركبات قيد الاستخدام</h1>
-  <div class="inUsCont">
-    {% if l %} {% for n in l %}
-    <div class="car-details">
-      <div class="details">
-        <div class="info">
-          <p class="info-p">اسم المستخدم: {{n.employee.ceoName}}</p>
-          <div class="br"></div>
-          <p class="info-p">الرقم الاداري: {{n.employee.ceoNumber}}</p>
-          <div class="br"></div>
-          <div>
-            <p>{{n.employee.section}}</p>
+  <div class="inuseBorder">
+    <div class="inUsCont">
+      {% if l %} {% for n in l %}
+      <div class="car-details">
+        <div class="details">
+          <div class="info">
+            <p class="info-p">اسم المستخدم: {{n.employee.ceoName}}</p>
+            <div class="br"></div>
+            <p class="info-p">الرقم الاداري: {{n.employee.ceoNumber}}</p>
+            <div class="br"></div>
+            <div>
+              <p>{{n.employee.section}}</p>
+            </div>
+            <div class="br"></div>
+            <div class="car-plate">
+              <p>{{n.car.carNumber}}</p>
+              <p>رقم اللوحه</p>
+            </div>
+            <div class="br"></div>
+            <p>تاريخ و وقت الاستلام</p>
+            <p class="created-at">{{ n.created_at|date:"Y-m-d / h:i A" }}</p>
           </div>
-          <div class="br"></div>
-          <div class="car-plate">
-            <p>{{n.car.carNumber}}</p>
-            <p>رقم اللوحه</p>
-          </div>
-          <div class="br"></div>
-          <p>تاريخ و وقت الاستلام</p>
-          <p class="created-at">{{ n.created_at|date:"Y-m-d / h:i A" }}</p>
         </div>
       </div>
-    </div>
-    {% endfor %} {% else %}
+      {% endfor %} {% else %}
 
-    <h1>لاتوجد مركبات قيد الاستخدام</h1>
-    {% endif %}
+      <h1>لاتوجد مركبات قيد الاستخدام</h1>
+      {% endif %}
+    </div>
   </div>
 </div>
 

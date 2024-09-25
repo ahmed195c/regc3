@@ -1,13 +1,18 @@
-.inUsCont {
-  padding: 30px 0 0 0;
-  margin: auto;
-  width: 80%;
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
+.inuseBorder {
+  width: 100%;
   grid-row-start: 1;
+  grid-column-start: 1;
+  height: 100vh;
+}
+.inUsCont {
+  padding: 30px 50px 30px 0;
+  margin: auto;
+  display: flex;
+  width: 90%;
+  gap: 20px;
   height: 85vh;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   overflow-y: scroll;
   border: 2px solid black;
   border-radius: 8px;
@@ -144,10 +149,12 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: rgb(253, 253, 253);
   border: 2px solid #c1c1c1;
   width: 350px;
-  height: 250px;
+  height: 400px;
   margin-bottom: 30px;
 }
-
+.msg-cont {
+  height: 50px;
+}
 .submit-btn {
   cursor: pointer;
   font-weight: bold;

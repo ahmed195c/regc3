@@ -2,11 +2,11 @@ from django.shortcuts import render
 from django.utils import timezone
 from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
 import re
-
 from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 import pytz
+from django.contrib import messages
 
 dubai_tz = pytz.timezone('Asia/Dubai')
 
@@ -36,7 +36,7 @@ def registerCar(request):
         try:
             carExists = RegistredCars.objects.get(carNumber=carNInput,carIsInparking=True)
         except RegistredCars.DoesNotExist:
-            carDNE = "رقم السياره المدخل خاطء او السياره قيد الاستخدام"
+            carDNE = "رقم المركبة غير صحيح أو تم استخدامه" 
             return render(request, "logsApp/registerCar.html",{"carDNE":carDNE,"l":allnUseCars})
         
         InUseCars.objects.create(car=carExists, employee=empExists)
@@ -47,7 +47,8 @@ def registerCar(request):
 
         carExists.carIsInparking = False
         carExists.save()
-        return render(request, "logsApp/registerCar.html",{"l":allnUseCars})    
+        sucssuMessge = "تم التسجيل بنجاح"
+        return render(request, "logsApp/registerCar.html",{"sucssuMessge":sucssuMessge,"l":allnUseCars})    
         
     return render(request, "logsApp/registerCar.html",{"l":allnUseCars})
 
@@ -176,21 +177,19 @@ def fineC(request):
         fine_date = request.POST.get('finedate')
         fine_time = request.POST.get('finetime')
         fine_car_number = request.POST.get('finecar')
-
+        fineDateTime = request.POST.get('fineDatetime')
         print(f"Fine date is: {fine_date}")
         print(f"Fine time is: {fine_time}")
 
-        dubai_tz = pytz.timezone('Asia/Dubai')
-        combined_fine_datetime = dubai_tz.localize(timezone.datetime.strptime(f"{fine_date} {fine_time}", '%Y-%m-%d %H:%M'))
-        print(combined_fine_datetime.time())
+        # dubai_tz = pytz.timezone('Asia/Dubai')
+        # combined_fine_datetime = dubai_tz.localize(timezone.datetime.strptime(f"{fine_date} {fine_time}", '%Y-%m-%d %H:%M'))
+        # print(combined_fine_datetime.time())
         try:
             car_ins = RegistredCars.objects.get(carNumber=fine_car_number)
 
             finon = LogsC.objects.get(
                 Logs_car_ins=car_ins,
-                taken_date__lte=combined_fine_datetime.date(),
-                
-                taken_time__lte=combined_fine_datetime.time(),
+                created_at__let = fineDateTime
                 
             )
             print(finon)
