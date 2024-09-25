@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 
 class RegistredCars(models.Model):
     carYear = models.IntegerField(null=True)
@@ -19,11 +18,11 @@ class RegistredCars(models.Model):
 
 class EmployesInfo(models.Model):
     EmpHaveCar = models.BooleanField(default=False)
-    ceoNumber = models.TextField(default=0)
+    ceoNumber = models.CharField(default=0,max_length=100)
     ceoName = models.CharField(max_length=100)
-    phoneNumber = models.TextField( default='0000000000')
-    position = models.TextField(default="الوظيفه")
-    section = models.TextField(default="القسم")
+    phoneNumber = models.CharField(max_length=100, default='0000000000')
+    position = models.CharField(max_length=100,default="الوظيفه")
+    section = models.CharField(max_length=100,default="القسم")
     email = models.EmailField(default='example@example.com')
     def __str__(self):
         return str(f"  الرقم الاداري: {self.ceoNumber}  :الاسم {self.ceoName} ")

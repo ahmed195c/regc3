@@ -12,7 +12,8 @@
 }
 
 .car-details {
-  width: 300px;
+  width: 100%;
+  max-width: 280px;
   font-family: Arial, sans-serif;
   padding: 20px;
   background-color: #ffffff;
@@ -38,6 +39,7 @@
 }
 
 .info {
+  padding: 0 15px 0 0;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -71,6 +73,7 @@
   letter-spacing: 2px;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  gap: 20px;
 }
 
 /* Adjusting specific parts */

@@ -8,14 +8,12 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 import pytz
 
-# Get the Asia/Dubai timezone
 dubai_tz = pytz.timezone('Asia/Dubai')
 
 from django.http import HttpResponse
 import pandas as pd
-# Create your views here.
 def remove_non_numeric(s):
-    # Use regular expression to replace all non-numeric characters with an empty string
+    
     return re.sub(r'\D', '', s)
 
 def index(request):
@@ -29,12 +27,9 @@ def registerCar(request):
         ceoNInput = request.POST["ceoNumber"]
         carNInput = request.POST.get("carNumber")
         print(ceoNInput)
-        # check if emp exists and dose not have a car
         try:
-            #if emp dosenot have a car and exists skip the except
             empExists = EmployesInfo.objects.get(ceoNumber=ceoNInput,EmpHaveCar=False)
         except EmployesInfo.DoesNotExist:
-            # if emp dosent exists or do have a car return a message to not him about that
             empDoseNotEXISTS = "الرقم الاداري غير صحصح او مستخدم"
             return render(request, "logsApp/registerCar.html",{"empDoseNotEXISTS":empDoseNotEXISTS,"l":allnUseCars})
         
@@ -106,10 +101,8 @@ def logsfunc(request):
 
 
 def export_to_excel(request):
-    # Define the Dubai timezone
     dubai_tz = pytz.timezone('Asia/Dubai')
 
-    # Fetch data from the model with related fields
     data = LogsC.objects.select_related('Logs_employee_ins', 'Logs_car_ins').all()
 
     export_data = []
@@ -136,43 +129,35 @@ def export_to_excel(request):
             'قسم الموظف':log.Logs_employee_ins.section
         })
 
-    # Create a DataFrame from the export data
     df = pd.DataFrame(export_data)
 
-    # Create an HTTP response with the Excel file
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="logs_data.xlsx"'
 
-    # Use Pandas to write to a temporary Excel file
     with pd.ExcelWriter(response, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Logs Data')
 
-        # Get the workbook and the active worksheet
         workbook = writer.book
         worksheet = writer.sheets['Logs Data']
 
-        # Define styles
-        header_font = Font(size=16, bold=True, color='000000')  # Black header font
+        header_font = Font(size=16, bold=True, color='000000')
         header_fill = PatternFill(start_color='B7E1A1', end_color='B7E1A1', fill_type='solid')  # Olive green accent 3 lighter 40%
-        cell_font = Font(size=16)  # Font for all cells
+        cell_font = Font(size=16)  
         center_alignment = Alignment(horizontal='center')
 
-        # Style the header row
         for cell in worksheet[1]:
             cell.font = header_font
             cell.fill = header_fill
             cell.alignment = center_alignment
 
-        # Apply font style to all cells and keep original width adjustment
         for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
             for cell in row:
                 cell.font = cell_font
-                cell.alignment = center_alignment  # Center align all cells
+                cell.alignment = center_alignment  
 
-        # Set column widths based on content
         for column in worksheet.columns:
             max_length = 0
-            column_letter = column[0].column_letter  # Get the column name
+            column_letter = column[0].column_letter  
             for cell in column:
                 try:
                     if len(str(cell.value)) > max_length:
@@ -195,23 +180,20 @@ def fineC(request):
         print(f"Fine date is: {fine_date}")
         print(f"Fine time is: {fine_time}")
 
-        # Combine date and time into a single datetime object
         dubai_tz = pytz.timezone('Asia/Dubai')
         combined_fine_datetime = dubai_tz.localize(timezone.datetime.strptime(f"{fine_date} {fine_time}", '%Y-%m-%d %H:%M'))
         print(combined_fine_datetime.time())
         try:
             car_ins = RegistredCars.objects.get(carNumber=fine_car_number)
 
-            # Query logs based on combined datetime
             finon = LogsC.objects.get(
-                taken_date__gte=combined_fine_datetime.date(),
-                return_date__lte=combined_fine_datetime.date(),
-                taken_time__gte=combined_fine_datetime.time(),
-                return_time__lte=combined_fine_datetime.time(),
-                Logs_car_ins=car_ins
+                Logs_car_ins=car_ins,
+                taken_date__lte=combined_fine_datetime.date(),
+                
+                taken_time__lte=combined_fine_datetime.time(),
+                
             )
             print(finon)
-            # Handle the result of the finon query as needed
         except RegistredCars.DoesNotExist:
             print(f"Car with number {fine_car_number} does not exist.")
         except Exception as e:
