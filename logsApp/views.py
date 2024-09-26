@@ -33,7 +33,7 @@ def registerCar(request):
             empDoseNotEXISTS = "الرقم الاداري غير صحصح او مستخدم"
             return render(request, "logsApp/registerCar.html",{"empDoseNotEXISTS":empDoseNotEXISTS,"l":allnUseCars})
         print("commit 1 check for data")
-
+        print("double cheack 1 ")
         try:
             carExists = RegistredCars.objects.get(carNumber=carNInput,carIsInparking=True)
         except RegistredCars.DoesNotExist:
