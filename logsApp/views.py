@@ -19,8 +19,6 @@ def remove_non_numeric(s):
 def index(request):
     return render(request, "logsApp/layout.html")
 
-
-
 def registerCar(request):
     allnUseCars = InUseCars.objects.all()
     if request.method == "POST":
@@ -65,14 +63,14 @@ def returncar(request):
         try:
            empinstance = EmployesInfo.objects.get(ceoNumber=ceonumberq)
         except EmployesInfo.DoesNotExist:
-             f = True
-             return render(request,"logsApp/registerCar.html", {"f":f,"l":allInUseCars})
+             retErrm = " الرقم الاداري خاظئ "
+             return render(request,"logsApp/registerCar.html", {"retErrm":retErrm,"l":allInUseCars})
         try:
           inusecatinstance = InUseCars.objects.get(employee=empinstance)
         except InUseCars.DoesNotExist:
-            g = True
-            return render(request,"logsApp/registerCar.html", {"g":g,"l":allInUseCars})
-        
+            retCarErr = "لاتوجد مركبه مرتبطه بل رقم الاداري "
+            return render(request,"logsApp/registerCar.html", {"retCarErr":retCarErr,"l":allInUseCars})
+        retSucssM = "تم اعاده المركبه بنجاح "
         registerCarinst = RegistredCars.objects.get(carNumber=inusecatinstance.car.carNumber)
         print(inusecatinstance)
         print(inusecatinstance.employee)
@@ -90,7 +88,7 @@ def returncar(request):
         inusecarinstance.save()
         registerCarinst.save()
         inusecatinstance.delete()
-        return render(request, "logsApp/registerCar.html",{"l":allInUseCars})
+        return render(request, "logsApp/registerCar.html",{"retSucssM":retSucssM,"l":allInUseCars})
 
 
 

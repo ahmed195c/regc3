@@ -20,6 +20,7 @@
 }
 
 .car-details {
+  height: 45%;
   width: 100%;
   max-width: 280px;
   font-family: Arial, sans-serif;
