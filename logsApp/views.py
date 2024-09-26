@@ -34,7 +34,7 @@ def registerCar(request):
             return render(request, "logsApp/registerCar.html",{"empDoseNotEXISTS":empDoseNotEXISTS,"l":allnUseCars})
         print(" testif data from lab will push to work pc  ")
         print("commit 1 to test if  local repo will get a conflict for being delayed")
-        
+        print("second commit to see if local repo will get a conflict ")
         try:
             carExists = RegistredCars.objects.get(carNumber=carNInput,carIsInparking=True)
         except RegistredCars.DoesNotExist:
