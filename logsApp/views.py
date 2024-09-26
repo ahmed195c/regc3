@@ -32,7 +32,7 @@ def registerCar(request):
         except EmployesInfo.DoesNotExist:
             empDoseNotEXISTS = "الرقم الاداري غير صحصح او مستخدم"
             return render(request, "logsApp/registerCar.html",{"empDoseNotEXISTS":empDoseNotEXISTS,"l":allnUseCars})
-        
+        print(" conflict must happen here ")
         try:
             carExists = RegistredCars.objects.get(carNumber=carNInput,carIsInparking=True)
         except RegistredCars.DoesNotExist:
