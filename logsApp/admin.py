@@ -5,7 +5,7 @@ models_list = [LogsC,RegistredCars,EmployesInfo,InUseCars]
 
 class LogsCAdmin(admin.ModelAdmin):
     list_display = ('id','Logs_employee_ins', 'taken_date', 'return_time','Logs_car_ins')  # Display these fields in the list view
-    search_fields = ('taken_date', 'return_time')
+    search_fields = ('taken_date', 'return_time','Logs_car_ins.carNumber')
     list_filter = ('taken_date',)  # Add filters for the taken_date field
 
 class RegCarsAdmin(admin.ModelAdmin):
