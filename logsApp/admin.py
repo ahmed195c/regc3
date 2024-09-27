@@ -4,19 +4,21 @@ models_list = [LogsC,RegistredCars,EmployesInfo,InUseCars]
 
 
 class LogsCAdmin(admin.ModelAdmin):
-    list_display = ('id','Logs_employee_ins', 'taken_date', 'return_time','Logs_car_ins')  # Display these fields in the list view
-    search_fields = ('taken_date', 'return_time')
-    list_filter = ('taken_date',)  # Add filters for the taken_date field
+    list_display = ('Logs_employee_ins__ceoName', 'taken_date', 'return_time','Logs_car_ins__carNumber')
+    search_fields = ('taken_date','taken_time', 'return_time','Logs_car_ins__carNumber','Logs_employee_ins__ceoNumber')
+    list_filter = ('taken_date','taken_time','Logs_car_ins__carNumber')
 
 class RegCarsAdmin(admin.ModelAdmin):
-    list_display = ('carNumber','vType','section','cownerName','cownerEmpNumber')  # Display these fields in the list view
+    list_display = ('cownerName','carNumber','vType','section','cownerEmpNumber','carIsInparking')
     search_fields = ('vType','id')
     list_filter = ('vType',)
 
-
+class InuseCarsAdmin(admin.ModelAdmin):
+    list_display = ('employee__ceoName','car__carNumber',)
+    search_fields = ('employee__ceoNumber','employee__ceoName')
+    list_filter = ('start_date', )
 
 admin.site.register(LogsC, LogsCAdmin)
 admin.site.register(RegistredCars, RegCarsAdmin)
 admin.site.register(EmployesInfo)
-admin.site.register(InUseCars)
- 
+admin.site.register(InUseCars, InuseCarsAdmin)

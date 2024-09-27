@@ -1,17 +1,15 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 
-<!-- <div>
+<div>
   <h1>المخالفات</h1>
-  <form action="{% url 'logsApp:finec'%}" method="POST"> -->
-    <!-- {% csrf_token %} -->
-    <!-- <input type="date" name="finedate" />
-    <input type="time" name="finetime" /> -->
-
-    <!-- <input type="datetime-local" name="fineDatetime" id="fineDatetime" />
-
+  <form action="{% url 'logsApp:finec'%}" method="POST">
+    {% csrf_token %}
+    <input type="date" name="finedate" />
+    <input type="time" name="finetime" />
+    <input type="datetime-local" name="fineDatetime" id="fineDatetime" />
     <input type="text" name="finecar" />
     <input type="submit" value="submit btn" />
   </form>
-</div> -->
+</div>
 
 {% endblock %}

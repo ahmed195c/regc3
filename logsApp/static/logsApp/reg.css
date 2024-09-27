@@ -4,14 +4,15 @@
   grid-column-start: 1;
   height: 100vh;
 }
+
 .inUsCont {
   padding: 30px 50px 30px 0;
   margin: auto;
   display: flex;
+  flex-direction: row-reverse;
   width: 90%;
   gap: 20px;
   height: 85vh;
-  justify-content: flex-end;
   flex-wrap: wrap;
   overflow-y: scroll;
   border: 2px solid black;
@@ -59,9 +60,11 @@
   align-items: flex-end;
   flex-direction: column;
 }
+
 .info-car-name {
   display: block;
 }
+
 .br {
   background-color: #000;
   height: 1px;
@@ -150,29 +153,25 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: rgb(253, 253, 253);
   border: 2px solid #c1c1c1;
   width: 350px;
-  height: 400px;
+  height: 320px;
   margin-bottom: 30px;
 }
+
 .msg-cont {
-  height: 50px;
+  height: 40px;
 }
+
 .submit-btn {
   cursor: pointer;
   font-weight: bold;
   color: white;
   border: none;
   border-radius: 12px;
-  margin-top: 10px;
   background-color: #4e6b31;
   height: 40px;
 }
-.return-cont {
-  display: flex;
-  justify-content: right;
-  background-color: rgb(253, 253, 253);
-  border: 2px solid rgb(214, 209, 209);
-  width: 350px;
-}
+
+
 
 .main {
   display: grid;

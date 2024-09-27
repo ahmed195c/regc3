@@ -11,14 +11,12 @@ class RegistredCars(models.Model):
     vType = models.TextField(max_length=100,null=True)
     carIsInparking = models.BooleanField(default=True)
     def __str__(self):
-        return str(f" car number: {self.carNumber}")
-   
-    
+        return str(f" car number: {self.carNumber}")    
 
 
 class EmployesInfo(models.Model):
     EmpHaveCar = models.BooleanField(default=False)
-    ceoNumber = models.CharField(default=0,max_length=100)
+    ceoNumber = models.CharField(default=0,max_length=100,unique=True)
     ceoName = models.CharField(max_length=100)
     phoneNumber = models.CharField(max_length=100, default='0000000000')
     position = models.CharField(max_length=100,default="الوظيفه")
@@ -28,13 +26,15 @@ class EmployesInfo(models.Model):
         return str(f"  الرقم الاداري: {self.ceoNumber}  :الاسم {self.ceoName} ")
 
 
-    
 class InUseCars(models.Model):
     car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
     employee = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE)
     start_date = models.DateField(auto_now=True)
     created_at = models.DateTimeField(auto_now=True)
     logsc_ley = models.ForeignKey('LogsC', on_delete=models.CASCADE,null=True) 
+    def __str__(self):
+        return str(f"مستخدم المركبه : {self.employee.ceoName} |||  رقم المركبه : {self.car.carNumber}")
+
 
 class LogsC(models.Model):
     Logs_car_ins = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)

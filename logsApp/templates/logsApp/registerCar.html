@@ -138,10 +138,9 @@
       </form>
     </div>
     <div class="regCont">
+      <h2>لإعادة المركبه</h2>
       <form action="{% url 'logsApp:ret' %}" dir="rtl" method="post">
         {% csrf_token %}
-        <h2>لإعادة المركبه</h2>
-
         <div class="input-cont">
           <label class="labels" for="ceonumber"> الرقم الاداري </label>
           <input class="inpute" type="number" name="ceonumber" id="ceonumber" />
@@ -253,7 +252,7 @@
     {% endif %}
   </div>
 
-  <h1>مركبات قيد الاستخدام</h1>
+  <div><h1>مركبات قيد الاستخدام</h1></div>
   <div class="inuseBorder">
     <div class="inUsCont">
       {% if l %} {% for n in l %}

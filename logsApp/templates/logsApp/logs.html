@@ -1,7 +1,5 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 
-
-
 <!-- <div>
   <div>
     <form action="">
@@ -13,7 +11,9 @@
 </div> -->
 
 <div class="dbtn-cont">
-  <button class="d-btn"><a href="{% url 'logsApp:export_to_excel'%}">تحميل السجل </a></button>
+  <button class="d-btn">
+    <a href="{% url 'logsApp:export_to_excel'%}">تحميل السجل </a>
+  </button>
 </div>
 <div class="mainlog">
   <table border="1">
@@ -23,7 +23,7 @@
         <th>الرقم الاداري</th>
         <th>الاسم</th>
         <th>تاريخ الاستلام</th>
-        <th>وقت الاتسلام</th>
+        <th>وقت الاستلام</th>
         <th>تاريخ التسليم</th>
         <th>وقت التسليم</th>
         <th>ملاحظات</th>
@@ -41,14 +41,19 @@
         <td>{{k.return_date|date:"Y-m-d"}}</td>
         {% else %}
         <td></td>
-        {%endif%} {% if k.return_time %}
+        {%endif%}
+        <!-- وقت التسليم -->
+        {% if k.return_time %}
         <td>{{k.return_time}}</td>
         {%else%}
         <td></td>
-        {%endif%} {% if k.carNote %}
+        {%endif%}
+        <!--  -->
+        {% if k.carNote %}
         <td>{{k.carNote}}</td>
         {% else %}
         <td></td>
+
         {% endif %}
       </tr>
       {% endfor %}

@@ -6,7 +6,6 @@ from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 import pytz
-from django.contrib import messages
 
 dubai_tz = pytz.timezone('Asia/Dubai')
 
@@ -20,22 +19,19 @@ def index(request):
     return render(request, "logsApp/layout.html")
 
 def registerCar(request):
-    allnUseCars = InUseCars.objects.all()
+    allnUseCars = InUseCars.objects.all().order_by('-id')
     if request.method == "POST":
         ceoNInput = request.POST["ceoNumber"]
         carNInput = request.POST.get("carNumber")
-        print(ceoNInput)
         try:
             empExists = EmployesInfo.objects.get(ceoNumber=ceoNInput,EmpHaveCar=False)
         except EmployesInfo.DoesNotExist:
             empDoseNotEXISTS = "الرقم الاداري غير صحصح او مستخدم"
             return render(request, "logsApp/registerCar.html",{"empDoseNotEXISTS":empDoseNotEXISTS,"l":allnUseCars})
-        print("commit 1 check for data")
-        print("double cheack 1 ")
         try:
             carExists = RegistredCars.objects.get(carNumber=carNInput,carIsInparking=True)
         except RegistredCars.DoesNotExist:
-            carDNE = "رقم المركبة غير صحيح أو تم استخدامه" 
+            carDNE = "رقم المركبة غير صحيح أو تم استخدامه"
             return render(request, "logsApp/registerCar.html",{"carDNE":carDNE,"l":allnUseCars})
         
         InUseCars.objects.create(car=carExists, employee=empExists)
@@ -57,7 +53,6 @@ def returncar(request):
         ceonumberq = remove_non_numeric(request.POST.get("ceonumber")).strip()
         empnote = request.POST.get("empnote")
         carCondq = request.POST.get("carCd")
-        print(carCondq)
         allInUseCars = InUseCars.objects.all()
 
         try:
@@ -72,10 +67,7 @@ def returncar(request):
             return render(request,"logsApp/registerCar.html", {"retCarErr":retCarErr,"l":allInUseCars})
         retSucssM = "تم اعاده المركبه بنجاح "
         registerCarinst = RegistredCars.objects.get(carNumber=inusecatinstance.car.carNumber)
-        print(inusecatinstance)
-        print(inusecatinstance.employee)
         inusecarinstance = LogsC.objects.get(Logs_employee_ins=empinstance,carIsInUse=True)
-        print(inusecarinstance)
         inusecarinstance.ended_at = timezone.now().astimezone(dubai_tz)
         inusecarinstance.return_date = timezone.now().astimezone(dubai_tz).date()
         inusecarinstance.return_time = timezone.now().astimezone(dubai_tz).time()
@@ -93,10 +85,8 @@ def returncar(request):
 
 
 def logsfunc(request):
-    alllogs = LogsC.objects.all()
+    alllogs = LogsC.objects.all().order_by('-id')
     logs = LogsC.objects.all()
-    for log in logs:
-        print(log.created_at, log.taken_date, log.ended_at)
     return render(request, "logsApp/logs.html",{"alllogs":alllogs})
 
 
@@ -173,6 +163,7 @@ def export_to_excel(request):
 
 def fineC(request):
     if request.method == "POST":
+        # convert the input time to dubai time 
         fine_date = request.POST.get('finedate')
         fine_time = request.POST.get('finetime')
         fine_car_number = request.POST.get('finecar')
@@ -180,16 +171,15 @@ def fineC(request):
         print(f"Fine date is: {fine_date}")
         print(f"Fine time is: {fine_time}")
 
-        # dubai_tz = pytz.timezone('Asia/Dubai')
-        # combined_fine_datetime = dubai_tz.localize(timezone.datetime.strptime(f"{fine_date} {fine_time}", '%Y-%m-%d %H:%M'))
-        # print(combined_fine_datetime.time())
+        dubai_tz = pytz.timezone('Asia/Dubai')
+        combined_fine_datetime = dubai_tz.localize(timezone.datetime.strptime(f"{fine_date} {fine_time}", '%Y-%m-%d %H:%M'))
+        print(combined_fine_datetime.time())
         try:
             car_ins = RegistredCars.objects.get(carNumber=fine_car_number)
 
             finon = LogsC.objects.get(
                 Logs_car_ins=car_ins,
-                created_at__let = fineDateTime
-                
+                created_at__lte = combined_fine_datetime
             )
             print(finon)
         except RegistredCars.DoesNotExist:
