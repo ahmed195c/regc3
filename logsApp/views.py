@@ -132,7 +132,7 @@ def export_to_excel(request):
 
         header_font = Font(size=16, bold=True, color='000000')
         header_fill = PatternFill(start_color='B7E1A1', end_color='B7E1A1', fill_type='solid')  # Olive green accent 3 lighter 40%
-        cell_font = Font(size=16)  
+        cell_font = Font(size=16)
         center_alignment = Alignment(horizontal='center')
 
         for cell in worksheet[1]:
@@ -143,7 +143,7 @@ def export_to_excel(request):
         for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
             for cell in row:
                 cell.font = cell_font
-                cell.alignment = center_alignment  
+                cell.alignment = center_alignment
 
         for column in worksheet.columns:
             max_length = 0
@@ -167,10 +167,8 @@ def fineC(request):
         fine_date = request.POST.get('finedate')
         fine_time = request.POST.get('finetime')
         fine_car_number = request.POST.get('finecar')
-        fineDateTime = request.POST.get('fineDatetime')
         print(f"Fine date is: {fine_date}")
         print(f"Fine time is: {fine_time}")
-
         dubai_tz = pytz.timezone('Asia/Dubai')
         combined_fine_datetime = dubai_tz.localize(timezone.datetime.strptime(f"{fine_date} {fine_time}", '%Y-%m-%d %H:%M'))
         print(combined_fine_datetime.time())
@@ -186,4 +184,6 @@ def fineC(request):
             print(f"Car with number {fine_car_number} does not exist.")
         except Exception as e:
             print(f"An error occurred: {e}")
+            
+        return render(request, "logsApp/finespage.html",{"finon":finon})
     return render(request,"logsApp/finespage.html",)

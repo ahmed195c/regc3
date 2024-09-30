@@ -1,0 +1,6 @@
+.fine-incont-flex {
+  display: flex;
+  flex-direction: column;
+  font-size: larger;
+  font-weight: bold;
+}
