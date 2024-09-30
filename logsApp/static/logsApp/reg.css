@@ -152,8 +152,9 @@ input[type="number"]::-webkit-outer-spin-button {
   align-items: center;
   background-color: rgb(253, 253, 253);
   border: 2px solid #c1c1c1;
+  border-radius: 10px;
   width: 350px;
-  height: 320px;
+  height: 330px;
   margin-bottom: 30px;
 }
 
@@ -170,8 +171,6 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: #4e6b31;
   height: 40px;
 }
-
-
 
 .main {
   display: grid;
