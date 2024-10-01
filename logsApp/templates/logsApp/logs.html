@@ -32,28 +32,36 @@
     <tbody>
       {% for k in alllogs %}
       <tr>
+        <!-- رقم السياره and الرقم الاداري -->
         <td>{{k.Logs_car_ins.carNumber}}</td>
         <td>{{k.Logs_employee_ins.ceoNumber}}</td>
+
+        <!-- الاسم -->
         <td class="ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
+
+        <!-- تاريخ الاستلام and وقت الاستلام -->
         <td>{{k.created_at|date:"Y-m-d"}}</td>
         <td>{{k.created_at|date:"h:i A"}}</td>
+
+        <!-- تاريخ التسليم -->
         {% if k.return_date %}
         <td>{{k.return_date|date:"Y-m-d"}}</td>
         {% else %}
         <td></td>
-        {%endif%}
+        {% endif %}
+
         <!-- وقت التسليم -->
         {% if k.return_time %}
         <td>{{k.return_time}}</td>
-        {%else%}
+        {% else %}
         <td></td>
-        {%endif%}
-        <!--  -->
+        {% endif %}
+
+        <!-- ملاحظات -->
         {% if k.carNote %}
         <td>{{k.carNote}}</td>
         {% else %}
         <td></td>
-
         {% endif %}
       </tr>
       {% endfor %}

@@ -1,8 +1,10 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 <div class="main">
+  <!-- Error Message Display -->
   <h1>{{inUseErr}}</h1>
 
   <div class="forms-cont">
+    <!-- Form for Vehicle Receipt -->
     <div class="regCont">
       <h2>لاستلام المركبه</h2>
       <form action="{% url 'logsApp:add' %}" dir="rtl" method="post">
@@ -18,39 +20,29 @@
             placeholder="مثال: 23945"
           />
 
+          <!-- Display for Employee Existence Error -->
           <div class="msg-cont">
             {% if empDoseNotEXISTS %}
-            <div
-              id="error-message"
-              style="
-                background-color: #f8d7da;
-                color: #721c24;
-                padding: 10px;
-                border: 1px solid #f5c6cb;
-                border-radius: 5px;
-                margin-bottom: 20px;
-              "
-            >
+            <div id="error-message" class="error-msg">
               {{ empDoseNotEXISTS }}
             </div>
             <script>
               setTimeout(function () {
-                var message = document.getElementById("error-message");
-                if (message) {
-                  message.style.transition = "opacity 1s ease-out";
-                  message.style.opacity = 0;
-                  setTimeout(function () {
-                    message.style.display = "none";
-                  }, 1000);
-                }
-              }, 5000);
+                fadeOutMessage("error-message");
+              }, 7000);
             </script>
             {% endif %}
           </div>
+
+          <!-- Other Errors -->
           {% if EmpMErr %}
           <h3>{{EmpMErr}}</h3>
-          {% endif %} {% if InUseCar_exists %} {{InUseCar_exists}} {% endif %}
+          {% endif %} {% if InUseCar_exists %}
+          <h3>{{InUseCar_exists}}</h3>
+          {% endif %}
         </div>
+
+        <!-- Car Number Input -->
         <div class="input-cont">
           <label class="labels" for="carNumber">رقم السياره</label>
           <input
@@ -61,80 +53,45 @@
             placeholder="1-46793"
             required
           />
+
+          <!-- Display for Car Existence Error -->
           <div class="msg-cont">
             {% if carDNE %}
-            <div
-              id="error-message-car"
-              style="
-                background-color: #f8d7da;
-                color: #721c24;
-                padding: 10px;
-                border: 1px solid #f5c6cb;
-                border-radius: 5px;
-                margin-bottom: 20px;
-              "
-            >
-              {{carDNE}}
-            </div>
-
+            <div id="error-message-car" class="error-msg">{{carDNE}}</div>
             <script>
               setTimeout(function () {
-                var message = document.getElementById("error-message-car");
-                if (message) {
-                  message.style.transition = "opacity 1s ease-out";
-                  message.style.opacity = 0;
-                  setTimeout(function () {
-                    message.style.display = "none";
-                  }, 1000);
-                }
-              }, 5000);
+                fadeOutMessage("error-message-car");
+              }, 7000);
             </script>
             {% endif %}
           </div>
 
+          <!-- Display for Vehicle In-use Error -->
           {% if inuse %}
           <h3>{{inuse}}</h3>
-          {% else %}
-          <h1>{{inuse}}</h1>
           {% endif %}
+
+          <!-- Submit Button -->
           <input class="submit-btn" type="submit" value="تسجيل المركبه" />
 
-          <div>
-            <div class="msg-cont">
-              {% if sucssuMessge %}
-              <div
-                id="reg-succ-message"
-                style="
-                  background-color: #d4edda;
-                  color: #155724;
-                  padding: 10px;
-                  border: 1px solid #c3e6cb;
-                  border-radius: 5px;
-                  margin-bottom: 20px;
-                  transition: opacity 1s ease-out;
-                "
-              >
-                {{sucssuMessge}}
-              </div>
-
-              <script>
-                setTimeout(function () {
-                  var message = document.getElementById("reg-succ-message");
-                  if (message) {
-                    message.style.transition = "opacity 1s ease-out";
-                    message.style.opacity = 0;
-                    setTimeout(function () {
-                      message.style.display = "none";
-                    }, 1000);
-                  }
-                }, 5000);
-              </script>
-              {% endif %}
+          <!-- Success Message Display -->
+          <div class="msg-cont">
+            {% if sucssuMessge %}
+            <div id="reg-succ-message" class="success-msg">
+              {{sucssuMessge}}
             </div>
+            <script>
+              setTimeout(function () {
+                fadeOutMessage("reg-succ-message");
+              }, 7000);
+            </script>
+            {% endif %}
           </div>
         </div>
       </form>
     </div>
+
+    <!-- Form for Vehicle Return -->
     <div class="regCont">
       <h2>لإعادة المركبه</h2>
       <form action="{% url 'logsApp:ret' %}" dir="rtl" method="post">
@@ -143,113 +100,61 @@
           <label class="labels" for="ceonumber"> الرقم الاداري </label>
           <input class="inpute" type="number" name="ceonumber" id="ceonumber" />
 
+          <!-- Display for Return Error -->
           <div class="msg-cont">
             {% if retErrm %}
-            <div
-              id="ret-err-message"
-              style="
-                background-color: #f8d7da;
-                color: #721c24;
-                padding: 10px;
-                border: 1px solid #f5c6cb;
-                border-radius: 5px;
-                margin-bottom: 20px;
-              "
-            >
-              {{retErrm}}
-            </div>
-
+            <div id="ret-err-message" class="error-msg">{{retErrm}}</div>
             <script>
               setTimeout(function () {
-                var message = document.getElementById("ret-err-message");
-                if (message) {
-                  message.style.transition = "opacity 1s ease-out";
-                  message.style.opacity = 0;
-                  setTimeout(function () {
-                    message.style.display = "none";
-                  }, 1000);
-                }
-              }, 5000);
+                fadeOutMessage("ret-err-message");
+              }, 7000);
             </script>
             {% endif %}
           </div>
         </div>
+
+        <!-- Car Note Input -->
         <div class="input-cont">
           <label class="labels" for="note">ملاحظه على السياره</label>
           <input class="inpute" type="text" id="note" name="empnote" />
 
+          <!-- Display for Car Return Error -->
           <div class="msg-cont">
             {% if retCarErr %}
-            <div
-              id="ret-err-message"
-              style="
-                background-color: #f8d7da;
-                color: #721c24;
-                padding: 10px;
-                border: 1px solid #f5c6cb;
-                border-radius: 5px;
-                margin-bottom: 20px;
-              "
-            >
-              {{retCarErr}}
-            </div>
-
+            <div id="ret-car-err" class="error-msg">{{retCarErr}}</div>
             <script>
               setTimeout(function () {
-                var message = document.getElementById("ret-err-message");
-                if (message) {
-                  message.style.transition = "opacity 1s ease-out";
-                  message.style.opacity = 0;
-                  setTimeout(function () {
-                    message.style.display = "none";
-                  }, 1000);
-                }
-              }, 5000);
+                fadeOutMessage("ret-car-err");
+              }, 7000);
             </script>
             {% endif %}
           </div>
+
+          <!-- Submit Button -->
           <input class="submit-btn" type="submit" value="إعادة المركبه" />
 
+          <!-- Return Success Message -->
           <div class="msg-cont">
             {% if retSucssM %}
-            <div
-              id="ret-err-message"
-              style="
-                background-color: #d4edda;
-                color: #155724;
-                padding: 10px;
-                border: 1px solid #c3e6cb;
-                border-radius: 5px;
-                margin-bottom: 20px;
-                transition: opacity 1s ease-out;
-              "
-            >
-              {{retSucssM}}
-            </div>
-
+            <div id="ret-succ-message" class="success-msg">{{retSucssM}}</div>
             <script>
               setTimeout(function () {
-                var message = document.getElementById("ret-err-message");
-                if (message) {
-                  message.style.transition = "opacity 1s ease-out";
-                  message.style.opacity = 0;
-                  setTimeout(function () {
-                    message.style.display = "none";
-                  }, 1000);
-                }
-              }, 5000);
+                fadeOutMessage("ret-succ-message");
+              }, 7000);
             </script>
             {% endif %}
           </div>
         </div>
       </form>
     </div>
-
-    {% if message %}
-    <h1>message</h1>
-    {% endif %}
   </div>
 
+  <!-- Message Display -->
+  {% if message %}
+  <h1>{{message}}</h1>
+  {% endif %}
+
+  <!-- Vehicles In Use Section -->
   <div><h1>مركبات قيد الاستخدام</h1></div>
   <div class="inuseBorder">
     <div class="inUsCont">
@@ -258,18 +163,12 @@
         <div class="details">
           <div class="info">
             <p class="info-p">اسم المستخدم: {{n.employee.ceoName}}</p>
-            <div class="br"></div>
             <p class="info-p">الرقم الاداري: {{n.employee.ceoNumber}}</p>
-            <div class="br"></div>
-            <div>
-              <p>{{n.employee.section}}</p>
-            </div>
-            <div class="br"></div>
+            <p>{{n.employee.section}}</p>
             <div class="car-plate">
               <p>{{n.car.carNumber}}</p>
               <p>رقم اللوحه</p>
             </div>
-            <div class="br"></div>
             <p>تاريخ و وقت الاستلام</p>
             <p class="created-at">{{ n.created_at|date:"Y-m-d / h:i A" }}</p>
           </div>
@@ -281,5 +180,19 @@
     </div>
   </div>
 </div>
+
+<!-- Script for fading out messages -->
+<script>
+  function fadeOutMessage(id) {
+    var message = document.getElementById(id);
+    if (message) {
+      message.style.transition = "opacity 1s ease-out";
+      message.style.opacity = 0;
+      setTimeout(function () {
+        message.style.display = "none";
+      }, 1000);
+    }
+  }
+</script>
 
 {% endblock %}

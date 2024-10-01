@@ -1,51 +1,79 @@
-.ceoNameS {
-  overflow: hidden;
-}
+/* Container for the table */
 .mainlog {
-  margin: auto 0;
-  height: 100%;
-}
-.headtr {
-  background-color: green;
+  width: 80%;
+  height: 90vh; /* Viewport height for dynamic resizing */
+  overflow-y: scroll; /* Enables vertical scrolling */
+  overflow-x: auto; /* Enables horizontal scrolling */
+  margin: 0 auto; /* Center the table container */
+  border: 1px solid #ddd; /* Optional: border for the table container */
 }
 
+/* Table styles */
 table {
-  margin: 0 auto; 
-  border-collapse: collapse; 
-  width: 80%; 
+  width: 100%;
+  margin: 0 auto; /* Center the table within the container */
+  border-collapse: collapse; /* Avoid spacing between cells */
 }
 
-th {
-  background-color: #4e6b31; 
-  color: white; 
-  padding: 10px; 
+/* Sticky header */
+thead th {
+  background-color: #4e6b31;
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  position: sticky;
+  top: 0; /* Keeps the header at the top */
+  z-index: 1; /* Ensures it stays above table content */
 }
 
+/* Header row styling */
+.headtr {
+  background-color: green; /* Custom color for the header row */
+}
+
+/* Cell styles */
+th,
 td {
-  padding: 10px; 
+  padding: 10px;
+  border: 1px solid #ccc; /* Border around cells */
   text-align: center;
+  transition: background-color 0.3s ease;
 }
 
-
+/* Alternating row colors */
 tbody tr:nth-child(even) td {
-  background-color: #e3e3e3; 
+  background-color: #e3e3e3; /* Light gray for even rows */
 }
 
 tbody tr:nth-child(odd) td {
-  background-color: white; 
+  background-color: white; /* White for odd rows */
 }
 
-table,
-th,
-td {
-  border: 1px solid #ccc; 
+/* Hidden overflow for ceoNameS */
+.ceoNameS {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; /* Adds '...' for overflowed text */
 }
 
+/* Hover effect for rows */
+tbody tr:hover td {
+  background-color: #b59958; /* Light gray on row hover */
+}
+
+/* Button styles */
 .d-btn {
   border-radius: 8px;
-  border: 0;
+  border: none;
   margin: 30px 0 30px 30px;
   background-color: #4e6b31;
+  color: white;
   width: 150px;
   height: 50px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.d-btn:hover {
+  background-color: #3c5124; /* Darken on hover */
 }

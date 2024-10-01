@@ -43,7 +43,7 @@ def registerCar(request):
         carExists.carIsInparking = False
         carExists.save()
         sucssuMessge = "تم التسجيل بنجاح"
-        return render(request, "logsApp/registerCar.html",{"sucssuMessge":sucssuMessge,"l":allnUseCars})    
+        return render(request, "logsApp/registerCar.html",{"sucssuMessge":sucssuMessge,"l":allnUseCars})
         
     return render(request, "logsApp/registerCar.html",{"l":allnUseCars})
 
@@ -53,12 +53,12 @@ def returncar(request):
         ceonumberq = remove_non_numeric(request.POST.get("ceonumber")).strip()
         empnote = request.POST.get("empnote")
         carCondq = request.POST.get("carCd")
-        allInUseCars = InUseCars.objects.all()
+        allInUseCars = InUseCars.objects.all().order_by('-id')
 
         try:
            empinstance = EmployesInfo.objects.get(ceoNumber=ceonumberq)
         except EmployesInfo.DoesNotExist:
-             retErrm = " الرقم الاداري خاظئ "
+             retErrm = " الرقم الاداري غير صحيح "
              return render(request,"logsApp/registerCar.html", {"retErrm":retErrm,"l":allInUseCars})
         try:
           inusecatinstance = InUseCars.objects.get(employee=empinstance)

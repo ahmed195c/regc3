@@ -19,6 +19,17 @@
   border-radius: 8px;
   font-weight: bold;
 }
+/* Keyframe for fade-in effect */
+@keyframes fadeIn {
+  0% {
+    opacity: 0; /* Start completely transparent */
+    transform: translateY(20px); /* Start slightly below */
+  }
+  100% {
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* End in original position */
+  }
+}
 
 .car-details {
   height: 45%;
@@ -29,7 +40,17 @@
   background-color: #ffffff;
   border-radius: 18px;
   border: 1px solid #000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Increased shadow for depth */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation for transform and shadow */
+  opacity: 0; /* Start fully transparent */
+  animation: fadeIn 0.6s forwards; /* Apply fade-in animation */
+  animation-delay: 0.2s; /* Delay before starting the animation */
+}
+
+/* Animation on hover */
+.car-details:hover {
+  transform: translateY(-5px); /* Lift the card slightly */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
 }
 
 .car-details h1 {
@@ -40,8 +61,8 @@
 
 .details {
   display: flex;
-  align-items: right;
-  justify-content: right;
+  align-items: flex-end; /* Corrected from 'right' to 'flex-end' */
+  justify-content: flex-start; /* Corrected from 'right' to 'flex-start' */
   flex-direction: column;
   gap: 10px;
 }
@@ -134,7 +155,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .forms-cont {
-  margin-top: 30px;
+  margin-top: 20px;
   grid-row-start: 1;
   grid-row-end: 2;
   grid-column-end: 3;
@@ -145,34 +166,127 @@ input[type="number"]::-webkit-outer-spin-button {
   font-weight: bold;
 }
 
+.main {
+  display: grid;
+  grid-template-columns: [first]75% [line2]25%;
+}
+.msg-cont {
+  position: absolute; /* Relative positioning for absolute children */
+  height: auto; /* Adjust height to fit content */
+  top: 50%;
+  right: 40%;
+}
+
+/* Updated styles for the form container */
 .regCont {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgb(253, 253, 253);
+  background-color: #f9f9f9; /* Slightly lighter background */
+  border: 2px solid #d1d1d1;
+  border-radius: 12px;
+  width: 400px; /* Slightly larger for more spacing */
+  padding: 20px; /* Padding inside the container for space */
+  margin-bottom: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+/* Styling for labels to give them clarity */
+.labels {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px; /* Add space between label and input */
+  color: #333; /* Darker color for readability */
+}
+
+/* Input fields styling */
+.inpute {
+  width: 100%;
+  padding: 10px;
   border: 2px solid #c1c1c1;
-  border-radius: 10px;
-  width: 350px;
-  height: 330px;
-  margin-bottom: 30px;
+  border-radius: 8px;
+  margin-bottom: 20px; /* Space between inputs */
+  font-size: 16px;
+  transition: border-color 0.3s ease; /* Transition for focus effect */
 }
 
-.msg-cont {
-  height: 40px;
+.inpute:focus {
+  border-color: #4e6b31; /* Change border color on focus */
+  outline: none;
 }
 
+/* Message container styling for error/success messages */
+
+.success-msg,
+.error-msg {
+  width: 100%;
+  font-size: 50px;
+  padding: 10px;
+  text-align: center;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.success-msg {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.error-msg {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Styling for the submit button */
 .submit-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  color: #fff;
+  background-color: #4e6b31;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  background-color: #4e6b31;
-  height: 40px;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Animation for button */
 }
 
-.main {
-  display: grid;
-  grid-template-columns: [first]75% [line2]25%;
+/* Button hover effect */
+.submit-btn:hover {
+  background-color: #3e5524; /* Darker green */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Button active (clicked) effect */
+.submit-btn:active {
+  transform: translateY(0); /* Reset transform on click */
+}
+
+/* Animation for fade-out message */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+#ret-succ-message,
+#ret-err-message,
+#ret-car-err {
+  animation: fadeIn 0.5s ease-in-out;
 }
