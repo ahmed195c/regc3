@@ -1,10 +1,8 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 <div class="main">
-  <!-- Error Message Display -->
   <h1>{{inUseErr}}</h1>
 
   <div class="forms-cont">
-    <!-- Form for Vehicle Receipt -->
     <div class="regCont">
       <h2>لاستلام المركبه</h2>
       <form action="{% url 'logsApp:add' %}" dir="rtl" method="post">
@@ -20,7 +18,6 @@
             placeholder="مثال: 23945"
           />
 
-          <!-- Display for Employee Existence Error -->
           <div class="msg-cont">
             {% if empDoseNotEXISTS %}
             <div id="error-message" class="error-msg">
@@ -34,7 +31,6 @@
             {% endif %}
           </div>
 
-          <!-- Other Errors -->
           {% if EmpMErr %}
           <h3>{{EmpMErr}}</h3>
           {% endif %} {% if InUseCar_exists %}
@@ -42,7 +38,6 @@
           {% endif %}
         </div>
 
-        <!-- Car Number Input -->
         <div class="input-cont">
           <label class="labels" for="carNumber">رقم السياره</label>
           <input
@@ -54,7 +49,6 @@
             required
           />
 
-          <!-- Display for Car Existence Error -->
           <div class="msg-cont">
             {% if carDNE %}
             <div id="error-message-car" class="error-msg">{{carDNE}}</div>
@@ -66,15 +60,12 @@
             {% endif %}
           </div>
 
-          <!-- Display for Vehicle In-use Error -->
           {% if inuse %}
           <h3>{{inuse}}</h3>
           {% endif %}
 
-          <!-- Submit Button -->
           <input class="submit-btn" type="submit" value="تسجيل المركبه" />
 
-          <!-- Success Message Display -->
           <div class="msg-cont">
             {% if sucssuMessge %}
             <div id="reg-succ-message" class="success-msg">
@@ -91,7 +82,6 @@
       </form>
     </div>
 
-    <!-- Form for Vehicle Return -->
     <div class="regCont">
       <h2>لإعادة المركبه</h2>
       <form action="{% url 'logsApp:ret' %}" dir="rtl" method="post">
@@ -99,8 +89,6 @@
         <div class="input-cont">
           <label class="labels" for="ceonumber"> الرقم الاداري </label>
           <input class="inpute" type="number" name="ceonumber" id="ceonumber" />
-
-          <!-- Display for Return Error -->
           <div class="msg-cont">
             {% if retErrm %}
             <div id="ret-err-message" class="error-msg">{{retErrm}}</div>
@@ -113,12 +101,10 @@
           </div>
         </div>
 
-        <!-- Car Note Input -->
         <div class="input-cont">
           <label class="labels" for="note">ملاحظه على السياره</label>
           <input class="inpute" type="text" id="note" name="empnote" />
 
-          <!-- Display for Car Return Error -->
           <div class="msg-cont">
             {% if retCarErr %}
             <div id="ret-car-err" class="error-msg">{{retCarErr}}</div>
@@ -130,10 +116,8 @@
             {% endif %}
           </div>
 
-          <!-- Submit Button -->
           <input class="submit-btn" type="submit" value="إعادة المركبه" />
 
-          <!-- Return Success Message -->
           <div class="msg-cont">
             {% if retSucssM %}
             <div id="ret-succ-message" class="success-msg">{{retSucssM}}</div>
@@ -149,12 +133,10 @@
     </div>
   </div>
 
-  <!-- Message Display -->
   {% if message %}
   <h1>{{message}}</h1>
   {% endif %}
 
-  <!-- Vehicles In Use Section -->
   <div><h1>مركبات قيد الاستخدام</h1></div>
   <div class="inuseBorder">
     <div class="inUsCont">

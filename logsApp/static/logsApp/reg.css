@@ -19,15 +19,15 @@
   border-radius: 8px;
   font-weight: bold;
 }
-/* Keyframe for fade-in effect */
+
 @keyframes fadeIn {
   0% {
-    opacity: 0; /* Start completely transparent */
-    transform: translateY(20px); /* Start slightly below */
+    opacity: 0;
+    transform: translateY(20px);
   }
   100% {
-    opacity: 1; /* Fully visible */
-    transform: translateY(0); /* End in original position */
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -40,17 +40,16 @@
   background-color: #ffffff;
   border-radius: 18px;
   border: 1px solid #000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Increased shadow for depth */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation for transform and shadow */
-  opacity: 0; /* Start fully transparent */
-  animation: fadeIn 0.6s forwards; /* Apply fade-in animation */
-  animation-delay: 0.2s; /* Delay before starting the animation */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  animation: fadeIn 0.6s forwards;
+  animation-delay: 0.2s;
 }
 
-/* Animation on hover */
 .car-details:hover {
-  transform: translateY(-5px); /* Lift the card slightly */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .car-details h1 {
@@ -61,8 +60,8 @@
 
 .details {
   display: flex;
-  align-items: flex-end; /* Corrected from 'right' to 'flex-end' */
-  justify-content: flex-start; /* Corrected from 'right' to 'flex-start' */
+  align-items: flex-end;
+  justify-content: flex-start;
   flex-direction: column;
   gap: 10px;
 }
@@ -171,52 +170,47 @@ input[type="number"]::-webkit-outer-spin-button {
   grid-template-columns: [first]75% [line2]25%;
 }
 .msg-cont {
-  position: absolute; /* Relative positioning for absolute children */
-  height: auto; /* Adjust height to fit content */
+  position: absolute;
+  height: auto;
   top: 50%;
   right: 40%;
 }
 
-/* Updated styles for the form container */
 .regCont {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #f9f9f9; /* Slightly lighter background */
+  background-color: #f9f9f9;
   border: 2px solid #d1d1d1;
   border-radius: 12px;
-  width: 400px; /* Slightly larger for more spacing */
-  padding: 20px; /* Padding inside the container for space */
+  width: 400px;
+  padding: 20px;
   margin-bottom: 40px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Styling for labels to give them clarity */
 .labels {
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 5px; /* Add space between label and input */
-  color: #333; /* Darker color for readability */
+  margin-bottom: 5px;
+  color: #333;
 }
 
-/* Input fields styling */
 .inpute {
   width: 100%;
   padding: 10px;
   border: 2px solid #c1c1c1;
   border-radius: 8px;
-  margin-bottom: 20px; /* Space between inputs */
+  margin-bottom: 20px;
   font-size: 16px;
-  transition: border-color 0.3s ease; /* Transition for focus effect */
+  transition: border-color 0.3s ease;
 }
 
 .inpute:focus {
-  border-color: #4e6b31; /* Change border color on focus */
+  border-color: #4e6b31;
   outline: none;
 }
-
-/* Message container styling for error/success messages */
 
 .success-msg,
 .error-msg {
@@ -240,7 +234,6 @@ input[type="number"]::-webkit-outer-spin-button {
   border: 1px solid #f5c6cb;
 }
 
-
 .submit-btn {
   width: 100%;
   padding: 12px;
@@ -252,21 +245,18 @@ input[type="number"]::-webkit-outer-spin-button {
   cursor: pointer;
   font-weight: bold;
   margin-top: 20px;
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Animation for button */
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Button hover effect */
 .submit-btn:hover {
-  background-color: #3e5524; /* Darker green */
-  transform: translateY(-2px); /* Slight lift on hover */
+  background-color: #3e5524;
+  transform: translateY(-2px);
 }
 
-/* Button active (clicked) effect */
 .submit-btn:active {
-  transform: translateY(0); /* Reset transform on click */
+  transform: translateY(0);
 }
 
-/* Animation for fade-out message */
 @keyframes fadeOut {
   0% {
     opacity: 1;

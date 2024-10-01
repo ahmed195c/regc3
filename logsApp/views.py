@@ -86,8 +86,7 @@ def returncar(request):
 
 def logsfunc(request):
     if request.method == 'POST':
-        carNumberq = request.POST.get('carNumper')
-        
+        carNumberq = request.POST.get('carNumper').strip()
         searchByCarNm = LogsC.objects.filter(Logs_car_ins__carNumber=carNumberq)
         return render( request,"logsApp/logs.html",{'alllogs':searchByCarNm})
     alllogs = LogsC.objects.all().order_by('-id')
@@ -136,7 +135,7 @@ def export_to_excel(request):
         worksheet = writer.sheets['Logs Data']
 
         header_font = Font(size=16, bold=True, color='000000')
-        header_fill = PatternFill(start_color='B7E1A1', end_color='B7E1A1', fill_type='solid')  # Olive green accent 3 lighter 40%
+        header_fill = PatternFill(start_color='B7E1A1', end_color='B7E1A1', fill_type='solid') 
         cell_font = Font(size=16)
         center_alignment = Alignment(horizontal='center')
 
@@ -168,7 +167,7 @@ def export_to_excel(request):
 
 def fineC(request):
     if request.method == "POST":
-        # convert the input time to dubai time 
+        
         fine_date = request.POST.get('finedate')
         fine_time = request.POST.get('finetime')
         fine_car_number = request.POST.get('finecar')

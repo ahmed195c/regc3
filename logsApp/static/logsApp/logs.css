@@ -1,67 +1,57 @@
-/* Container for the table */
 .mainlog {
   width: 80%;
-  height: 90vh; /* Viewport height for dynamic resizing */
-  overflow-y: scroll; /* Enables vertical scrolling */
-  overflow-x: auto; /* Enables horizontal scrolling */
-  margin: 0 auto; /* Center the table container */
-  border: 1px solid #ddd; /* Optional: border for the table container */
+  height: 90vh;
+  overflow-y: scroll;
+  overflow-x: auto;
+  margin: 0 auto;
+  border: 1px solid #ddd;
 }
 
-/* Table styles */
 table {
   width: 100%;
-  margin: 0 auto; /* Center the table within the container */
-  border-collapse: collapse; /* Avoid spacing between cells */
+  margin: 0 auto;
+  border-collapse: collapse;
 }
 
-/* Sticky header */
 thead th {
   background-color: #4e6b31;
   color: white;
   padding: 10px;
   font-weight: bold;
   position: sticky;
-  top: 0; /* Keeps the header at the top */
-  z-index: 1; /* Ensures it stays above table content */
+  top: 0;
+  z-index: 1;
 }
 
-/* Header row styling */
 .headtr {
-  background-color: green; /* Custom color for the header row */
+  background-color: green;
 }
 
-/* Cell styles */
 th,
 td {
   padding: 10px;
-  border: 1px solid #ccc; /* Border around cells */
-  text-align: center;
+  border: 1px solid #ccc;
   transition: background-color 0.3s ease;
 }
 
-/* Alternating row colors */
 tbody tr:nth-child(even) td {
-  background-color: #e3e3e3; /* Light gray for even rows */
+  background-color: #e3e3e3;
 }
 
 tbody tr:nth-child(odd) td {
-  background-color: white; /* White for odd rows */
+  background-color: white;
 }
 
-/* Hidden overflow for ceoNameS */
 .ceoNameS {
   overflow: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis; /* Adds '...' for overflowed text */
+  text-overflow: ellipsis;
 }
 
-/* Hover effect for rows */
 tbody tr:hover td {
-  background-color: #b59958; /* Light gray on row hover */
+  background-color: #b59958;
 }
 
-/* Button styles */
 .d-btn {
   border-radius: 8px;
   border: none;
@@ -75,7 +65,7 @@ tbody tr:hover td {
 }
 
 .d-btn:hover {
-  background-color: #3c5124; /* Darken on hover */
+  background-color: #3c5124;
 }
 
 .logs-btns {
