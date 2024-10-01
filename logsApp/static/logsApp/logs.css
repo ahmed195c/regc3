@@ -77,3 +77,10 @@ tbody tr:hover td {
 .d-btn:hover {
   background-color: #3c5124; /* Darken on hover */
 }
+
+.logs-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}

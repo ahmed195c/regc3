@@ -9,11 +9,31 @@
     </form>
   </div>
 </div> -->
-
-<div class="dbtn-cont">
-  <button class="d-btn">
-    <a href="{% url 'logsApp:export_to_excel'%}">تحميل السجل </a>
-  </button>
+<div class="logs-btns">
+  <div class="dbtn-cont">
+    <button class="d-btn">
+      <a href="{% url 'logsApp:export_to_excel'%}">تحميل السجل </a>
+    </button>
+  </div>
+  <div>
+    <form action="{% url 'logsApp:logslink' %}" method="post">
+      {% csrf_token %}
+      <label for="carNumbers">carNumbers</label>
+      <input
+        type="text"
+        id="carNumbers"
+        name="carNumper"
+        required
+        placeholder="1-46841:مثال "
+      />
+      <input type="submit" value="search" />
+    </form>
+    <div>
+      <button onclick="window.location='{% url 'logsApp:logslink' %}'">
+        show all
+      </button>
+    </div>
+  </div>
 </div>
 <div class="mainlog">
   <table border="1">

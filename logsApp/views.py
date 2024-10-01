@@ -85,6 +85,11 @@ def returncar(request):
 
 
 def logsfunc(request):
+    if request.method == 'POST':
+        carNumberq = request.POST.get('carNumper')
+        
+        searchByCarNm = LogsC.objects.filter(Logs_car_ins__carNumber=carNumberq)
+        return render( request,"logsApp/logs.html",{'alllogs':searchByCarNm})
     alllogs = LogsC.objects.all().order_by('-id')
     logs = LogsC.objects.all()
     return render(request, "logsApp/logs.html",{"alllogs":alllogs})
