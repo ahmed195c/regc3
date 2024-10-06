@@ -3,10 +3,10 @@ from django.utils import timezone
 from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
 import re
 from django.http import HttpResponse
-from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 import pytz
-
+from datetime import datetime
+from django.db.models import Q
 dubai_tz = pytz.timezone('Asia/Dubai')
 
 from django.http import HttpResponse
@@ -85,19 +85,37 @@ def returncar(request):
 
 
 def logsfunc(request):
-    if request.method == 'POST':
-        carNumberq = request.POST.get('carNumper').strip()
-        searchByCarNm = LogsC.objects.filter(Logs_car_ins__carNumber=carNumberq)
-        return render( request,"logsApp/logs.html",{'alllogs':searchByCarNm})
-    alllogs = LogsC.objects.all().order_by('-id')
+    carnF = request.GET.get('carNumper')
+    ceoN = request.GET.get('ceoN')
+    showAllq = request.GET.get('showAll')
+
+    print(carnF)
+    
+    filters = {}
+    
+    if ceoN:
+        filters['Logs_employee_ins__ceoNumber'] = ceoN.strip()
+
+    if carnF:
+        filters['Logs_car_ins__carNumber'] = carnF.strip()
+
+    searchByCarNm = LogsC.objects.filter(**filters).order_by('-id')
+    
+    if showAllq:
+        alllogsq = LogsC.objects.all().order_by('-id')
+        return render(request,"logsApp/logs.html",{'alllogs':alllogsq})    
+    current_date = datetime.now().date()
+    print(current_date)
+    alllogs = LogsC.objects.filter(Q(taken_date=current_date) | Q(taken_date__isnull=True)).order_by('-id')
     logs = LogsC.objects.all()
-    return render(request, "logsApp/logs.html",{"alllogs":alllogs})
+    
+    return render(request, "logsApp/logs.html", {'alllogs': searchByCarNm})
 
 
 def export_to_excel(request):
     dubai_tz = pytz.timezone('Asia/Dubai')
-
-    data = LogsC.objects.select_related('Logs_employee_ins', 'Logs_car_ins').all()
+    
+    data = LogsC.objects.select_related('Logs_employee_ins', 'Logs_car_ins').all().order_by('-id')
 
     export_data = []
     for log in data:
@@ -167,7 +185,6 @@ def export_to_excel(request):
 
 def fineC(request):
     if request.method == "POST":
-        
         fine_date = request.POST.get('finedate')
         fine_time = request.POST.get('finetime')
         fine_car_number = request.POST.get('finecar')
@@ -179,10 +196,8 @@ def fineC(request):
         try:
             car_ins = RegistredCars.objects.get(carNumber=fine_car_number)
 
-            finon = LogsC.objects.get(
-                Logs_car_ins=car_ins,
-                created_at__lte = combined_fine_datetime
-            )
+            finon = LogsC.objects.get(Logs_car_ins=car_ins,
+                                      created_at__lte = combined_fine_datetime)
             print(finon)
         except RegistredCars.DoesNotExist:
             print(f"Car with number {fine_car_number} does not exist.")

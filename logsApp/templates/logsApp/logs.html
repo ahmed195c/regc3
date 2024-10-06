@@ -9,29 +9,37 @@
     </form>
   </div>
 </div> -->
+
 <div class="logs-btns">
   <div class="dbtn-cont">
     <button class="d-btn">
       <a href="{% url 'logsApp:export_to_excel'%}">تحميل السجل </a>
     </button>
   </div>
-  <div>
-    <form action="{% url 'logsApp:logslink' %}" method="post">
+  <div class="filters-cont">
+    <form action="{% url 'logsApp:logslink' %}">
       {% csrf_token %}
-      <label for="carNumbers">carNumbers</label>
-      <input
-        type="text"
-        id="carNumbers"
-        name="carNumper"
-        required
-        placeholder="1-46841:مثال "
-      />
+      <!-- filter by car number -->
+      <div class="filter-cont">
+        <label for="carNumbers">carNumbers</label>
+        <input
+          type="text"
+          id="carNumbers"
+          name="carNumper"
+          placeholder="1-46841:مثال "
+        />
+        <label for="ceoN">الرقم الداري</label>
+        <input type="text" name="ceoN" />
+      </div>
+
       <input type="submit" value="search" />
     </form>
     <div>
-      <button onclick="window.location='{% url 'logsApp:logslink' %}'">
-        show all
-      </button>
+      <form action="{% url 'logsApp:logslink' %}">
+        {% csrf_token %}
+        <input type="hidden" value="showall" id="showAll" name="showAll" />
+        <input type="submit" value="اظهار الكل" />
+      </form>
     </div>
   </div>
 </div>
@@ -52,33 +60,23 @@
     <tbody>
       {% for k in alllogs %}
       <tr>
-        <!-- رقم السياره and الرقم الاداري -->
         <td>{{k.Logs_car_ins.carNumber}}</td>
         <td>{{k.Logs_employee_ins.ceoNumber}}</td>
 
-        <!-- الاسم -->
         <td class="ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
 
-        <!-- تاريخ الاستلام and وقت الاستلام -->
         <td>{{k.created_at|date:"Y-m-d"}}</td>
         <td>{{k.created_at|date:"h:i A"}}</td>
 
-        <!-- تاريخ التسليم -->
         {% if k.return_date %}
         <td>{{k.return_date|date:"Y-m-d"}}</td>
         {% else %}
         <td></td>
-        {% endif %}
-
-        <!-- وقت التسليم -->
-        {% if k.return_time %}
+        {% endif %} {% if k.return_time %}
         <td>{{k.return_time}}</td>
         {% else %}
         <td></td>
-        {% endif %}
-
-        <!-- ملاحظات -->
-        {% if k.carNote %}
+        {% endif %} {% if k.carNote %}
         <td>{{k.carNote}}</td>
         {% else %}
         <td></td>
