@@ -168,7 +168,16 @@ input[type="number"]::-webkit-outer-spin-button {
 .main {
   display: grid;
   grid-template-columns: [first]75% [line2]25%;
+  grid-template-rows: [first]10% [second]90%;
 }
+
+.h1n {
+  width: 100%;
+  text-align: center;
+  grid-row-end: first;
+  
+}
+
 .msg-cont {
   position: absolute;
   height: auto;

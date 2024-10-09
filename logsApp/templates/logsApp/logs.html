@@ -13,13 +13,15 @@
 <div class="logs-btns">
   <div class="dbtn-cont">
     <button class="d-btn">
-      <a href="{% url 'logsApp:export_to_excel'%}">تحميل السجل </a>
+      <a class="d-btn-a" href="{% url 'logsApp:export_to_excel'%}"
+        >تحميل السجل
+      </a>
     </button>
   </div>
-  <div class="filters-cont">
+  <!-- <div class="filters-cont">
     <form action="{% url 'logsApp:logslink' %}">
       {% csrf_token %}
-      <!-- filter by car number -->
+      filter by car number
       <div class="filter-cont">
         <label for="carNumbers">carNumbers</label>
         <input
@@ -41,7 +43,7 @@
         <input type="submit" value="اظهار الكل" />
       </form>
     </div>
-  </div>
+  </div> -->
 </div>
 <div class="mainlog">
   <table border="1">

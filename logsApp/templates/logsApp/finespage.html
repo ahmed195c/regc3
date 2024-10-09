@@ -1,18 +1,19 @@
 {% extends "logsApp/layout.html" %} {% block body %}
+<!-- <div class="main-fin">
 
-<div>
-  <h1>المخالفات</h1>
-  <form action="{% url 'logsApp:finec'%}" method="POST">
-    {% csrf_token %}
-    <input type="date" name="finedate" required />
-    <input type="time" name="finetime" required />
-    <input type="text" name="finecar" required />
-    <input type="submit" value="submit btn" />
-  </form>
-</div>
-
-<div>
-  <div class="fine-incont-flex">
+  <div>
+    <h1>المخالفات</h1>
+    <form action="{% url 'logsApp:finec'%}" method="POST">
+      {% csrf_token %}
+      <input type="date" name="finedate" required />
+      <input type="time" name="finetime" required />
+      <input type="text" name="finecar" required />
+      <input type="submit" value="submit btn" />
+    </form>
+  </div>
+  
+  <div>
+    <div class="fine-incont-flex">
     <div>
       {{finon.Logs_car_ins.carNumber}}
       <p>رقم السياره</p>
@@ -22,4 +23,5 @@
     <div>{{finon.created_at|date:"Y-m-d h:i A" }}</div>
   </div>
 </div>
+</div> -->
 {% endblock %}

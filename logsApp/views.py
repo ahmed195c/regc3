@@ -48,7 +48,7 @@ def registerCar(request):
     return render(request, "logsApp/registerCar.html",{"l":allnUseCars})
 
 
-def returncar(request):
+def returnCar(request):
     if request.method == "POST":
         ceonumberq = remove_non_numeric(request.POST.get("ceonumber")).strip()
         empnote = request.POST.get("empnote")
@@ -92,7 +92,7 @@ def logsfunc(request):
     print(carnF)
     
     filters = {}
-    
+        
     if ceoN:
         filters['Logs_employee_ins__ceoNumber'] = ceoN.strip()
 
@@ -108,7 +108,6 @@ def logsfunc(request):
     print(current_date)
     alllogs = LogsC.objects.filter(Q(taken_date=current_date) | Q(taken_date__isnull=True)).order_by('-id')
     logs = LogsC.objects.all()
-    
     return render(request, "logsApp/logs.html", {'alllogs': searchByCarNm})
 
 
@@ -197,12 +196,14 @@ def fineC(request):
             car_ins = RegistredCars.objects.get(carNumber=fine_car_number)
 
             finon = LogsC.objects.get(Logs_car_ins=car_ins,
-                                      created_at__lte = combined_fine_datetime)
+                                      created_at__lte = combined_fine_datetime,
+                                      ended_at__gte = combined_fine_datetime
+                                      )
             print(finon)
+            return render(request, "logsApp/finespage.html",{"finon":finon})
         except RegistredCars.DoesNotExist:
             print(f"Car with number {fine_car_number} does not exist.")
         except Exception as e:
             print(f"An error occurred: {e}")
             
-        return render(request, "logsApp/finespage.html",{"finon":finon})
     return render(request,"logsApp/finespage.html",)

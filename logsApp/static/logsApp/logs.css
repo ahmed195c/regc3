@@ -64,6 +64,11 @@ tbody tr:hover td {
   transition: background-color 0.3s ease;
 }
 
+.d-btn-a {
+  width: 60px;
+  height: 20px;
+}
+
 .d-btn:hover {
   background-color: #3c5124;
 }
