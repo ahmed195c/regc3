@@ -1,10 +1,17 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 <div class="main">
+  {{dd}}
   <form action="{% url 'logsApp:addNewEmp' %}" method="post">
     {% csrf_token %}
     <div>
       <label for="empName">اسم الموظف</label>
-      <input type="text" name="empName" id="empName" placeholder="اسم الموظف" />
+      <input
+        type="text"
+        name="empName"
+        id="empName"
+        placeholder="اسم الموظف"
+        required
+      />
     </div>
     <div>
       <label for="empNumber">الرقم الاداري</label>
@@ -13,6 +20,7 @@
         name="empNumber"
         id="empNumber"
         placeholder="الرقم الادري"
+        required
       />
     </div>
     <input type="submit" />

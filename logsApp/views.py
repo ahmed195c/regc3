@@ -8,6 +8,7 @@ import pytz
 from datetime import datetime
 from django.db.models import Q
 dubai_tz = pytz.timezone('Asia/Dubai')
+from django.db import IntegrityError
 
 from django.http import HttpResponse
 import pandas as pd
@@ -15,6 +16,13 @@ def remove_non_numeric(s):
     
     return re.sub(r'\D', '', s)
 
+def removechars(c):
+    characters_to_remove = "!@#$%^&*()_+|?}{:><`1234567890"
+
+    for char in characters_to_remove:
+        c = c.replace(char, "")
+    
+    return c 
 def index(request):
     return render(request, "logsApp/layout.html")
 
@@ -184,9 +192,14 @@ def addNewEmp(request):
     if request.method == "POST":
         empNameq = request.POST.get('empName')
         empNumber = request.POST.get('empNumber')
-        EmployesInfo.objects.create(ceoName=empNameq,ceoNumber=empNumber)
-        dd = " working"
-        return render(request,"logsApp/addNewEmp.html",{'dd':dd})
+        sa = removechars(empNameq)
+        print(sa)
+        try:
+            EmployesInfo.objects.create(ceoName=sa,ceoNumber=empNumber)
+            dd = " working"
+        except IntegrityError:
+            dd = "الرقم الاداري موجود من قبل"
+        return render(request, "logsApp/addNewEmp.html", {'dd': dd})
     return render(request,"logsApp/addNewEmp.html")
 
 
