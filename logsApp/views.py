@@ -39,12 +39,11 @@ def registerCar(request):
 
         empExists.EmpHaveCar = True
         empExists.save()
-
         carExists.carIsInparking = False
         carExists.save()
         sucssuMessge = "تم التسجيل بنجاح"
         return render(request, "logsApp/registerCar.html",{"sucssuMessge":sucssuMessge,"l":allnUseCars})
-        
+    
     return render(request, "logsApp/registerCar.html",{"l":allnUseCars})
 
 
@@ -182,12 +181,13 @@ def export_to_excel(request):
 
 
 def addNewEmp(request):
-    empNameq = request.GET.get('empName')
-    empNumber = request.GET.get('empNumber')
-    
-    newEmp = EmployesInfo(ceoName=empNameq,ceoName=)
-    dd = " working"
-    return render(request,"logsApp/addNewEmp.html",{'dd':dd})
+    if request.method == "POST":
+        empNameq = request.POST.get('empName')
+        empNumber = request.POST.get('empNumber')
+        EmployesInfo.objects.create(ceoName=empNameq,ceoNumber=empNumber)
+        dd = " working"
+        return render(request,"logsApp/addNewEmp.html",{'dd':dd})
+    return render(request,"logsApp/addNewEmp.html")
 
 
 
