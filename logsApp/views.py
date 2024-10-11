@@ -103,7 +103,7 @@ def logsfunc(request):
     
     if showAllq:
         alllogsq = LogsC.objects.all().order_by('-id')
-        return render(request,"logsApp/logs.html",{'alllogs':alllogsq})    
+        return render(request,"logsApp/logs.html",{'alllogs':alllogsq})
     current_date = datetime.now().date()
     print(current_date)
     alllogs = LogsC.objects.filter(Q(taken_date=current_date) | Q(taken_date__isnull=True)).order_by('-id')
@@ -181,6 +181,17 @@ def export_to_excel(request):
     return response
 
 
+def addNewEmp(request):
+    empNameq = request.GET.get('empName')
+    empNumber = request.GET.get('empNumber')
+    
+    newEmp = EmployesInfo(ceoName=empNameq,ceoName=)
+    dd = " working"
+    return render(request,"logsApp/addNewEmp.html",{'dd':dd})
+
+
+
+
 
 def fineC(request):
     if request.method == "POST":
@@ -205,5 +216,4 @@ def fineC(request):
             print(f"Car with number {fine_car_number} does not exist.")
         except Exception as e:
             print(f"An error occurred: {e}")
-            
     return render(request,"logsApp/finespage.html",)
