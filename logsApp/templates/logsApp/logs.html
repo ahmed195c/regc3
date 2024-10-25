@@ -13,37 +13,41 @@
 <div class="logs-btns">
   <div class="dbtn-cont">
     <button class="d-btn">
-      <a class="d-btn-a" href="{% url 'logsApp:export_to_excel'%}"
-        >تحميل السجل
+      <a class="d-btn-a" href="{% url 'logsApp:export_to_excel'%}">
+        تحميل السجل
       </a>
     </button>
   </div>
-  <!-- <div class="filters-cont">
-    <form action="{% url 'logsApp:logslink' %}">
-      {% csrf_token %}
-      filter by car number
-      <div class="filter-cont">
-        <label for="carNumbers">carNumbers</label>
-        <input
-          type="text"
-          id="carNumbers"
-          name="carNumper"
-          placeholder="1-46841:مثال "
-        />
-        <label for="ceoN">الرقم الداري</label>
-        <input type="text" name="ceoN" />
-      </div>
+  <div class="filtersMain">
+    <button id="filtersBtn">ShowFilters</button>
+    <div class="filtersDw">
+      <div class="filters-cont">
+        <form class="filtersForm" action="{% url 'logsApp:logslink' %}">
+          {% csrf_token %}
+          <div class="filter-cont">
+            <label for="carNumbers">رقم المركبه</label>
+            <input
+              type="text"
+              id="carNumbers"
+              name="carNumper"
+              placeholder="1-46841:مثال "
+            />
+            <label for="ceoN">الرقم الداري</label>
+            <input type="text" name="ceoN" />
+          </div>
 
-      <input type="submit" value="search" />
-    </form>
-    <div>
-      <form action="{% url 'logsApp:logslink' %}">
-        {% csrf_token %}
-        <input type="hidden" value="showall" id="showAll" name="showAll" />
-        <input type="submit" value="اظهار الكل" />
-      </form>
+          <input type="submit" value="search" />
+        </form>
+        <div>
+          <form action="{% url 'logsApp:logslink' %}">
+            {% csrf_token %}
+            <input type="hidden" value="showall" id="showAll" name="showAll" />
+            <input type="submit" value="اظهار الكل" />
+          </form>
+        </div>
+      </div>
     </div>
-  </div> -->
+  </div>
 </div>
 <div class="mainlog">
   <table border="1">

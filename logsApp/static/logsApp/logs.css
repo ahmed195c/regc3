@@ -74,8 +74,63 @@ tbody tr:hover td {
 }
 
 .logs-btns {
+  background-color: #b59958;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 30% 1fr;
+}
+
+.filtersDw {
+  width: 100%;
+}
+
+.filters-cont {
+  width: 40%;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9;
+  text-align: right;
+}
+
+.filter-cont {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filtersForm {
+  direction: rtl;
+}
+label {
+  font-weight: bold;
+  color: #4e6b31;
+}
+
+input[type="text"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #4e6b31;
+  outline: none;
+}
+
+input[type="submit"] {
+  border-radius: 8px;
+  border: none;
+  background-color: #4e6b31;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+input[type="submit"]:hover {
+  background-color: #3c5124;
 }

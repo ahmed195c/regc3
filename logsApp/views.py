@@ -1,4 +1,4 @@
-from django.shortcuts import render 
+from django.shortcuts import render
 from django.utils import timezone
 from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
 import re
@@ -7,7 +7,6 @@ from openpyxl.styles import Font, Alignment, PatternFill
 import pytz
 from datetime import datetime
 from django.db.models import Q
-dubai_tz = pytz.timezone('Asia/Dubai')
 from django.db import IntegrityError
 
 from django.http import HttpResponse
@@ -22,7 +21,7 @@ def removechars(c):
     for char in characters_to_remove:
         c = c.replace(char, "")
     
-    return c 
+    return c
 def index(request):
     return render(request, "logsApp/layout.html")
 
@@ -31,10 +30,23 @@ def registerCar(request):
     if request.method == "POST":
         ceoNInput = request.POST["ceoNumber"]
         carNInput = request.POST.get("carNumber")
+
+        try:
+            itsinuse = LogsC.objects.get(Logs_employee_ins__ceoNumber=ceoNInput,carIsInUse=True)
+            return render(request, "logsApp/registerCar.html",{"itsinuse":itsinuse,"l":allnUseCars})
+        except LogsC.DoesNotExist:
+            pass
+        
+        try:
+            carIsInUse = LogsC.objects.get(Logs_car_ins__carNumber=carNInput,carIsInUse=True)
+            return render(request, "logsApp/registerCar.html",{"carIsInUse":carIsInUse,"l":allnUseCars})        
+        except LogsC.DoesNotExist:
+            pass
+
         try:
             empExists = EmployesInfo.objects.get(ceoNumber=ceoNInput,EmpHaveCar=False)
         except EmployesInfo.DoesNotExist:
-            empDoseNotEXISTS = "الرقم الاداري غير صحصح او مستخدم"
+            empDoseNotEXISTS = " الرقم الاداري غير صحصح "
             return render(request, "logsApp/registerCar.html",{"empDoseNotEXISTS":empDoseNotEXISTS,"l":allnUseCars})
         try:
             carExists = RegistredCars.objects.get(carNumber=carNInput,carIsInparking=True)
@@ -61,7 +73,7 @@ def returnCar(request):
         empnote = request.POST.get("empnote")
         carCondq = request.POST.get("carCd")
         allInUseCars = InUseCars.objects.all().order_by('-id')
-
+        dubai_tz = pytz.timezone('Asia/Dubai')
         try:
            empinstance = EmployesInfo.objects.get(ceoNumber=ceonumberq)
         except EmployesInfo.DoesNotExist:
@@ -118,6 +130,7 @@ def logsfunc(request):
     return render(request, "logsApp/logs.html", {'alllogs': searchByCarNm})
 
 
+
 def export_to_excel(request):
     dubai_tz = pytz.timezone('Asia/Dubai')
     
@@ -126,10 +139,8 @@ def export_to_excel(request):
     export_data = []
     for log in data:
         created_at_dubai = log.created_at.astimezone(dubai_tz)
-        taken_date_dubai = log.taken_date
         taken_time_dubai = (log.taken_time.replace(tzinfo=dubai_tz) if log.taken_time else None)
         ended_at_dubai = log.ended_at.astimezone(dubai_tz) if log.ended_at else None
-        return_date_dubai = log.return_date
         return_time_dubai = (log.return_time.replace(tzinfo=dubai_tz) if log.return_time else None)
 
         export_data.append({
@@ -138,17 +149,19 @@ def export_to_excel(request):
             'الاسم': log.Logs_employee_ins.ceoName,
             'الرقم الاداري': log.Logs_employee_ins.ceoNumber,
             'تاريخ ووقت الاستلام': created_at_dubai.strftime('%Y-%m-%d %I:%M %p'),
-            'تاريخ الاستلام': taken_date_dubai,
+            'تاريخ الاستلام': log.taken_date,
             'وقت الاستلام': taken_time_dubai.strftime('%I:%M %p') if taken_time_dubai else None,
             'تاريخ و وقت التسليم': ended_at_dubai.strftime('%Y-%m-%d %I:%M %p') if ended_at_dubai else None,
-            'تاريخ التسليم': return_date_dubai,
+            'تاريخ التسليم': log.return_date,
             'وقت التسليم': return_time_dubai.strftime('%I:%M %p') if return_time_dubai else None,
             'ملاحظه على المركبه': log.carNote,
-            'قسم الموظف':log.Logs_employee_ins.section
+            'قسم الموظف': log.Logs_employee_ins.section
         })
 
+    
     df = pd.DataFrame(export_data)
 
+    
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="logs_data.xlsx"'
 
@@ -158,34 +171,42 @@ def export_to_excel(request):
         workbook = writer.book
         worksheet = writer.sheets['Logs Data']
 
+       
+        worksheet.sheet_view.rightToLeft = True
+
+       
         header_font = Font(size=16, bold=True, color='000000')
-        header_fill = PatternFill(start_color='B7E1A1', end_color='B7E1A1', fill_type='solid') 
+        header_fill = PatternFill(start_color='B7E1A1', end_color='B7E1A1', fill_type='solid')
         cell_font = Font(size=16)
         center_alignment = Alignment(horizontal='center')
 
+       
         for cell in worksheet[1]:
             cell.font = header_font
             cell.fill = header_fill
             cell.alignment = center_alignment
 
+       
         for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
             for cell in row:
                 cell.font = cell_font
                 cell.alignment = center_alignment
 
+       
         for column in worksheet.columns:
             max_length = 0
-            column_letter = column[0].column_letter  
+            column_letter = column[0].column_letter
             for cell in column:
                 try:
                     if len(str(cell.value)) > max_length:
-                        max_length = len(cell.value)
+                        max_length = len(str(cell.value))
                 except:
                     pass
             adjusted_width = (max_length + 4)
             worksheet.column_dimensions[column_letter].width = adjusted_width
 
     return response
+
 
 
 def addNewEmp(request):

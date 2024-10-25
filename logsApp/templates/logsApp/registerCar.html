@@ -1,7 +1,6 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 <div class="main">
   <h1>{{inUseErr}}</h1>
-
   <div class="forms-cont">
     <div class="regCont">
       <h2>لاستلام المركبه</h2>
@@ -28,6 +27,75 @@
                 fadeOutMessage("error-message");
               }, 7000);
             </script>
+            {% endif %}
+          </div>
+
+          <div class="msg-cont">
+            {% if itsinuse %}
+            <div id="empisInuse" class="error-msg-empinuse">
+              <div class="car-detailserr">
+                <div class="details">
+                  <div class="infoerr">
+                    <div>
+                      <p class="info-p">الرقم الاداري مسجل من قبل</p>
+                    </div>
+                    <p class="info-p">
+                      الاسم : {{itsinuse.Logs_employee_ins.ceoName}}
+                    </p>
+                    <p class="info-p">
+                      الرقم الاداري: {{itsinuse.Logs_employee_ins.ceoNumber}}
+                    </p>
+                    <p>{{itsinuse.Logs_employee_ins.section}}</p>
+                    <div class="car-plate">
+                      <p>رقم اللوحه</p>
+                      <p>{{itsinuse.Logs_car_ins.carNumber}}</p>
+                    </div>
+                    <p>تاريخ و وقت الاستلام</p>
+                    <p class="created-at">
+                      {{ itsinuse.created_at|date:"Y-m-d / h:i A" }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <script>
+              setTimeout(function () {
+                fadeOutMessage("empisInuse");
+              }, 10000);
+            </script>
+            {% elif carIsInUse %}
+            <div id="carisInuse" class="error-msg-empinuse">
+              <div class="car-detailserr">
+                <div class="details">
+                  <div class="infoerr">
+                    <div>
+                      <p class="info-p">المركبه مسجله من قبل</p>
+                    </div>
+                    <p class="info-p">
+                      الاسم : {{carIsInUse.Logs_employee_ins.ceoName}}
+                    </p>
+                    <p class="info-p">
+                      الرقم الاداري: {{carIsInUse.Logs_employee_ins.ceoNumber}}
+                    </p>
+                    <p>{{carIsInUse.Logs_employee_ins.section}}</p>
+                    <div class="car-plate">
+                      <p>رقم اللوحه</p>
+                      <p>{{carIsInUse.Logs_car_ins.carNumber}}</p>
+                    </div>
+                    <p>تاريخ و وقت الاستلام</p>
+                    <p class="created-at">
+                      {{ carIsInUse.created_at|date:"Y-m-d / h:i A" }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <script>
+              setTimeout(function () {
+                fadeOutMessage("carisInuse");
+              }, 10000);
+            </script>
+
             {% endif %}
           </div>
 
@@ -59,10 +127,6 @@
             </script>
             {% endif %}
           </div>
-
-          {% if inuse %}
-          <h3>{{inuse}}</h3>
-          {% endif %}
 
           <input class="submit-btn" type="submit" value="تسجيل المركبه" />
 
@@ -132,10 +196,6 @@
       </form>
     </div>
   </div>
-
-  {% if message %}
-  <h1>{{message}}</h1>
-  {% endif %}
 
   <div class="h1n"><h1>مركبات قيد الاستخدام</h1></div>
   <div class="inuseBorder">
