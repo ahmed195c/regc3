@@ -106,12 +106,16 @@ def returnCar(request):
 def logsfunc(request):
     carnF = request.GET.get('carNumper')
     ceoN = request.GET.get('ceoN')
+    dateF = request.GET.get('date')
     showAllq = request.GET.get('showAll')
 
     print(carnF)
     
     filters = {}
         
+    if dateF:
+        filters['taken_date'] = dateF
+
     if ceoN:
         filters['Logs_employee_ins__ceoNumber'] = ceoN.strip()
 

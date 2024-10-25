@@ -25,15 +25,23 @@
         <form class="filtersForm" action="{% url 'logsApp:logslink' %}">
           {% csrf_token %}
           <div class="filter-cont">
-            <label for="carNumbers">رقم المركبه</label>
-            <input
-              type="text"
-              id="carNumbers"
-              name="carNumper"
-              placeholder="1-46841:مثال "
-            />
-            <label for="ceoN">الرقم الداري</label>
-            <input type="text" name="ceoN" />
+            <div>
+              <label for="carNumbers">رقم المركبه</label>
+              <input
+                type="text"
+                id="carNumbers"
+                name="carNumper"
+                placeholder="1-46841:مثال "
+              />
+            </div>
+            <div>
+              <label for="ceoN">الرقم الداري</label>
+              <input type="text" name="ceoN" />
+            </div>
+            <div>
+              <label for="date">التاريخ</label>
+              <input type="date" id="date" name="date" />
+            </div>
           </div>
 
           <input type="submit" value="search" />

@@ -11,15 +11,15 @@ function fadeOutMessage(id) {
   }
 }
 
-let filtersElement = document.getElementsByClassName("filtersDw")[0]; // Select the first element with the class
-let filtersBtnel = document.getElementById("filtersBtn");
+// let filtersElement = document.getElementsByClassName("filtersDw")[0]; // Select the first element with the class
+// let filtersBtnel = document.getElementById("filtersBtn");
 
-filtersBtnel.addEventListener("click", showFilters); // Pass the function reference
+// filtersBtnel.addEventListener("click", showFilters); // Pass the function reference
 
-function showFilters() {
-  if (filtersElement.style.display === "block") {
-    filtersElement.style.display = "none"; // Hide if currently shown
-  } else {
-    filtersElement.style.display = "block"; // Show if currently hidden
-  }
-}
+// function showFilters() {
+//   if (filtersElement.style.display === "block") {
+//     filtersElement.style.display = "none"; // Hide if currently shown
+//   } else {
+//     filtersElement.style.display = "block"; // Show if currently hidden
+//   }
+// }
