@@ -51,7 +51,7 @@ def registerCar(request):
         try:
             carExists = RegistredCars.objects.get(carNumber=carNInput,carIsInparking=True)
         except RegistredCars.DoesNotExist:
-            carDNE = "رقم المركبة غير صحيح أو تم استخدامه"
+            carDNE = "رقم المركبة غير صحيح "
             return render(request, "logsApp/registerCar.html",{"carDNE":carDNE,"l":allnUseCars})
         
         InUseCars.objects.create(car=carExists, employee=empExists)

@@ -7,6 +7,7 @@
   border: 1px solid #ddd;
 }
 
+/* Table styles */
 table {
   width: 100%;
   margin: 0 auto;
@@ -41,57 +42,56 @@ tbody tr:nth-child(odd) td {
   background-color: white;
 }
 
+tbody tr:hover td {
+  background-color: #b59958;
+}
+
 .ceoNameS {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-tbody tr:hover td {
-  background-color: #b59958;
-}
-
+/* Button styles */
 .d-btn {
+  width: 100%;
+  padding: 15px;
   border-radius: 8px;
   border: none;
-  margin: 30px 0 30px 30px;
   background-color: #4e6b31;
   color: white;
-  width: 150px;
-  height: 50px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 10px;
 }
 
-.d-btn-a {
-  width: 60px;
-  height: 20px;
+input[type="submit"] {
+  width: 100%; /* Make buttons take full width */
+  padding: 15px; /* Add padding for left and right */
+  border-radius: 8px;
+  border: none;
+  background-color: #4e6b31;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px; /* Space between buttons */
 }
 
-.d-btn:hover {
+.d-btn:hover,
+input[type="submit"]:hover {
   background-color: #3c5124;
-}
-
-.logs-btns {
-  background-color: #b59958;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 30% 1fr;
-}
-
-.filtersDw {
-  width: 100%;
-  /* display: none; */
 }
 
 .filters-cont {
   width: 40%;
-  margin: 20px auto;
+  max-width: 800px;
+  margin: 40px auto;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #f9f9;
+  background-color: #f9f9f9;
   text-align: right;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .filter-cont {
@@ -100,19 +100,36 @@ tbody tr:hover td {
   gap: 10px;
 }
 
+.search-input-conts {
+  font-weight: bold;
+  width: 50%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.search-buttons {
+  font-size: large;
+  font-weight: bold;
+}
+
+/* Align form and labels */
 .filtersForm {
   direction: rtl;
 }
+
 label {
   font-weight: bold;
   color: #4e6b31;
 }
 
+/* Text input styling */
 input[type="text"] {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   transition: border-color 0.3s ease;
+  width: 100%; /* Make input fields span full width */
 }
 
 input[type="text"]:focus {
@@ -120,17 +137,14 @@ input[type="text"]:focus {
   outline: none;
 }
 
-input[type="submit"] {
-  border-radius: 8px;
-  border: none;
-  background-color: #4e6b31;
-  color: white;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 10px;
+/* Logs buttons section */
+.logs-btns {
+  background-color: #b59958;
+  display: grid;
+  grid-template-columns: 10% 90%;
+  grid-template-rows: 30% 1fr;
 }
 
-input[type="submit"]:hover {
-  background-color: #3c5124;
+.filtersDw {
+  width: 100%;
 }

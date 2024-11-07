@@ -13,30 +13,37 @@
 <div class="logs-btns">
   <div class="dbtn-cont">
     <button class="d-btn">
-      <a class="d-btn-a" href="{% url 'logsApp:export_to_excel'%}">
+      <a class="d-btn" href="{% url 'logsApp:export_to_excel'%}">
         تحميل السجل
       </a>
     </button>
   </div>
   <div class="filtersMain">
-    <button id="filtersBtn">ShowFilters</button>
+    <!-- <button id="filtersBtn">ShowFilters</button> -->
     <div class="filtersDw">
       <div class="filters-cont">
         <form class="filtersForm" action="{% url 'logsApp:logslink' %}">
           {% csrf_token %}
           <div class="filter-cont">
             <div>
-              <label for="carNumbers">رقم المركبه</label>
+              <h1>بحث عن طريق</h1>
+            </div>
+            <div class="search-input-conts">
+              <label for="carNumbers">رقــــــــم المركبه</label>
               <input
                 type="text"
                 id="carNumbers"
                 name="carNumper"
-                placeholder="1-46841:مثال "
+                placeholder="ادخل رقم المركبه هنا "
               />
             </div>
-            <div>
-              <label for="ceoN">الرقم الداري</label>
-              <input type="text" name="ceoN" />
+            <div class="search-input-conts">
+              <label for="ceoN">الــــــرقم الاداري</label>
+              <input
+                type="text"
+                name="ceoN"
+                placeholder="ادخل الرقم الاداري هنا"
+              />
             </div>
             <div>
               <label for="date">التاريخ</label>
@@ -44,13 +51,17 @@
             </div>
           </div>
 
-          <input type="submit" value="search" />
+          <input class="search-buttons" type="submit" value="بحث" />
         </form>
         <div>
           <form action="{% url 'logsApp:logslink' %}">
             {% csrf_token %}
             <input type="hidden" value="showall" id="showAll" name="showAll" />
-            <input type="submit" value="اظهار الكل" />
+            <input
+              class="search-buttons"
+              type="submit"
+              value="اظهار كامل السجل "
+            />
           </form>
         </div>
       </div>
