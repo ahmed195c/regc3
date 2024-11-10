@@ -104,34 +104,36 @@ def returnCar(request):
 
 
 def logsfunc(request):
-    carnF = request.GET.get('carNumper')
-    ceoN = request.GET.get('ceoN')
-    dateF = request.GET.get('date')
-    showAllq = request.GET.get('showAll')
 
-    print(carnF)
-    
-    filters = {}
+    if request.method == "POST":    
+        carnF = request.POST.get('carNumper')
+        ceoN = request.POST.get('ceoN')
+        dateF = request.POST.get('date')
+        showAllq = request.POST.get('showAll')
         
-    if dateF:
-        filters['taken_date'] = dateF
+        filters = {}
+            
+        if dateF:
+            filters['taken_date'] = dateF
 
-    if ceoN:
-        filters['Logs_employee_ins__ceoNumber'] = ceoN.strip()
+        if ceoN:
+            filters['Logs_employee_ins__ceoNumber'] = ceoN.strip()
 
-    if carnF:
-        filters['Logs_car_ins__carNumber'] = carnF.strip()
+        if carnF:
+            filters['Logs_car_ins__carNumber'] = carnF.strip()
 
-    searchByCarNm = LogsC.objects.filter(**filters).order_by('-id')
+        searchByCarNm = LogsC.objects.filter(**filters).order_by('-id')
+        
+        if searchByCarNm:
+            return render(request,"logsApp/logs.html",{'alllogs':searchByCarNm})
+        
+        if showAllq:
+            alllogsq = LogsC.objects.all().order_by('-id')
+            return render(request,"logsApp/logs.html",{'alllogs':alllogsq})
     
-    if showAllq:
-        alllogsq = LogsC.objects.all().order_by('-id')
-        return render(request,"logsApp/logs.html",{'alllogs':alllogsq})
     current_date = datetime.now().date()
-    print(current_date)
-    alllogs = LogsC.objects.filter(Q(taken_date=current_date) | Q(taken_date__isnull=True)).order_by('-id')
-    logs = LogsC.objects.all()
-    return render(request, "logsApp/logs.html", {'alllogs': searchByCarNm})
+    todayLogs = LogsC.objects.filter(Q(taken_date=current_date) | Q(taken_date__isnull=True)).order_by('-id')
+    return render(request, "logsApp/logs.html", {'alllogs': todayLogs})
 
 
 
@@ -161,11 +163,9 @@ def export_to_excel(request):
             'ملاحظه على المركبه': log.carNote,
             'قسم الموظف': log.Logs_employee_ins.section
         })
-
     
     df = pd.DataFrame(export_data)
 
-    
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="logs_data.xlsx"'
 
@@ -174,28 +174,23 @@ def export_to_excel(request):
 
         workbook = writer.book
         worksheet = writer.sheets['Logs Data']
-
        
         worksheet.sheet_view.rightToLeft = True
-
        
         header_font = Font(size=16, bold=True, color='000000')
         header_fill = PatternFill(start_color='B7E1A1', end_color='B7E1A1', fill_type='solid')
         cell_font = Font(size=16)
         center_alignment = Alignment(horizontal='center')
 
-       
         for cell in worksheet[1]:
             cell.font = header_font
             cell.fill = header_fill
             cell.alignment = center_alignment
-
        
         for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
             for cell in row:
                 cell.font = cell_font
                 cell.alignment = center_alignment
-
        
         for column in worksheet.columns:
             max_length = 0
