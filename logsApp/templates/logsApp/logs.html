@@ -22,7 +22,11 @@
     <!-- <button id="filtersBtn">ShowFilters</button> -->
     <div class="filtersDw">
       <div class="filters-cont">
-        <form class="filtersForm" action="{% url 'logsApp:logslink' %}">
+        <form
+          class="filtersForm"
+          action="{% url 'logsApp:logslink' %}"
+          method="post"
+        >
           {% csrf_token %}
           <div class="filter-cont">
             <div>
@@ -54,7 +58,7 @@
           <input class="search-buttons" type="submit" value="بحث" />
         </form>
         <div>
-          <form action="{% url 'logsApp:logslink' %}">
+          <form action="{% url 'logsApp:logslink' %}" method="post">
             {% csrf_token %}
             <input type="hidden" value="showall" id="showAll" name="showAll" />
             <input
@@ -102,9 +106,9 @@
         {% else %}
         <td></td>
         {% endif %} {% if k.carNote %}
-        <td>{{k.carNote}}</td>
+        <td class="logs_not_cell">{{k.carNote}}</td>
         {% else %}
-        <td></td>
+        <td class="logs_not_cell"></td>
         {% endif %}
       </tr>
       {% endfor %}
