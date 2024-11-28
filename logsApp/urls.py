@@ -14,6 +14,5 @@ urlpatterns = [
     path("finec/",views.fineC,name='finec'),
     path('export/excel/', views.export_to_excel, name='export_to_excel'),
     path('addNewEmp/',views.addNewEmp, name="addNewEmp"),
+    path("finesAccidents/", views.finesAccidents, name="finesAccidents")
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

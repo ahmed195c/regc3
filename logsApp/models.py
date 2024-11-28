@@ -11,7 +11,7 @@ class RegistredCars(models.Model):
     vType = models.TextField(max_length=100,null=True)
     carIsInparking = models.BooleanField(default=True)
     def __str__(self):
-        return str(f" car number: {self.carNumber}")    
+        return str(f" رقم المركبه: {self.carNumber}")    
 
 
 class EmployesInfo(models.Model):
@@ -37,7 +37,7 @@ class InUseCars(models.Model):
 
 
 class LogsC(models.Model):
-    Logs_car_ins = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
+    Logs_car_ins = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, )
     Logs_employee_ins = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     taken_date = models.DateField(auto_now_add=True,null=True)
@@ -50,5 +50,5 @@ class LogsC(models.Model):
     def __str__(self):
         return str(f" name: {self.Logs_car_ins.carNumber}  ceo nam: {self.Logs_employee_ins.ceoName} carIsINuSE: {self.carIsInUse}")
     
-class imgtest(models.Model):
-    img = models.ImageField(null=True, blank=True);
+class FinesAccidents(models.Model):
+    image = models.ImageField(null=True, blank=True, upload_to="images/")

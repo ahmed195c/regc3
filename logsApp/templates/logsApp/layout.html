@@ -8,6 +8,7 @@
     <link href="{% static 'logsApp/reg.css'%}" rel="stylesheet" />
     <link href="{% static 'logsApp/logs.css'%}" rel="stylesheet" />
     <link href="{% static 'logsApp/finesstyle.css'%}" rel="stylesheet" />
+    <link href="{% static 'logsApp/fiAc.css'%}" rel="stylesheet" />
     <script src="{% static 'logsApp/js/script.js' %}" defer></script>
     
     <title>Document</title>
@@ -25,9 +26,9 @@
                اضافة موظف جديد
               </button>
               </li> -->
-            <!-- <li>
+            <li>
               <button class="nav-link-btn" onclick="window.location='{% url 'logsApp:finec' %}'">حصر المخالفات</button>
-            </li> -->
+            </li> 
             <li>
               <button class="nav-link-btn" onclick="window.location='{% url 'logsApp:logslink' %}'">
                 سجل الاستلام والتسليم
@@ -37,7 +38,12 @@
               <button class="nav-link-btn "   onclick="window.location='{% url 'logsApp:add' %}'">
                استلام و ارجاع المركبه
               </button>
-              </li>
+            </li>
+            <li>
+              <button class="nav-link-btn" onclick="window.location='{% url 'logsApp:finesAccidents' %}'">
+               سجل المخالفات و الحوادث
+              </button>
+            </li>
 
           </ul>
         </div>

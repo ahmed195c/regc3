@@ -136,6 +136,9 @@ def logsfunc(request):
     return render(request, "logsApp/logs.html", {'alllogs': todayLogs})
 
 
+def finesAccidents(request):
+    return render(request, "logsApp/finesaccidents.html")
+
 
 def export_to_excel(request):
     dubai_tz = pytz.timezone('Asia/Dubai')
