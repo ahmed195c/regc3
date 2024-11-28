@@ -1,0 +1,16 @@
+{% extends "logsApp/layout.html" %} {% block body %} {% load static %}
+<div>
+  <form action="">
+    <input type="text" />
+    <label class="img" for="files"
+      >اضافة صورة
+      <img
+        class="addImgPhoto"
+        src="{% static 'logsApp\imgs\add.png' %}"
+        alt=""
+      />
+    </label>
+    <input type="file" class="fileInputField" name="files" id="files" />
+  </form>
+</div>
+{% endblock %}

@@ -1,5 +1,3 @@
-console.log("working");
-
 function fadeOutMessage(id) {
   var message = document.getElementById(id);
   if (message) {

@@ -1,0 +1,15 @@
+.img {
+  background: rgb(167, 141, 141);
+  max-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.addImgPhoto {
+  width: 30px;
+}
+
+.fileInputField {
+  display: none;
+}
