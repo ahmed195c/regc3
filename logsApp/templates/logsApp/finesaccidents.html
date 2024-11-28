@@ -1,7 +1,8 @@
 {% extends "logsApp/layout.html" %} {% block body %} {% load static %}
 <div>
-  <form action="">
-    <input type="text" />
+  <form action="{% url 'logsApp:finesAccidents'%}" method="POST">
+    {% csrf_token %}
+    <input type="text" name="textq" />
     <label class="img" for="files"
       >اضافة صورة
       <img
@@ -11,6 +12,7 @@
       />
     </label>
     <input type="file" class="fileInputField" name="files" id="files" />
+    <input type="submit" value="add" />
   </form>
 </div>
 {% endblock %}

@@ -51,4 +51,5 @@ class LogsC(models.Model):
         return str(f" name: {self.Logs_car_ins.carNumber}  ceo nam: {self.Logs_employee_ins.ceoName} carIsINuSE: {self.carIsInUse}")
     
 class FinesAccidents(models.Model):
+    text = models.TextField(null=True, blank=True, max_length=20)
     image = models.ImageField(null=True, blank=True, upload_to="images/")

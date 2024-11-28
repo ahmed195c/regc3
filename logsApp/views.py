@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.utils import timezone
-from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC
+from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC,FinesAccidents
 import re
 from django.http import HttpResponse
 from openpyxl.styles import Font, Alignment, PatternFill
@@ -137,6 +137,13 @@ def logsfunc(request):
 
 
 def finesAccidents(request):
+    if request.method == "POST":
+        acer = request.POST.get("textq")
+        FinesAccidents.objects.create(text=acer)
+        card1 = FinesAccidents.objects.get()
+        return render(request, "logsApp/finesaccidents.html")
+
+
     return render(request, "logsApp/finesaccidents.html")
 
 
