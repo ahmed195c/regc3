@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import RegistredCars,EmployesInfo,InUseCars,LogsC
+from .models import RegistredCars,EmployesInfo,InUseCars,LogsC,imgtest
 models_list = [LogsC,RegistredCars,EmployesInfo,InUseCars]
 
 
@@ -19,3 +19,4 @@ admin.site.register(LogsC, LogsCAdmin)
 admin.site.register(RegistredCars, RegCarsAdmin)
 admin.site.register(EmployesInfo)
 admin.site.register(InUseCars)
+admin.site.register(imgtest)

@@ -2,6 +2,9 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 app_name = "logsApp"
 urlpatterns = [
     path('', views.index, name='index'),
@@ -12,3 +15,5 @@ urlpatterns = [
     path('export/excel/', views.export_to_excel, name='export_to_excel'),
     path('addNewEmp/',views.addNewEmp, name="addNewEmp"),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

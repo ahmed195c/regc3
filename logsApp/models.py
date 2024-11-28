@@ -49,3 +49,6 @@ class LogsC(models.Model):
     carNote = models.CharField(default=None,null=True, max_length=200,blank=True)
     def __str__(self):
         return str(f" name: {self.Logs_car_ins.carNumber}  ceo nam: {self.Logs_employee_ins.ceoName} carIsINuSE: {self.carIsInUse}")
+    
+class imgtest(models.Model):
+    img = models.ImageField(null=True, blank=True);
