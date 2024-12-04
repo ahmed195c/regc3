@@ -1,18 +1,17 @@
-from django.shortcuts import render
-from django.utils import timezone
-from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC,FinesAccidents
+import pandas as pd
 import re
+from django.shortcuts import render,redirect
+from django.utils import timezone
+from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC,FinesAccidents,FinesAccidentsImage
 from django.http import HttpResponse
 from openpyxl.styles import Font, Alignment, PatternFill
-import pytz
 from datetime import datetime
 from django.db.models import Q
 from django.db import IntegrityError
+from .forms import UserProfileForm
+import pytz
 
-from django.http import HttpResponse
-import pandas as pd
 def remove_non_numeric(s):
-    
     return re.sub(r'\D', '', s)
 
 def removechars(c):
@@ -25,127 +24,156 @@ def removechars(c):
 def index(request):
     return render(request, "logsApp/layout.html")
 
+from django.shortcuts import render
+from .models import InUseCars, EmployesInfo, LogsC, RegistredCars
+
 def registerCar(request):
-    allnUseCars = InUseCars.objects.all().order_by('-id')
-    if request.method == "POST":
-        ceoNInput = request.POST["ceoNumber"]
-        carNInput = request.POST.get("carNumber")
-
-        try:
-            itsinuse = LogsC.objects.get(Logs_employee_ins__ceoNumber=ceoNInput,carIsInUse=True)
-            return render(request, "logsApp/registerCar.html",{"itsinuse":itsinuse,"l":allnUseCars})
-        except LogsC.DoesNotExist:
-            pass
-        
-        try:
-            carIsInUse = LogsC.objects.get(Logs_car_ins__carNumber=carNInput,carIsInUse=True)
-            return render(request, "logsApp/registerCar.html",{"carIsInUse":carIsInUse,"l":allnUseCars})        
-        except LogsC.DoesNotExist:
-            pass
-
-        try:
-            empExists = EmployesInfo.objects.get(ceoNumber=ceoNInput,EmpHaveCar=False)
-        except EmployesInfo.DoesNotExist:
-            empDoseNotEXISTS = " الرقم الاداري غير صحصح "
-            return render(request, "logsApp/registerCar.html",{"empDoseNotEXISTS":empDoseNotEXISTS,"l":allnUseCars})
-        try:
-            carExists = RegistredCars.objects.get(carNumber=carNInput,carIsInparking=True)
-        except RegistredCars.DoesNotExist:
-            carDNE = "رقم المركبة غير صحيح "
-            return render(request, "logsApp/registerCar.html",{"carDNE":carDNE,"l":allnUseCars})
-        
-        InUseCars.objects.create(car=carExists, employee=empExists)
-        LogsC.objects.create(Logs_employee_ins=empExists, Logs_car_ins=carExists)
-
-        empExists.EmpHaveCar = True
-        empExists.save()
-        carExists.carIsInparking = False
-        carExists.save()
-        sucssuMessge = "تم التسجيل بنجاح"
-        return render(request, "logsApp/registerCar.html",{"sucssuMessge":sucssuMessge,"l":allnUseCars})
+    all_in_use_cars = InUseCars.objects.all().order_by('-id')
     
-    return render(request, "logsApp/registerCar.html",{"l":allnUseCars})
+    if request.method == "POST":
+        ceo_number = request.POST.get("ceoNumber").strip()
+        car_number = request.POST.get("carNumber").strip()
 
+        try:
+            its_in_use = LogsC.objects.get(Logs_employee_ins__ceoNumber=ceo_number, carIsInUse=True)
+            return render(request, "logsApp/registerCar.html", {"itsinuse": its_in_use, "l": all_in_use_cars})
+        except LogsC.DoesNotExist:
+            pass
+
+        try:
+            car_is_in_use = LogsC.objects.get(Logs_car_ins__carNumber=car_number, carIsInUse=True)
+            return render(request, "logsApp/registerCar.html", {"carIsInUse": car_is_in_use, "l": all_in_use_cars})
+        except LogsC.DoesNotExist:
+            pass
+
+        try:
+            emp_exists = EmployesInfo.objects.get(ceoNumber=ceo_number, EmpHaveCar=False)
+        except EmployesInfo.DoesNotExist:
+            emp_does_not_exist = "الرقم الاداري غير صحيح"
+            return render(request, "logsApp/registerCar.html", {"empDoseNotEXISTS": emp_does_not_exist, "l": all_in_use_cars})
+
+        try:
+            car_exists = RegistredCars.objects.get(carNumber=car_number, carIsInparking=True)
+        except RegistredCars.DoesNotExist:
+            car_dne = "رقم المركبة غير صحيح"
+            return render(request, "logsApp/registerCar.html", {"carDNE": car_dne, "l": all_in_use_cars})
+
+        InUseCars.objects.create(car=car_exists, employee=emp_exists)
+        LogsC.objects.create(Logs_employee_ins=emp_exists, Logs_car_ins=car_exists)
+
+        emp_exists.EmpHaveCar = True
+        emp_exists.save()
+        car_exists.carIsInparking = False
+        car_exists.save()
+
+        success_message = "تم التسجيل بنجاح"
+        return render(request, "logsApp/registerCar.html", {"sucssuMessge": success_message, "l": all_in_use_cars})
+
+    return render(request, "logsApp/registerCar.html", {"l": all_in_use_cars})
+
+
+from django.shortcuts import render
+from django.utils import timezone
+from .models import InUseCars, EmployesInfo, LogsC, RegistredCars
+import pytz
 
 def returnCar(request):
     if request.method == "POST":
-        ceonumberq = remove_non_numeric(request.POST.get("ceonumber")).strip()
-        empnote = request.POST.get("empnote")
-        carCondq = request.POST.get("carCd")
-        allInUseCars = InUseCars.objects.all().order_by('-id')
+        ceo_number = remove_non_numeric(request.POST.get("ceonumber")).strip()
+        emp_note = request.POST.get("empnote")
+        all_in_use_cars = InUseCars.objects.all().order_by('-id')
         dubai_tz = pytz.timezone('Asia/Dubai')
+
         try:
-           empinstance = EmployesInfo.objects.get(ceoNumber=ceonumberq)
+            emp_instance = EmployesInfo.objects.get(ceoNumber=ceo_number)
         except EmployesInfo.DoesNotExist:
-             retErrm = " الرقم الاداري غير صحيح "
-             return render(request,"logsApp/registerCar.html", {"retErrm":retErrm,"l":allInUseCars})
+            ret_err_msg = "الرقم الاداري غير صحيح"
+            return render(request, "logsApp/registerCar.html", {"retErrm": ret_err_msg, "l": all_in_use_cars})
+
         try:
-          inusecatinstance = InUseCars.objects.get(employee=empinstance)
+            in_use_car_instance = InUseCars.objects.get(employee=emp_instance)
         except InUseCars.DoesNotExist:
-            retCarErr = "لاتوجد مركبه مرتبطه بل رقم الاداري "
-            return render(request,"logsApp/registerCar.html", {"retCarErr":retCarErr,"l":allInUseCars})
-        retSucssM = "تم اعاده المركبه بنجاح "
-        registerCarinst = RegistredCars.objects.get(carNumber=inusecatinstance.car.carNumber)
-        inusecarinstance = LogsC.objects.get(Logs_employee_ins=empinstance,carIsInUse=True)
-        inusecarinstance.ended_at = timezone.now().astimezone(dubai_tz)
-        inusecarinstance.return_date = timezone.now().astimezone(dubai_tz).date()
-        inusecarinstance.return_time = timezone.now().astimezone(dubai_tz).time()
-        inusecarinstance.carCondition = carCondq
-        inusecarinstance.carIsInUse = False
-        inusecarinstance.carNote = empnote
-        registerCarinst.carIsInparking = True
-        empinstance.EmpHaveCar = False
-        empinstance.save()
-        inusecarinstance.save()
-        registerCarinst.save()
-        inusecatinstance.delete()
-        return render(request, "logsApp/registerCar.html",{"retSucssM":retSucssM,"l":allInUseCars})
+            ret_car_err = "لاتوجد مركبه مرتبطه بل رقم الاداري"
+            return render(request, "logsApp/registerCar.html", {"retCarErr": ret_car_err, "l": all_in_use_cars})
+
+        ret_success_msg = "تم اعاده المركبه بنجاح"
+        registered_car_instance = RegistredCars.objects.get(carNumber=in_use_car_instance.car.carNumber)
+        log_instance = LogsC.objects.get(Logs_employee_ins=emp_instance, carIsInUse=True)
+
+        current_time = timezone.now().astimezone(dubai_tz)
+        log_instance.ended_at = current_time
+        log_instance.return_date = current_time.date()
+        log_instance.return_time = current_time.time()
+        log_instance.carIsInUse = False
+        log_instance.carNote = emp_note
+
+        registered_car_instance.carIsInparking = True
+        emp_instance.EmpHaveCar = False
+
+        emp_instance.save()
+        log_instance.save()
+        registered_car_instance.save()
+        in_use_car_instance.delete()
+
+        return render(request, "logsApp/registerCar.html", {"retSucssM": ret_success_msg, "l": all_in_use_cars})
+
+    return render(request, "logsApp/registerCar.html", {"l": InUseCars.objects.all().order_by('-id')})
 
 
 
 def logsfunc(request):
+    if request.method == "POST":
+        car_number = request.POST.get('carNumper')
+        ceo_number = request.POST.get('ceoN')
+        date_filter = request.POST.get('date')
+        show_all = request.POST.get('showAll')
 
-    if request.method == "POST":    
-        carnF = request.POST.get('carNumper')
-        ceoN = request.POST.get('ceoN')
-        dateF = request.POST.get('date')
-        showAllq = request.POST.get('showAll')
-        
-        filters = {}
-            
-        if dateF:
-            filters['taken_date'] = dateF
+        filters = Q()
 
-        if ceoN:
-            filters['Logs_employee_ins__ceoNumber'] = ceoN.strip()
+        if date_filter:
+            filters &= Q(taken_date=date_filter)
 
-        if carnF:
-            filters['Logs_car_ins__carNumber'] = carnF.strip()
+        if ceo_number:
+            filters &= Q(Logs_employee_ins__ceoNumber=ceo_number.strip())
 
-        searchByCarNm = LogsC.objects.filter(**filters).order_by('-id')
-        
-        if searchByCarNm:
-            return render(request,"logsApp/logs.html",{'alllogs':searchByCarNm})
-        
-        if showAllq:
-            alllogsq = LogsC.objects.all().order_by('-id')
-            return render(request,"logsApp/logs.html",{'alllogs':alllogsq})
+        if car_number:
+            filters &= Q(Logs_car_ins__carNumber=car_number.strip())
+
+        if show_all:
+            logs = LogsC.objects.all().order_by('-id')
+        else:
+            logs = LogsC.objects.filter(filters).order_by('-id')
+
+        return render(request, "logsApp/logs.html", {'alllogs': logs})
+
     
     current_date = datetime.now().date()
-    todayLogs = LogsC.objects.filter(Q(taken_date=current_date) | Q(taken_date__isnull=True)).order_by('-id')
-    return render(request, "logsApp/logs.html", {'alllogs': todayLogs})
+    today_logs = LogsC.objects.filter(Q(taken_date=current_date) | Q(taken_date__isnull=True)).order_by('-id')
+    return render(request, "logsApp/logs.html", {'alllogs': today_logs})
 
+
+
+from django.shortcuts import render, redirect
+from .forms import UserProfileForm
+from .models import FinesAccidents, FinesAccidentsImage
+
+from .models import FinesAccidents
 
 def finesAccidents(request):
+    card1 = FinesAccidents.objects.all()
+    
     if request.method == "POST":
-        acer = request.POST.get("textq")
-        FinesAccidents.objects.create(text=acer)
-        card1 = FinesAccidents.objects.get()
-        return render(request, "logsApp/finesaccidents.html")
-
-
-    return render(request, "logsApp/finesaccidents.html")
-
+        profile_form = UserProfileForm(request.POST, request.FILES)
+        if profile_form.is_valid():
+            profile_form.save()
+            return redirect('logsApp:finesAccidents')
+    else:
+        profile_form = UserProfileForm()
+    
+    return render(request, "logsApp/finesaccidents.html", {
+        "card1": card1,
+        "profile_form": profile_form
+    })
 
 def export_to_excel(request):
     dubai_tz = pytz.timezone('Asia/Dubai')

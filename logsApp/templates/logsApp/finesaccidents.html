@@ -1,18 +1,37 @@
 {% extends "logsApp/layout.html" %} {% block body %} {% load static %}
 <div>
-  <form action="{% url 'logsApp:finesAccidents'%}" method="POST">
-    {% csrf_token %}
-    <input type="text" name="textq" />
-    <label class="img" for="files"
-      >اضافة صورة
-      <img
-        class="addImgPhoto"
-        src="{% static 'logsApp\imgs\add.png' %}"
-        alt=""
-      />
-    </label>
-    <input type="file" class="fileInputField" name="files" id="files" />
-    <input type="submit" value="add" />
+  {% comment %}
+  <div>
+    <form
+      action="{% url 'logsApp:finesAccidents'%}"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+      <input type="text" name="textq" />
+      <label class="img" for="files"
+        >اضافة صورة
+        <img
+          class="addImgPhoto"
+          src="{% static 'logsApp\imgs\add.png' %}"
+          alt=""
+        />
+      </label>
+      <input type="file" class="fileInputField" name="files" id="files" />
+      <input type="submit" value="add" />
+    </form>
+  </div>
+  {% endcomment %}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %} {{ profile_form.as_p }}
+    <button type="submit">Submit</button>
   </form>
+
+  <div>
+    {% for card in card1 %}
+      {{ card.text }}
+      <img src="{{ card.image.url }}" />
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}

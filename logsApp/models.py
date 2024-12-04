@@ -37,19 +37,27 @@ class InUseCars(models.Model):
 
 
 class LogsC(models.Model):
-    Logs_car_ins = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, )
+    Logs_car_ins = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
     Logs_employee_ins = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    taken_date = models.DateField(auto_now_add=True,null=True)
-    taken_time = models.TimeField(auto_now_add=True,null=True)
+    taken_date = models.DateField(auto_now_add=True, null=True)
+    taken_time = models.TimeField(auto_now_add=True, null=True)
     ended_at = models.DateTimeField(null=True, blank=True)
     return_date = models.DateField(null=True, blank=True)
     return_time = models.TimeField(null=True, blank=True)
-    carIsInUse =  models.BooleanField(default=True)
-    carNote = models.CharField(default=None,null=True, max_length=200,blank=True)
+    carIsInUse = models.BooleanField(default=True)
+    carNote = models.CharField(default=None, null=True, max_length=200, blank=True)
+
     def __str__(self):
         return str(f" name: {self.Logs_car_ins.carNumber}  ceo nam: {self.Logs_employee_ins.ceoName} carIsINuSE: {self.carIsInUse}")
-    
+
+
 class FinesAccidents(models.Model):
     text = models.TextField(null=True, blank=True, max_length=20)
     image = models.ImageField(null=True, blank=True, upload_to="images/")
+
+
+class FinesAccidentsImage(models.Model):
+    fines_accident = models.ForeignKey(FinesAccidents, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="images/")
+
