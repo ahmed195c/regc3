@@ -2,7 +2,7 @@ import pandas as pd
 import re
 from django.shortcuts import render,redirect
 from django.utils import timezone
-from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC,FinesAccidents,FinesAccidentsImage
+from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC,FinesAccidents
 from django.http import HttpResponse
 from openpyxl.styles import Font, Alignment, PatternFill
 from datetime import datetime
@@ -153,11 +153,7 @@ def logsfunc(request):
 
 
 
-from django.shortcuts import render, redirect
-from .forms import UserProfileForm
-from .models import FinesAccidents, FinesAccidentsImage
 
-from .models import FinesAccidents
 
 def finesAccidents(request):
     card1 = FinesAccidents.objects.all()

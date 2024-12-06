@@ -53,11 +53,9 @@ class LogsC(models.Model):
 
 
 class FinesAccidents(models.Model):
+    car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, null=True)
+    employee = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE, null=True)
     text = models.TextField(null=True, blank=True, max_length=20)
     image = models.ImageField(null=True, blank=True, upload_to="images/")
 
-
-class FinesAccidentsImage(models.Model):
-    fines_accident = models.ForeignKey(FinesAccidents, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="images/")
 
