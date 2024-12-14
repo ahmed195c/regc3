@@ -164,6 +164,7 @@
 }
 
 .msg-cont {
+  position: fixed;
   position: absolute;
   height: auto;
   top: 35%;
