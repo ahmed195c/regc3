@@ -1,12 +1,44 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 <div class="main">
   <h1>{{inUseErr}}</h1>
+
+  <div class="inuseBorder">
+    <div class="inUsCont">
+      {% if l %}
+      <div class="h1n"><h1>مركبات قيد الاستخدام</h1></div>
+      {% for n in l %}
+      <div class="car-details">
+        <div class="details">
+          <div class="info">
+            <p class="info-p">اسم المستخدم: {{n.employee.ceoName}}</p>
+            <p class="info-p">الرقم الاداري: {{n.employee.ceoNumber}}</p>
+            <p>{{n.employee.section}}</p>
+            <div class="car-plate">
+              <p>{{n.car.carNumber}}</p>
+              <p>رقم اللوحه</p>
+            </div>
+            <p>تاريخ و وقت الاستلام</p>
+            <p class="created-at">{{ n.created_at|date:"Y-m-d / h:i A" }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %} {% else %}
+      <div><h1>لاتوجد مركبات قيد الاستخدام</h1></div>
+      {% endif %}
+    </div>
+  </div>
+
   <div class="forms-cont">
     <div class="regCont">
-      <h2>لاستلام المركبه</h2>
-      <form action="{% url 'logsApp:add' %}" dir="rtl" method="post">
+      <form
+        action="{% url 'logsApp:add' %}"
+        dir="rtl"
+        method="post"
+        class="full-width-form"
+      >
         {% csrf_token %}
-        <div class="input-cont">
+        <div class="input-cont full-size">
+          <div class="full-size"><h2>لاستلام المركبه</h2></div>
           <label class="labels" for="ceoNumber">الرقم الاداري</label>
           <input
             class="inpute"
@@ -106,7 +138,7 @@
           {% endif %}
         </div>
 
-        <div class="input-cont">
+        <div class="input-cont full-size">
           <label class="labels" for="carNumber">رقم السياره</label>
           <input
             class="inpute"
@@ -147,10 +179,17 @@
     </div>
 
     <div class="regCont">
-      <h2>لإعادة المركبه</h2>
-      <form action="{% url 'logsApp:ret' %}" dir="rtl" method="post">
+      <form
+        action="{% url 'logsApp:ret' %}"
+        dir="rtl"
+        method="post"
+        class="full-width-form"
+      >
         {% csrf_token %}
-        <div class="input-cont">
+        <div class="input-cont full-size">
+          <div class="full-size">
+            <h2>لإعادة المركبه</h2>
+          </div>
           <label class="labels" for="ceonumber"> الرقم الاداري </label>
           <input class="inpute" type="number" name="ceonumber" id="ceonumber" />
           <div class="msg-cont">
@@ -165,7 +204,7 @@
           </div>
         </div>
 
-        <div class="input-cont">
+        <div class="input-cont full-size">
           <label class="labels" for="note">ملاحظه على السياره</label>
           <input class="inpute" type="text" id="note" name="empnote" />
 
@@ -194,31 +233,6 @@
           </div>
         </div>
       </form>
-    </div>
-  </div>
-
-  <div class="h1n"><h1>مركبات قيد الاستخدام</h1></div>
-  <div class="inuseBorder">
-    <div class="inUsCont">
-      {% if l %} {% for n in l %}
-      <div class="car-details">
-        <div class="details">
-          <div class="info">
-            <p class="info-p">اسم المستخدم: {{n.employee.ceoName}}</p>
-            <p class="info-p">الرقم الاداري: {{n.employee.ceoNumber}}</p>
-            <p>{{n.employee.section}}</p>
-            <div class="car-plate">
-              <p>{{n.car.carNumber}}</p>
-              <p>رقم اللوحه</p>
-            </div>
-            <p>تاريخ و وقت الاستلام</p>
-            <p class="created-at">{{ n.created_at|date:"Y-m-d / h:i A" }}</p>
-          </div>
-        </div>
-      </div>
-      {% endfor %} {% else %}
-      <h1>لاتوجد مركبات قيد الاستخدام</h1>
-      {% endif %}
     </div>
   </div>
 </div>

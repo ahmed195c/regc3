@@ -1,6 +1,82 @@
-{% extends "logsApp/layout.html" %} 
-{% block body %} 
-{% load static %}
+{% extends "logsApp/layout.html" %} {% block body %} {% load static %}
 
+<link rel="stylesheet" type="text/css" href="{% static 'logsApp/fiAc.css' %}" />
+
+<form method="POST" enctype="multipart/form-data" style="direction: rtl;">
+  {% csrf_token %}
+  <label for="carNumber">رقم المركبة</label>
+  <input type="text" id="carNumber" name="carNumber" required /><br />
+
+  <label for="empNumber">رقم الموظف</label>
+  <input type="text" id="empNumber" name="empNumber" /><br />
+
+  <label for="text">وصف الحادث</label>
+  <textarea id="text" name="text"></textarea><br />
+
+  <label for="reportPdfFile">تحميل تقرير (PDF)</label>
+  <input
+    type="file"
+    id="reportPdfFile"
+    name="reportPdfFile"
+    accept="application/pdf"
+  /><br />
+
+  <label for="images">تحميل الصور</label>
+  <input
+    type="file"
+    id="images"
+    name="images"
+    accept="image/*"
+    multiple
+  /><br />
+
+  <button type="submit">إرسال</button>
+</form>
+
+<div class="cards-container" style="direction: rtl;">
+  {% for fine in fines %}
+  <div class="card">
+    <div class="card-element">
+      <div class="flex-carnumber">
+        <div><h3>رقم المركبه</h3></div>
+        <h3>{{ fine.car.carNumber }}</h3>
+      </div>
+    </div>
+    <div class="card-element">
+      <p>وصف الحادث: {{ fine.text }}</p>
+    </div>
+    <div class="card-element">
+      <p>تاريخ تسجيل الحادث: {{ fine.created_at|date:"Y-m-d" }}</p>
+      <p>وقت تسجيل الحادث: {{ fine.created_at|time:"h:i A" }}</p>
+    </div>
+    <div class="card-element">
+      <p>المتسبب بل حادث</p>
+      <p>{% for emp in fine.employees.all %} {{ emp.ceoName }} {% endfor %}</p>
+    </div>
+    {% if fine.report_pdf_file %}
+    <div class="card-element">
+      <p class="downladbtn">
+        <a
+          class="downladbtn"
+          target="_blank"
+          href="{{ fine.report_pdf_file.url }}"
+          >فتح التقرير</a
+        >
+      </p>
+    </div>
+    {% endif %}
+    <div class="card-element images">
+      {% for image in fine.images.all %}
+      <img src="{{ image.image.url }}" alt="Fine Image" />
+      {% endfor %}
+    </div>
+    <div class="card-element">
+      <button onclick="location.href='{% url 'logsApp:carddetails' fine.id %}'">
+        اظهار تفاصيل اكثر
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 
 {% endblock %}

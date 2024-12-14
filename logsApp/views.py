@@ -1,14 +1,13 @@
 import pandas as pd
 import re
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from logsApp.models import  RegistredCars , EmployesInfo,InUseCars,LogsC,FinesAccidents
+from logsApp.models import RegistredCars, EmployesInfo, InUseCars, LogsC, FinesAccidents, FinesAccidentsImage
 from django.http import HttpResponse
 from openpyxl.styles import Font, Alignment, PatternFill
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.db.models import Q
 from django.db import IntegrityError
-from .forms import UserProfileForm
 import pytz
 
 def remove_non_numeric(s):
@@ -21,11 +20,9 @@ def removechars(c):
         c = c.replace(char, "")
     
     return c
+
 def index(request):
     return render(request, "logsApp/layout.html")
-
-from django.shortcuts import render
-from .models import InUseCars, EmployesInfo, LogsC, RegistredCars
 
 def registerCar(request):
     all_in_use_cars = InUseCars.objects.all().order_by('-id')
@@ -71,12 +68,6 @@ def registerCar(request):
 
     return render(request, "logsApp/registerCar.html", {"l": all_in_use_cars})
 
-
-from django.shortcuts import render
-from django.utils import timezone
-from .models import InUseCars, EmployesInfo, LogsC, RegistredCars
-import pytz
-
 def returnCar(request):
     if request.method == "POST":
         ceo_number = remove_non_numeric(request.POST.get("ceonumber")).strip()
@@ -119,19 +110,30 @@ def returnCar(request):
 
     return render(request, "logsApp/registerCar.html", {"l": InUseCars.objects.all().order_by('-id')})
 
-
-
 def logsfunc(request):
+    years = range(2020, 2040)
     if request.method == "POST":
         car_number = request.POST.get('carNumper')
         ceo_number = request.POST.get('ceoN')
         date_filter = request.POST.get('date')
+        month_filter = request.POST.get('month')
+        year_filter = request.POST.get('year')
+        year_only_filter = request.POST.get('yearOnly')
+        date_type = request.POST.get('dateType')
         show_all = request.POST.get('showAll')
 
         filters = Q()
 
-        if date_filter:
+        if date_type == "day" and date_filter:
             filters &= Q(taken_date=date_filter)
+        elif date_type == "month" and month_filter and year_filter:
+            month_start = datetime(year=int(year_filter), month=int(month_filter), day=1)
+            month_end = (month_start + timedelta(days=32)).replace(day=1) - timedelta(seconds=1)
+            filters &= Q(taken_date__range=(month_start, month_end))
+        elif date_type == "year" and year_only_filter:
+            year_start = datetime(year=int(year_only_filter), month=1, day=1)
+            year_end = datetime(year=int(year_only_filter), month=12, day=31, hour=23, minute=59, second=59)
+            filters &= Q(taken_date__range=(year_start, year_end))
 
         if ceo_number:
             filters &= Q(Logs_employee_ins__ceoNumber=ceo_number.strip())
@@ -144,32 +146,47 @@ def logsfunc(request):
         else:
             logs = LogsC.objects.filter(filters).order_by('-id')
 
-        return render(request, "logsApp/logs.html", {'alllogs': logs})
+        return render(request, "logsApp/logs.html", {'alllogs': logs,'years': years})
 
-    
     current_date = datetime.now().date()
     today_logs = LogsC.objects.filter(Q(taken_date=current_date) | Q(taken_date__isnull=True)).order_by('-id')
-    return render(request, "logsApp/logs.html", {'alllogs': today_logs})
-
-
-
-
+    
+    return render(request, "logsApp/logs.html", {'alllogs': today_logs, 'years': years})
 
 def finesAccidents(request):
-    card1 = FinesAccidents.objects.all()
-    
     if request.method == "POST":
-        profile_form = UserProfileForm(request.POST, request.FILES)
-        if profile_form.is_valid():
-            profile_form.save()
-            return redirect('logsApp:finesAccidents')
-    else:
-        profile_form = UserProfileForm()
-    
-    return render(request, "logsApp/finesaccidents.html", {
-        "card1": card1,
-        "profile_form": profile_form
-    })
+        car_number = request.POST.get('carNumber')
+        emp_number = request.POST.get('empNumber')
+        text = request.POST.get('text')
+        report_pdf_file = request.FILES.get('reportPdfFile')
+        images = request.FILES.getlist('images')
+
+        try:
+            car_instance = RegistredCars.objects.get(carNumber=car_number)
+        except RegistredCars.DoesNotExist:
+            car_instance = None
+
+        try:
+            emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number)
+        except EmployesInfo.DoesNotExist:
+            emp_instance = None
+
+        fines_accident = FinesAccidents.objects.create(
+            car=car_instance,
+            text=text,
+            report_pdf_file=report_pdf_file
+        )
+
+        if emp_instance:
+            fines_accident.employees.add(emp_instance)
+
+        for image in images:
+            FinesAccidentsImage.objects.create(fines_accident=fines_accident, image=image)
+
+        fines_accident.save()
+
+    fines = FinesAccidents.objects.all()
+    return render(request, "logsApp/finesaccidents.html", {"fines": fines})
 
 def export_to_excel(request):
     dubai_tz = pytz.timezone('Asia/Dubai')
@@ -181,7 +198,7 @@ def export_to_excel(request):
         created_at_dubai = log.created_at.astimezone(dubai_tz)
         taken_time_dubai = (log.taken_time.replace(tzinfo=dubai_tz) if log.taken_time else None)
         ended_at_dubai = log.ended_at.astimezone(dubai_tz) if log.ended_at else None
-        return_time_dubai = (log.return_time.replace(tzinfo=dubai_tz) if log.return_time else None)
+        return_time_dubai = (log.return_time.replace(tzinfo=dubai_tz) if return_time_dubai else None)
 
         export_data.append({
             'ID': log.id,
@@ -240,8 +257,6 @@ def export_to_excel(request):
 
     return response
 
-
-
 def addNewEmp(request):
     if request.method == "POST":
         empNameq = request.POST.get('empName')
@@ -256,17 +271,11 @@ def addNewEmp(request):
         return render(request, "logsApp/addNewEmp.html", {'dd': dd})
     return render(request,"logsApp/addNewEmp.html")
 
-
-
-
-
 def fineC(request):
     if request.method == "POST":
         fine_date = request.POST.get('finedate')
         fine_time = request.POST.get('finetime')
         fine_car_number = request.POST.get('finecar')
-        print(f"Fine date is: {fine_date}")
-        print(f"Fine time is: {fine_time}")
         dubai_tz = pytz.timezone('Asia/Dubai')
         combined_fine_datetime = dubai_tz.localize(timezone.datetime.strptime(f"{fine_date} {fine_time}", '%Y-%m-%d %H:%M'))
         print(combined_fine_datetime.time())
@@ -277,10 +286,13 @@ def fineC(request):
                                       created_at__lte = combined_fine_datetime,
                                       ended_at__gte = combined_fine_datetime
                                       )
-            print(finon)
             return render(request, "logsApp/finespage.html",{"finon":finon})
         except RegistredCars.DoesNotExist:
             print(f"Car with number {fine_car_number} does not exist.")
         except Exception as e:
             print(f"An error occurred: {e}")
     return render(request,"logsApp/finespage.html",)
+
+def carddetails(request, fine_id):
+    fine = get_object_or_404(FinesAccidents, id=fine_id)
+    return render(request, 'logsApp/carddetails.html', {'fine': fine})

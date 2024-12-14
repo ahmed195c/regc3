@@ -1,82 +1,100 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 
-<!-- <div>
-  <div>
-    <form action="">
-      {% csrf_token %}
-      <input type="date" name="" id="" />
-      <input type="time" name="dd" id="" />
-    </form>
-  </div>
-</div> -->
-
 <div class="logs-btns">
+  {% comment %}
   <div class="dbtn-cont">
-    <button class="d-btn">
-      <a class="d-btn" href="{% url 'logsApp:export_to_excel'%}">
-        تحميل السجل
-      </a>
+    <button
+      class="nav-link-btn"
+      onclick="window.location='{% url 'logsApp:export_to_excel' %}'"
+    >
+      تحميل السجل
     </button>
   </div>
-  <div class="filtersMain">
-    <!-- <button id="filtersBtn">ShowFilters</button> -->
-    <div class="filtersDw">
-      <div class="filters-cont">
-        <form
-          class="filtersForm"
-          action="{% url 'logsApp:logslink' %}"
-          method="post"
-        >
-          {% csrf_token %}
-          <div class="filter-cont">
-            <div>
-              <h1>بحث عن طريق</h1>
-            </div>
-            <div class="search-input-conts">
-              <label for="ig">رقــــــــم المركبه</label>
-              <input
-                type="file"
-                id="ig"
-                name="ig"
-                placeholder="ادخل رقم المركبه هنا "
-              />
-            </div>
-            <div class="search-input-conts">
-              <label for="carNumbers">رقــــــــم المركبه</label>
-              <input
-                type="text"
-                id="carNumbers"
-                name="carNumper"
-                placeholder="ادخل رقم المركبه هنا "
-              />
-            </div>
-            <div class="search-input-conts">
-              <label for="ceoN">الــــــرقم الاداري</label>
-              <input
-                type="text"
-                name="ceoN"
-                placeholder="ادخل الرقم الاداري هنا"
-              />
-            </div>
-            <div>
-              <label for="date">التاريخ</label>
-              <input type="date" id="date" name="date" />
-            </div>
+  {% endcomment %}
+</div>
+<div class="filtersMain">
+  <div class="filtersDw">
+    <div class="filters-cont">
+      <form
+        class="filtersForm"
+        action="{% url 'logsApp:logslink' %}"
+        method="post"
+      >
+        {% csrf_token %}
+        <div class="filter-cont">
+          <div>
+            <h1>بحث عن طريق</h1>
           </div>
-
-          <input class="search-buttons" type="submit" value="بحث" />
-        </form>
-        <div>
-          <form action="{% url 'logsApp:logslink' %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" value="showall" id="showAll" name="showAll" />
+          <div class="search-input-conts">
+            <label for="carNumbers">رقــــــــم المركبه</label>
             <input
-              class="search-buttons"
-              type="submit"
-              value="اظهار كامل السجل "
+              type="text"
+              id="carNumbers"
+              name="carNumper"
+              placeholder="ادخل رقم المركبه هنا "
             />
-          </form>
+          </div>
+          <div class="search-input-conts">
+            <label for="ceoN">الــــــرقم الاداري</label>
+            <input
+              type="text"
+              name="ceoN"
+              placeholder="ادخل الرقم الاداري هنا"
+            />
+          </div>
+          <div class="search-input-conts">
+            <label for="dateType"> الــــتاريخ</label>
+            <select id="dateType" name="dateType" onchange="toggleDateInput()">
+              <option value="day">يوم</option>
+              <option value="month">شهر</option>
+              <option value="year">سنة</option>
+            </select>
+          </div>
+          <div class="search-input-conts" id="dayInput">
+            <label for="date">تاريخ استلام المركبه</label>
+            <input type="date" id="date" name="date" />
+          </div>
+          <div class="search-input-conts" id="monthInput" style="display: none">
+            <label for="year">السنة</label>
+            <select id="year" name="year">
+              {% for year in years %}
+              <option value="{{ year }}">{{ year }}</option>
+              {% endfor %}
+            </select>
+            <label for="month">الشهر</label>
+            <select id="month" name="month">
+              <option value="1">يناير</option>
+              <option value="2">فبراير</option>
+              <option value="3">مارس</option>
+              <option value="4">أبريل</option>
+              <option value="5">مايو</option>
+              <option value="6">يونيو</option>
+              <option value="7">يوليو</option>
+              <option value="8">أغسطس</option>
+              <option value="9">سبتمبر</option>
+              <option value="10">أكتوبر</option>
+              <option value="11">نوفمبر</option>
+              <option value="12">ديسمبر</option>
+            </select>
+          </div>
+          <div class="search-input-conts" id="yearInput" style="display: none">
+            <label for="yearOnly">السنة</label>
+            <select id="yearOnly" name="yearOnly">
+              {% for year in years %}
+              <option value="{{ year }}">{{ year }}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
+
+        <input class="nav-link-btn" type="submit" value="بحث" />
+      </form>
+      <div>
+        <form action="{% url 'logsApp:logslink' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" value="showall" id="showAll" name="showAll" />
+          <input class="nav-link-btn" type="submit" value="اظهار كامل السجل " />
+        </form>
       </div>
     </div>
   </div>
@@ -122,5 +140,17 @@
     </tbody>
   </table>
 </div>
+
+<script>
+  function toggleDateInput() {
+    var dateType = document.getElementById("dateType").value;
+    document.getElementById("dayInput").style.display =
+      dateType === "day" ? "block" : "none";
+    document.getElementById("monthInput").style.display =
+      dateType === "month" ? "block" : "none";
+    document.getElementById("yearInput").style.display =
+      dateType === "year" ? "block" : "none";
+  }
+</script>
 
 {% endblock %}

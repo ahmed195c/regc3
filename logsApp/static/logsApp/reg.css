@@ -1,18 +1,25 @@
+.main {
+  display: grid;
+  grid-template-columns: [first]75% [line2]25%;
+  grid-template-rows: [first]10% [second]90%;
+  padding: 0 30px 0 0;
+}
+
 .inuseBorder {
-  width: 100%;
-  grid-row-start: 1;
-  grid-column-start: 1;
+  margin-top: 20px;
+  grid-row: 1;
   height: 100vh;
 }
 
 .inUsCont {
-  padding: 30px 50px 30px 0;
   margin: auto;
   display: flex;
   flex-direction: row-reverse;
+  justify-content: center;
+  align-items: center;
   width: 90%;
   gap: 20px;
-  height: 85vh;
+  height: 90vh;
   flex-wrap: wrap;
   overflow-y: scroll;
   border: 2px solid black;
@@ -20,19 +27,9 @@
   font-weight: bold;
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .car-details {
-  height: 45%;
+  height: 100%;
+  max-height: 250px;
   width: 100%;
   max-width: 280px;
   font-family: Arial, sans-serif;
@@ -45,6 +42,11 @@
   opacity: 0;
   animation: fadeIn 0.6s forwards;
   animation-delay: 0.2s;
+}
+
+.car-details:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .car-detailserr {
@@ -71,17 +73,6 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
-}
-
-.car-details:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.car-details h1 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 20px;
 }
 
 .details {
@@ -146,28 +137,6 @@
   font-weight: bold;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
 .input-cont {
   display: flex;
   flex-direction: column;
@@ -185,17 +154,7 @@ input[type="number"]::-webkit-outer-spin-button {
   grid-row-start: 1;
   grid-row-end: 2;
   grid-column-end: 3;
-}
-
-.labels {
-  padding-bottom: 5px;
-  font-weight: bold;
-}
-
-.main {
-  display: grid;
-  grid-template-columns: [first]75% [line2]25%;
-  grid-template-rows: [first]10% [second]90%;
+  width: 100%;
 }
 
 .h1n {
@@ -213,24 +172,19 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .regCont {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   background-color: #f9f9f9;
   border: 2px solid #d1d1d1;
   border-radius: 12px;
-  width: 400px;
-  padding: 20px;
+  width: 100%;
   margin-bottom: 40px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .labels {
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
   margin-bottom: 5px;
-  color: #333;
+  color: #4e6b31;
 }
 
 .inpute {
@@ -278,26 +232,71 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .submit-btn {
-  width: 100%;
+  width: 95%;
   padding: 12px;
   font-size: 18px;
   color: #fff;
   background-color: #4e6b31;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   margin-top: 20px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.4s ease-in-out, transform 0.2s ease;
 }
 
 .submit-btn:hover {
-  background-color: #3e5524;
+  background-color: #b59958;
   transform: translateY(-2px);
 }
 
 .submit-btn:active {
   transform: translateY(0);
+}
+
+.forms-cont {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+}
+
+.full-width-form {
+  width: 100%;
+  max-width: none;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0;
+}
+
+/* Add styles for full-size class */
+.full-size {
+  width: 100%;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 @keyframes fadeOut {
@@ -322,4 +321,17 @@ input[type="number"]::-webkit-outer-spin-button {
 #ret-err-message,
 #ret-car-err {
   animation: fadeIn 0.5s ease-in-out;
+}
+
+.submit-btn:hover {
+  background-color: #3b4d27;
+}
+
+.success-msg,
+.error-msg,
+.error-msg-empinuse {
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
 }

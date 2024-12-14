@@ -7,7 +7,7 @@ class RegistredCars(models.Model):
     cownerName= models.TextField(null=True)
     cownerPhone = models.TextField(null=True)
     section = models.TextField(null=True)
-    carNumber = models.TextField(default=0)
+    carNumber = models.TextField(default='0')
     vType = models.TextField(max_length=100,null=True)
     carIsInparking = models.BooleanField(default=True)
     def __str__(self):
@@ -16,7 +16,7 @@ class RegistredCars(models.Model):
 
 class EmployesInfo(models.Model):
     EmpHaveCar = models.BooleanField(default=False)
-    ceoNumber = models.CharField(default=0,max_length=100,unique=True)
+    ceoNumber = models.CharField(default='0', max_length=100, unique=True)
     ceoName = models.CharField(max_length=100)
     phoneNumber = models.CharField(max_length=100, default='0000000000')
     position = models.CharField(max_length=100,default="الوظيفه")
@@ -46,7 +46,7 @@ class LogsC(models.Model):
     return_date = models.DateField(null=True, blank=True)
     return_time = models.TimeField(null=True, blank=True)
     carIsInUse = models.BooleanField(default=True)
-    carNote = models.CharField(default=None, null=True, max_length=200, blank=True)
+    carNote = models.CharField(default='', null=True, max_length=200, blank=True)
 
     def __str__(self):
         return str(f" name: {self.Logs_car_ins.carNumber}  ceo nam: {self.Logs_employee_ins.ceoName} carIsINuSE: {self.carIsInUse}")
@@ -54,8 +54,15 @@ class LogsC(models.Model):
 
 class FinesAccidents(models.Model):
     car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, null=True)
-    employee = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE, null=True)
-    text = models.TextField(null=True, blank=True, max_length=20)
-    image = models.ImageField(null=True, blank=True, upload_to="images/")
+    employees = models.ManyToManyField(EmployesInfo, blank=True)
+    text = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True,null=True, blank=True)
+    report_date = models.DateField( null=True, blank=True)
+    fixin_date = models.DateField( null=True, blank=True)
+    report_pdf_file = models.FileField(upload_to='pdfs/', null=True, blank=True, max_length=500)
+
+class FinesAccidentsImage(models.Model):
+    fines_accident = models.ForeignKey(FinesAccidents, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="images/")
 
 

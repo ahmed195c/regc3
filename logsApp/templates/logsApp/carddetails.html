@@ -1,0 +1,29 @@
+{% extends "logsApp/layout.html" %} {% block body %} {% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'logsApp/fiAc.css' %}" />
+
+<div class="card-details">
+  <h2>رقم المركبه: {{ fine.car.carNumber }}</h2>
+  <p>وصف الحادث: {{ fine.text }}</p>
+  <p>تاريخ تسجيل الحادث: {{ fine.created_at|date:"Y-m-d" }}</p>
+  <p>وقت تسجيل الحادث: {{ fine.created_at|time:"h:i A" }}</p>
+  <p>تاريخ الإصلاح: {{ fine.fixin_date }}</p>
+  <p>
+    المتسببين بل حادث: {% for emp in fine.employees.all %} {{ emp.ceoName }} ({{
+    emp.ceoNumber }}) {% endfor %}
+  </p>
+  {% if fine.report_pdf_file %}
+  <p class="downladbtn">
+    <a class="downladbtn" target="_blank" href="{{ fine.report_pdf_file.url }}"
+      >تحميل التقرير</a
+    >
+  </p>
+  {% endif %}
+  <div class="images">
+    {% for image in fine.images.all %}
+    <img src="{{ image.image.url }}" alt="صورة الحادث" class="large-image" />
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

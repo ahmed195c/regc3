@@ -10,5 +10,6 @@ urlpatterns = [
     path("finec/", views.fineC, name='finec'),
     path('export/excel/', views.export_to_excel, name='export_to_excel'),
     path('addNewEmp/', views.addNewEmp, name="addNewEmp"),
-    path("finesAccidents/", views.finesAccidents, name="finesAccidents")
+    path("finesAccidents/", views.finesAccidents, name="finesAccidents"),
+    path('carddetails/<int:fine_id>/', views.carddetails, name='carddetails'),
 ]

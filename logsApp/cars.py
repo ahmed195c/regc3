@@ -1,5 +1,3 @@
-
-
 carsList = [
 
 {"ID":"1","vnumber":"10079","vType":"TOYOTA COROLLA SEDAN 1.6L AT SE","Myear":"2020","empid":"33061","empName":"ABDALLA GHARIB ALBLOOSHI","tel":"0505910662","section":"قسم الرقابة الغذائية"}
