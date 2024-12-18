@@ -9,15 +9,41 @@ function fadeOutMessage(id) {
   }
 }
 
-// let filtersElement = document.getElementsByClassName("filtersDw")[0]; // Select the first element with the class
-// let filtersBtnel = document.getElementById("filtersBtn");
+function toggleDateInput() {
+  var dateType = document.getElementById("dateType").value;
+  document.getElementById("dayInput").style.display =
+    dateType === "day" ? "block" : "none";
+  document.getElementById("monthInput").style.display =
+    dateType === "month" ? "block" : "none";
+  document.getElementById("yearInput").style.display =
+    dateType === "year" ? "block" : "none";
+}
 
-// filtersBtnel.addEventListener("click", showFilters); // Pass the function reference
+function toggleFilters() {
+  var filtersMain = document.getElementById("filtersMain");
+  if (filtersMain.classList.contains("show")) {
+    filtersMain.classList.remove("show");
+    setTimeout(function () {
+      filtersMain.style.display = "none";
+    }, 500); // Match the transition duration
+  } else {
+    filtersMain.style.display = "block";
+    setTimeout(function () {
+      filtersMain.classList.add("show");
+    }, 10); // Slight delay to trigger the transition
+  }
+}
 
-// function showFilters() {
-//   if (filtersElement.style.display === "block") {
-//     filtersElement.style.display = "none"; // Hide if currently shown
-//   } else {
-//     filtersElement.style.display = "block"; // Show if currently hidden
-//   }
-// }
+document.addEventListener("DOMContentLoaded", function () {
+  var tableContainer = document.getElementById("tableContainer");
+  tableContainer.addEventListener("scroll", function () {
+    if (tableContainer.scrollTop === 0) {
+      window.scrollBy(0, -1);
+    } else if (
+      tableContainer.scrollTop + tableContainer.clientHeight >=
+      tableContainer.scrollHeight
+    ) {
+      window.scrollBy(0, 1);
+    }
+  });
+});

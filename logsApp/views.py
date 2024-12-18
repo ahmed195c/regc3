@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from django.db.models import Q
 from django.db import IntegrityError
 import pytz
+from django.core.paginator import Paginator
 
 def remove_non_numeric(s):
     return re.sub(r'\D', '', s)
@@ -72,7 +73,7 @@ def returnCar(request):
     if request.method == "POST":
         ceo_number = remove_non_numeric(request.POST.get("ceonumber")).strip()
         emp_note = request.POST.get("empnote")
-        all_in_use_cars = InUseCars.objects.all().order_by('-id')
+        all_in_use_cars = InUseCars.objects.select_related('car', 'employee').all().order_by('-id')
         dubai_tz = pytz.timezone('Asia/Dubai')
 
         try:
@@ -82,14 +83,14 @@ def returnCar(request):
             return render(request, "logsApp/registerCar.html", {"retErrm": ret_err_msg, "l": all_in_use_cars})
 
         try:
-            in_use_car_instance = InUseCars.objects.get(employee=emp_instance)
+            in_use_car_instance = InUseCars.objects.select_related('car', 'employee').get(employee=emp_instance)
         except InUseCars.DoesNotExist:
             ret_car_err = "لاتوجد مركبه مرتبطه بل رقم الاداري"
             return render(request, "logsApp/registerCar.html", {"retCarErr": ret_car_err, "l": all_in_use_cars})
 
         ret_success_msg = "تم اعاده المركبه بنجاح"
         registered_car_instance = RegistredCars.objects.get(carNumber=in_use_car_instance.car.carNumber)
-        log_instance = LogsC.objects.get(Logs_employee_ins=emp_instance, carIsInUse=True)
+        log_instance = LogsC.objects.select_related('Logs_employee_ins', 'Logs_car_ins').get(Logs_employee_ins=emp_instance, carIsInUse=True)
 
         current_time = timezone.now().astimezone(dubai_tz)
         log_instance.ended_at = current_time
@@ -108,19 +109,19 @@ def returnCar(request):
 
         return render(request, "logsApp/registerCar.html", {"retSucssM": ret_success_msg, "l": all_in_use_cars})
 
-    return render(request, "logsApp/registerCar.html", {"l": InUseCars.objects.all().order_by('-id')})
+    return render(request, "logsApp/registerCar.html", {"l": InUseCars.objects.select_related('car', 'employee').all().order_by('-id')})
 
 def logsfunc(request):
     years = range(2020, 2040)
-    if request.method == "POST":
-        car_number = request.POST.get('carNumper')
-        ceo_number = request.POST.get('ceoN')
-        date_filter = request.POST.get('date')
-        month_filter = request.POST.get('month')
-        year_filter = request.POST.get('year')
-        year_only_filter = request.POST.get('yearOnly')
-        date_type = request.POST.get('dateType')
-        show_all = request.POST.get('showAll')
+    if request.method == "POST" or request.method == "GET":
+        car_number = request.GET.get('carNumper')
+        ceo_number = request.GET.get('ceoN')
+        date_filter = request.GET.get('date')
+        month_filter = request.GET.get('month')
+        year_filter = request.GET.get('year')
+        year_only_filter = request.GET.get('yearOnly')
+        date_type = request.GET.get('dateType')
+        show_all = request.GET.get('showAll')
 
         filters = Q()
 
@@ -146,12 +147,21 @@ def logsfunc(request):
         else:
             logs = LogsC.objects.filter(filters).order_by('-id')
 
-        return render(request, "logsApp/logs.html", {'alllogs': logs,'years': years})
+
+        paginator = Paginator(logs, 50)  
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, "logsApp/logs.html", {'page_obj': page_obj, 'years': years})
 
     current_date = datetime.now().date()
     today_logs = LogsC.objects.filter(Q(taken_date=current_date) | Q(taken_date__isnull=True)).order_by('-id')
     
-    return render(request, "logsApp/logs.html", {'alllogs': today_logs, 'years': years})
+    paginator = Paginator(today_logs, 50) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "logsApp/logs.html", {'page_obj': page_obj, 'years': years})
 
 def finesAccidents(request):
     if request.method == "POST":

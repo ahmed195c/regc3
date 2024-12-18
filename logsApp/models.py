@@ -31,22 +31,30 @@ class InUseCars(models.Model):
     employee = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE)
     start_date = models.DateField(auto_now=True)
     created_at = models.DateTimeField(auto_now=True)
-    logsc_ley = models.ForeignKey('LogsC', on_delete=models.CASCADE,null=True) 
+    logsc_ley = models.ForeignKey('LogsC', on_delete=models.CASCADE,null=True)
     def __str__(self):
         return str(f"مستخدم المركبه : {self.employee.ceoName} |||  رقم المركبه : {self.car.carNumber}")
 
 
 class LogsC(models.Model):
-    Logs_car_ins = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
     Logs_employee_ins = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE)
+    Logs_car_ins = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
+    carIsInUse = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    taken_date = models.DateField(auto_now_add=True, null=True)
-    taken_time = models.TimeField(auto_now_add=True, null=True)
     ended_at = models.DateTimeField(null=True, blank=True)
     return_date = models.DateField(null=True, blank=True)
     return_time = models.TimeField(null=True, blank=True)
-    carIsInUse = models.BooleanField(default=True)
-    carNote = models.CharField(default='', null=True, max_length=200, blank=True)
+    carNote = models.TextField(null=True, blank=True)
+    taken_date = models.DateField(null=True, blank=True)
+    taken_time = models.TimeField(null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['Logs_employee_ins', 'carIsInUse']),
+            models.Index(fields=['Logs_car_ins', 'carIsInUse']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['ended_at']),
+        ]
 
     def __str__(self):
         return str(f" name: {self.Logs_car_ins.carNumber}  ceo nam: {self.Logs_employee_ins.ceoName} carIsINuSE: {self.carIsInUse}")

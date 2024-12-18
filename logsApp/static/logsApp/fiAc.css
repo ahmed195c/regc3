@@ -1,25 +1,37 @@
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 40px;
   justify-content: center;
   padding: 20px;
   justify-items: center;
+  max-width: 1500px;
+  margin: 0 auto;
 }
 
 .card {
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 16px;
+  padding: 20px; /* increased padding */
   background-color: #f9f9f9;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 300px;
+  max-width: 350px; /* increased max-width */
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* added gap between elements */
 }
 
 .card-element {
-  border-bottom: 1px solid black;
+  /* removed border-bottom */
   padding-bottom: 8px;
   margin-bottom: 8px;
+}
+
+.card-element .short-line {
+  width: 90%; /* shorter line */
+  height: 1px;
+  background-color: black;
+  margin: 0 auto; /* center the line */
 }
 
 .card h3 {

@@ -7,7 +7,7 @@ class LogsCAdmin(admin.ModelAdmin):
     list_display = ('id','Logs_employee_ins', 'taken_date','taken_time','return_date', 'return_time','Logs_car_ins')
     search_fields = ('taken_date', 'return_time')
     list_filter = ('taken_date',)
-    readonly_fields = ('Logs_car_ins','Logs_employee_ins')
+    # readonly_fields = ('Logs_car_ins','Logs_employee_ins')
 
 class RegCarsAdmin(admin.ModelAdmin):
     list_display = ('carNumber','vType','section','cownerName','cownerEmpNumber')

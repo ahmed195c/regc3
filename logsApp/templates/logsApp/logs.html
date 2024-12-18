@@ -11,14 +11,18 @@
     </button>
   </div>
   {% endcomment %}
+  <button class="nav-link-btn show-hide-btn" onclick="toggleFilters()">
+    بحث
+  </button>
 </div>
-<div class="filtersMain">
+
+<div class="filtersMain" id="filtersMain">
   <div class="filtersDw">
     <div class="filters-cont">
       <form
         class="filtersForm"
         action="{% url 'logsApp:logslink' %}"
-        method="post"
+        method="get"
       >
         {% csrf_token %}
         <div class="filter-cont">
@@ -90,7 +94,7 @@
         <input class="nav-link-btn" type="submit" value="بحث" />
       </form>
       <div>
-        <form action="{% url 'logsApp:logslink' %}" method="post">
+        <form action="{% url 'logsApp:logslink' %}" method="get">
           {% csrf_token %}
           <input type="hidden" value="showall" id="showAll" name="showAll" />
           <input class="nav-link-btn" type="submit" value="اظهار كامل السجل " />
@@ -99,58 +103,69 @@
     </div>
   </div>
 </div>
-<div class="mainlog">
-  <table border="1">
-    <thead>
-      <tr class="headtr">
-        <th>رقم السياره</th>
-        <th>الرقم الاداري</th>
-        <th>الاسم</th>
-        <th>تاريخ الاستلام</th>
-        <th>وقت الاستلام</th>
-        <th>تاريخ التسليم</th>
-        <th>وقت التسليم</th>
-        <th>ملاحظات</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for k in alllogs %}
-      <tr>
-        <td>{{k.Logs_car_ins.carNumber}}</td>
-        <td>{{k.Logs_employee_ins.ceoNumber}}</td>
-        <td class="ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
-        <td>{{k.created_at|date:"Y-m-d"}}</td>
-        <td>{{k.created_at|date:"h:i A"}}</td>
 
-        {% if k.return_date %}
-        <td>{{k.return_date|date:"Y-m-d"}}</td>
-        {% else %}
-        <td></td>
-        {% endif %} {% if k.return_time %}
-        <td>{{k.return_time}}</td>
-        {% else %}
-        <td></td>
-        {% endif %} {% if k.carNote %}
-        <td class="logs_not_cell">{{k.carNote}}</td>
-        {% else %}
-        <td class="logs_not_cell"></td>
-        {% endif %}
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="mainlog">
+  <div class="table-container" id="tableContainer">
+    <table>
+      <thead>
+        <tr class="headtr">
+          <th>رقم السياره</th>
+          <th>الرقم الاداري</th>
+          <th>الاسم</th>
+          <th>تاريخ الاستلام</th>
+          <th>وقت الاستلام</th>
+          <th>تاريخ التسليم</th>
+          <th>وقت التسليم</th>
+          <th>ملاحظات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for k in page_obj %}
+        <tr>
+          <td>{{k.Logs_car_ins.carNumber}}</td>
+          <td>{{k.Logs_employee_ins.ceoNumber}}</td>
+          <td class="ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
+          <td>{{k.created_at|date:"Y-m-d"}}</td>
+          <td>{{k.created_at|date:"h:i A"}}</td>
+
+          {% if k.return_date %}
+          <td>{{k.return_date|date:"Y-m-d"}}</td>
+          {% else %}
+          <td></td>
+          {% endif %} {% if k.return_time %}
+          <td>{{k.return_time}}</td>
+          {% else %}
+          <td></td>
+          {% endif %} {% if k.carNote %}
+          <td class="logs_not_cell">{{k.carNote}}</td>
+          {% else %}
+          <td class="logs_not_cell"></td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<script>
-  function toggleDateInput() {
-    var dateType = document.getElementById("dateType").value;
-    document.getElementById("dayInput").style.display =
-      dateType === "day" ? "block" : "none";
-    document.getElementById("monthInput").style.display =
-      dateType === "month" ? "block" : "none";
-    document.getElementById("yearInput").style.display =
-      dateType === "year" ? "block" : "none";
-  }
-</script>
+<div class="pagination-container">
+  <div class="pagination">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+      <a href="?page=1">&laquo; first</a>
+      <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}">next</a>
+      <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+</div>
 
 {% endblock %}
