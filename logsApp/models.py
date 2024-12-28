@@ -1,5 +1,13 @@
 from django.db import models
+import os
 
+def fines_accident_file_upload_to(instance, filename):
+    car_number = instance.fines_accident.car.carNumber if instance.fines_accident.car else 'unknown'
+    return f'fines_accidents/{car_number}_{instance.fines_accident.id}/{filename}'
+
+def fines_accident_pdf_upload_to(instance, filename):
+    car_number = instance.car.carNumber if instance.car else 'unknown'
+    return f'fines_accidents/{car_number}_{instance.id}/{filename}'
 
 class RegistredCars(models.Model):
     carYear = models.IntegerField(null=True)
@@ -64,13 +72,24 @@ class FinesAccidents(models.Model):
     car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, null=True)
     employees = models.ManyToManyField(EmployesInfo, blank=True)
     text = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True,null=True, blank=True)
-    report_date = models.DateField( null=True, blank=True)
-    fixin_date = models.DateField( null=True, blank=True)
-    report_pdf_file = models.FileField(upload_to='pdfs/', null=True, blank=True, max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    report_date = models.DateField(null=True, blank=True)
+    fixin_date = models.DateField(null=True, blank=True)
+    report_pdf_file = models.FileField(upload_to=fines_accident_pdf_upload_to, null=True, blank=True, max_length=500)
+    car_paperwork_file = models.FileField(upload_to=fines_accident_pdf_upload_to, null=True, blank=True, max_length=500)
+    def __str__(self):
+        return str(f" {self.pk} " )
 
 class FinesAccidentsImage(models.Model):
     fines_accident = models.ForeignKey(FinesAccidents, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="images/")
+    image = models.ImageField(upload_to=fines_accident_file_upload_to)
+    def __str__(self):
+        return str(f" {self.fines_accident.pk} " )
+
+class LicenseFile(models.Model):
+    fines_accident = models.ForeignKey(FinesAccidents, related_name='license_files', on_delete=models.CASCADE)
+    file = models.FileField(upload_to=fines_accident_file_upload_to)
+    def __str__(self):
+        return str(f" {self.fines_accident.pk} " )
 
 

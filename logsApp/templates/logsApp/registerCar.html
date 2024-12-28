@@ -6,7 +6,7 @@
     <div class="inUsCont">
       {% if l %}
       <div class="h1n"><h1>مركبات قيد الاستخدام</h1></div>
-      {% for n in l %}  
+      {% for n in l %}
       <div class="car-details">
         <div class="details">
           <div class="info">
@@ -45,6 +45,7 @@
             type="text"
             name="ceoNumber"
             id="ceoNumber"
+            value="{{ ceoNumber }}"
             required
             placeholder="مثال: 23945"
           />
@@ -69,10 +70,12 @@
                 <div class="details">
                   <div class="infoerr">
                     <div>
-                      <p class="info-p">تم تس</p>
+                      <p class="info-p">
+                        تنبية: الرقم الاداري الذي أدخلته مستخدم حاليا
+                      </p>
                     </div>
                     <p class="info-p">
-                      الاسم : {{itsinuse.Logs_employee_ins.ceoName}}
+                      اسم الموظف : {{itsinuse.Logs_employee_ins.ceoName}}
                     </p>
                     <p class="info-p">
                       الرقم الاداري: {{itsinuse.Logs_employee_ins.ceoNumber}}
@@ -145,6 +148,7 @@
             type="text"
             name="carNumber"
             id="carNumber"
+            value="{{ carNumber }}"
             placeholder="1-46793"
             required
           />
@@ -193,7 +197,13 @@
             <h2>لإعادة المركبه</h2>
           </div>
           <label class="labels" for="ceonumber"> الرقم الاداري </label>
-          <input class="inpute" type="number" name="ceonumber" id="ceonumber" />
+          <input
+            class="inpute"
+            type="number"
+            name="ceonumber"
+            id="ceonumber"
+            value="{{ ceonumber }}"
+          />
           <div class="msg-cont">
             {% if retErrm %}
             <div id="error-message-return-emp-not-exists" class="error-msg">
@@ -210,7 +220,13 @@
 
         <div class="input-cont full-size">
           <label class="labels" for="note">ملاحظه على السياره</label>
-          <input class="inpute" type="text" id="note" name="empnote" />
+          <input
+            class="inpute"
+            type="text"
+            id="note"
+            name="empnote"
+            value="{{ empnote }}"
+          />
 
           <div class="msg-cont">
             {% if retCarErr %}

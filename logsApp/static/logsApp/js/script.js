@@ -47,3 +47,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+// forms show hide button
+function toggleForm() {
+  var form = document.getElementById("addEventForm");
+  if (form.style.display === "none") {
+    form.style.display = "block";
+  } else {
+    form.style.display = "none";
+  }
+}

@@ -2,7 +2,7 @@ import pandas as pd
 import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from logsApp.models import RegistredCars, EmployesInfo, InUseCars, LogsC, FinesAccidents, FinesAccidentsImage
+from logsApp.models import RegistredCars, EmployesInfo, InUseCars, LogsC, FinesAccidents, FinesAccidentsImage,LicenseFile
 from django.http import HttpResponse
 from openpyxl.styles import Font, Alignment, PatternFill
 from datetime import datetime, timedelta
@@ -34,13 +34,25 @@ def registerCar(request):
 
         try:
             its_in_use = LogsC.objects.get(Logs_employee_ins__ceoNumber=ceo_number, carIsInUse=True)
-            return render(request, "logsApp/registerCar.html", {"itsinuse": its_in_use, "l": all_in_use_cars})
+            return render(request, "logsApp/registerCar.html", {
+                "itsinuse": its_in_use,
+                "l": all_in_use_cars,
+                "ceoNumber": "",
+                "carNumber": car_number,
+                "form_open": True
+            })
         except LogsC.DoesNotExist:
             pass
 
         try:
             car_is_in_use = LogsC.objects.get(Logs_car_ins__carNumber=car_number, carIsInUse=True)
-            return render(request, "logsApp/registerCar.html", {"carIsInUse": car_is_in_use, "l": all_in_use_cars})
+            return render(request, "logsApp/registerCar.html", {
+                "carIsInUse": car_is_in_use,
+                "l": all_in_use_cars,
+                "ceoNumber": ceo_number,
+                "carNumber": "",
+                "form_open": True
+            })
         except LogsC.DoesNotExist:
             pass
 
@@ -48,13 +60,25 @@ def registerCar(request):
             emp_exists = EmployesInfo.objects.get(ceoNumber=ceo_number, EmpHaveCar=False)
         except EmployesInfo.DoesNotExist:
             emp_does_not_exist = "الرقم الاداري غير صحيح"
-            return render(request, "logsApp/registerCar.html", {"empDoseNotEXISTS": emp_does_not_exist, "l": all_in_use_cars})
+            return render(request, "logsApp/registerCar.html", {
+                "empDoseNotEXISTS": emp_does_not_exist,
+                "l": all_in_use_cars,
+                "ceoNumber": "",
+                "carNumber": car_number,
+                "form_open": True
+            })
 
         try:
             car_exists = RegistredCars.objects.get(carNumber=car_number, carIsInparking=True)
         except RegistredCars.DoesNotExist:
             car_dne = "رقم المركبة غير صحيح"
-            return render(request, "logsApp/registerCar.html", {"carDNE": car_dne, "l": all_in_use_cars})
+            return render(request, "logsApp/registerCar.html", {
+                "carDNE": car_dne,
+                "l": all_in_use_cars,
+                "ceoNumber": ceo_number,
+                "carNumber": "",
+                "form_open": True
+            })
 
         InUseCars.objects.create(car=car_exists, employee=emp_exists)
         LogsC.objects.create(Logs_employee_ins=emp_exists, Logs_car_ins=car_exists)
@@ -65,7 +89,10 @@ def registerCar(request):
         car_exists.save()
 
         success_message = "تم التسجيل بنجاح"
-        return render(request, "logsApp/registerCar.html", {"sucssuMessge": success_message, "l": all_in_use_cars})
+        return render(request, "logsApp/registerCar.html", {
+            "sucssuMessge": success_message,
+            "l": all_in_use_cars
+        })
 
     return render(request, "logsApp/registerCar.html", {"l": all_in_use_cars})
 
@@ -80,13 +107,24 @@ def returnCar(request):
             emp_instance = EmployesInfo.objects.get(ceoNumber=ceo_number)
         except EmployesInfo.DoesNotExist:
             ret_err_msg = "الرقم الاداري غير صحيح"
-            return render(request, "logsApp/registerCar.html", {"retErrm": ret_err_msg, "l": all_in_use_cars})
+            return render(request, "logsApp/registerCar.html", {
+                "retErrm": ret_err_msg,
+                "l": all_in_use_cars,
+                "ceonumber": "",
+                "empnote": "emp_note",
+                "form_open": True
+            })
 
         try:
             in_use_car_instance = InUseCars.objects.select_related('car', 'employee').get(employee=emp_instance)
         except InUseCars.DoesNotExist:
             ret_car_err = "لاتوجد مركبه مرتبطه بل رقم الاداري"
-            return render(request, "logsApp/registerCar.html", {"retCarErr": ret_car_err, "l": all_in_use_cars})
+            return render(request, "logsApp/registerCar.html", {
+                "retCarErr": ret_car_err,
+                "l": all_in_use_cars,
+                "ceonumber": "",
+                "empnote": "emp_note",
+                "form_open": True})
 
         ret_success_msg = "تم اعاده المركبه بنجاح"
         registered_car_instance = RegistredCars.objects.get(carNumber=in_use_car_instance.car.carNumber)
@@ -107,7 +145,7 @@ def returnCar(request):
         registered_car_instance.save()
         in_use_car_instance.delete()
 
-        return render(request, "logsApp/registerCar.html", {"retSucssM": ret_success_msg, "l": all_in_use_cars})
+        return render(request, "logsApp/registerCar.html", {"retSucssM": ret_success_msg,"l": all_in_use_cars})
 
     return render(request, "logsApp/registerCar.html", {"l": InUseCars.objects.select_related('car', 'employee').all().order_by('-id')})
 
@@ -163,12 +201,18 @@ def logsfunc(request):
 
     return render(request, "logsApp/logs.html", {'page_obj': page_obj, 'years': years})
 
+def is_pdf(file):
+    return file.file.url.endswith(".pdf")
+
 def finesAccidents(request):
+    fines = FinesAccidents.objects.all()
     if request.method == "POST":
         car_number = request.POST.get('carNumber')
         emp_number = request.POST.get('empNumber')
         text = request.POST.get('text')
         report_pdf_file = request.FILES.get('reportPdfFile')
+        car_paperwork_file = request.FILES.get('carPaperworkFile')
+        license_files = request.FILES.getlist('licenseFiles')
         images = request.FILES.getlist('images')
 
         try:
@@ -179,13 +223,31 @@ def finesAccidents(request):
         try:
             emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number)
         except EmployesInfo.DoesNotExist:
-            emp_instance = None
+            emp_err_message = "الرقم الاداري غير صحيح"
+            return render(request, "logsApp/finesaccidents.html", {
+                'fines': fines,
+                'emp_err_message': emp_err_message,
+                'carNumber': car_number,
+                'empNumber': emp_number,
+                'text': text,
+                'reportPdfFile': report_pdf_file,
+                'carPaperworkFile': car_paperwork_file,
+                'licenseFiles': license_files,
+                'images': images,
+                'form_open': True
+            })
 
+        # Create the FinesAccidents object without files first
         fines_accident = FinesAccidents.objects.create(
             car=car_instance,
-            text=text,
-            report_pdf_file=report_pdf_file
+            text=text
         )
+
+        # Add files after the object has been created and has an ID
+        if report_pdf_file:
+            fines_accident.report_pdf_file = report_pdf_file
+        if car_paperwork_file:
+            fines_accident.car_paperwork_file = car_paperwork_file
 
         if emp_instance:
             fines_accident.employees.add(emp_instance)
@@ -193,10 +255,13 @@ def finesAccidents(request):
         for image in images:
             FinesAccidentsImage.objects.create(fines_accident=fines_accident, image=image)
 
+        for license_file in license_files:
+            LicenseFile.objects.create(fines_accident=fines_accident, file=license_file)
+
         fines_accident.save()
 
-    fines = FinesAccidents.objects.all()
-    return render(request, "logsApp/finesaccidents.html", {"fines": fines})
+    
+    return render(request, "logsApp/finesaccidents.html", {'fines': fines})
 
 def export_to_excel(request):
     dubai_tz = pytz.timezone('Asia/Dubai')
@@ -305,4 +370,48 @@ def fineC(request):
 
 def carddetails(request, fine_id):
     fine = get_object_or_404(FinesAccidents, id=fine_id)
-    return render(request, 'logsApp/carddetails.html', {'fine': fine})
+    if request.method == "POST":
+        report_pdf_file = request.FILES.get('reportPdfFile')
+        car_paperwork_file = request.FILES.get('carPaperworkFile')
+        license_files = request.FILES.getlist('licenseFiles')
+        images = request.FILES.getlist('images')
+        emp_number = request.POST.get('empNumber')
+
+        if report_pdf_file:
+            fine.report_pdf_file = report_pdf_file
+        if car_paperwork_file:
+            fine.car_paperwork_file = car_paperwork_file
+
+        for image in images:
+            FinesAccidentsImage.objects.create(fines_accident=fine, image=image)
+
+        for license_file in license_files:
+            LicenseFile.objects.create(fines_accident=fine, file=license_file)
+
+        if emp_number:
+            try:
+                emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number)
+                fine.employees.add(emp_instance)
+            except EmployesInfo.DoesNotExist:
+                pass
+
+        fine.save()
+
+    license_files = []
+    license_images = []
+    for license_file in fine.license_files.all():
+        if is_pdf(license_file):
+            license_files.append(license_file)
+        else:
+            license_images.append(license_file)
+    return render(request, 'logsApp/carddetails.html', {
+        'fine': fine,
+        'license_files': license_files,
+        'license_images': license_images
+    })
+
+def markasfixed(request, fine_id):
+    fine = get_object_or_404(FinesAccidents, id=fine_id)
+    fine.fixin_date = timezone.now()
+    fine.save()
+    return redirect('logsApp:carddetails', fine_id=fine_id)

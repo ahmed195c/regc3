@@ -2,28 +2,155 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'logsApp/fiAc.css' %}" />
 
-<div class="card-details">
-  <h2>رقم المركبه: {{ fine.car.carNumber }}</h2>
-  <p>وصف الحادث: {{ fine.text }}</p>
-  <p>تاريخ تسجيل الحادث: {{ fine.created_at|date:"Y-m-d" }}</p>
-  <p>وقت تسجيل الحادث: {{ fine.created_at|time:"h:i A" }}</p>
-  <p>تاريخ الإصلاح: {{ fine.fixin_date }}</p>
-  <p>
-    المتسببين بل حادث: {% for emp in fine.employees.all %} {{ emp.ceoName }} ({{
-    emp.ceoNumber }}) {% endfor %}
-  </p>
-  {% if fine.report_pdf_file %}
-  <p class="downladbtn">
-    <a class="downladbtn" target="_blank" href="{{ fine.report_pdf_file.url }}"
-      >تحميل التقرير</a
-    >
-  </p>
-  {% endif %}
-  <div class="images">
-    {% for image in fine.images.all %}
-    <img src="{{ image.image.url }}" alt="صورة الحادث" class="large-image" />
-    {% endfor %}
+<div class="card-main">
+  <!-- prettier-ignore -->
+  <div
+    class="card-header"
+    style="background-color: {% if fine.fixin_date %}green{% elif fine.report_pdf_file %}lightblue{% else %}red{% endif %}; width: 100%;"
+  >
+    <p>
+      {% if fine.fixin_date %} السيارة تم إصلاحها {% elif fine.report_pdf_file %} السيارة في انتظار الإصلاح {% else %} الشخص الذي تسبب في الحادث غير محدد
+      {% endif %}
+    </p>
+  </div>
+  <div class="card-details">
+    <div>
+      <h2>رقم المركبه: {{ fine.car.carNumber }}</h2>
+    </div>
+    <div>
+      المسؤل عن الحدث
+      <ul>
+        {% for emp in fine.employees.all %}
+        <li>
+          <p><strong>الاسم:</strong> {{ emp.ceoName }}</p>
+          {% if emp.ceoNumber %}
+          <p><strong>الرقم الاداري:</strong> {{ emp.ceoNumber }}</p>
+          {% else %}
+          <p>المتسبب بل حادث غير مجهول</p>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div>
+      <p><strong>وصف الحادث:</strong> {{ fine.text }}</p>
+    </div>
+    <div>
+      <p>
+        <strong>تاريخ تسجيل الحادث:</strong> {{ fine.created_at|date:"Y-m-d" }}
+      </p>
+      <p>
+        <strong>وقت تسجيل الحادث:</strong> {{ fine.created_at|time:"h:i A" }}
+      </p>
+    </div>
+    <div>
+      <p><strong>تاريخ الإصلاح:</strong> {{ fine.fixin_date }}</p>
+    </div>
+    {% if fine.report_pdf_file %}
+    <div>
+      <p class="downladbtn">
+        <a
+          class="downladbtn"
+          target="_blank"
+          href="{{ fine.report_pdf_file.url }}"
+          >عرض التقرير</a
+        >
+      </p>
+    </div>
+    {% endif %} {% if fine.car_paperwork_file %}
+    <div>
+      <p class="downladbtn">
+        <a
+          class="downladbtn"
+          target="_blank"
+          href="{{ fine.car_paperwork_file.url }}"
+          >عرض أوراق السيارة</a
+        >
+      </p>
+    </div>
+    {% endif %}
+
+    <div class="images">
+      {% for image in fine.images.all %}
+      <img src="{{ image.image.url }}" alt="صورة الحادث" class="large-image" />
+      {% endfor %}
+    </div>
+    <div class="license-files">
+      {% for license_file in license_files %}
+      <p class="downladbtn">
+        <a class="downladbtn" target="_blank" href="{{ license_file.file.url }}"
+          >تحميل رخصة القيادة (PDF)</a
+        >
+      </p>
+      {% endfor %} {% for license_image in license_images %}
+      <img
+        src="{{ license_image.file.url }}"
+        alt="صورة الرخصة"
+        class="large-image"
+      />
+      {% endfor %}
+    </div>
+    {% if not fine.report_pdf_file or not fine.car_paperwork_file or not fine.images.exists or not fine.license_files.exists or not fine.employees.exists %}
+    <div>
+      <form
+        method="POST"
+        enctype="multipart/form-data"
+        class="addEventForm-carDetails"
+        id="addEventForm"
+      >
+        {% csrf_token %} {% if not fine.report_pdf_file %}
+        <label for="reportPdfFile">تحميل تقرير (PDF)</label>
+        <input
+          type="file"
+          id="reportPdfFile"
+          name="reportPdfFile"
+          accept="application/pdf"
+        /><br />
+        {% endif %} {% if not fine.license_files.exists %}
+        <label for="licenseFiles">تحميل رخصة القيادة (PDF أو صورة)</label>
+        <input
+          type="file"
+          id="licenseFiles"
+          name="licenseFiles"
+          accept="application/pdf,image/*"
+          multiple
+        /><br />
+        {% endif %} {% if not fine.car_paperwork_file %}
+        <label for="carPaperworkFile">تحميل أوراق السيارة (PDF أو صورة)</label>
+        <input
+          type="file"
+          id="carPaperworkFile"
+          name="carPaperworkFile"
+          accept="application/pdf,image/*"
+          multiple
+        /><br />
+        {% endif %} {% if not fine.images.exists %}
+        <label for="images">تحميل الصور</label>
+        <input
+          type="file"
+          id="images"
+          name="images"
+          accept="image/*"
+          multiple
+        /><br />
+        {% endif %} {% if not fine.employees.exists %}
+        <label for="empNumber">إضافة موظف (الرقم الإداري)</label>
+        <input
+          type="text"
+          id="empNumber"
+          name="empNumber"
+          placeholder="الرقم الإداري"
+        /><br />
+        {% endif %}
+        
+        <button type="submit">إرسال</button>
+      </form>
+    </div>
+    {% endif %} {% if fine.report_pdf_file and not fine.fixin_date %}
+    <button onclick="location.href='{% url 'logsApp:markasfixed' fine.id %}'">
+      تم الإصلاح المركبة
+    </button>
+    {% endif %}
   </div>
 </div>
-
 {% endblock %}

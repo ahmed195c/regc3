@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import RegistredCars,EmployesInfo,InUseCars,LogsC,FinesAccidents,FinesAccidentsImage
-models_list = [LogsC,RegistredCars,EmployesInfo,InUseCars,FinesAccidents,FinesAccidentsImage]
+from .models import RegistredCars,EmployesInfo,InUseCars,LogsC,FinesAccidents,FinesAccidentsImage,LicenseFile
+models_list = [LogsC,RegistredCars,EmployesInfo,InUseCars,FinesAccidents,FinesAccidentsImage,LicenseFile]
 
 
 class LogsCAdmin(admin.ModelAdmin):
@@ -19,6 +19,7 @@ class FinesAccidentsAdmin(admin.ModelAdmin):
     search_fields = ('text','car')
     list_filter = ('created_at',)
 
+admin.site.register(LicenseFile)
 admin.site.register(LogsC, LogsCAdmin)
 admin.site.register(RegistredCars, RegCarsAdmin)
 admin.site.register(EmployesInfo)

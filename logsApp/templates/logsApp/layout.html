@@ -25,6 +25,7 @@
         </div>
         <div class="navs-cont">
           <ul class="nav-links">
+            {% comment %}
             <li>
               <button
                 class="nav-link-btn-unique"
@@ -33,12 +34,22 @@
                 اضافة موظف جديد
               </button>
             </li>
+            {% endcomment %} {% comment %}
             <li>
               <button
                 class="nav-link-btn-unique"
                 onclick="window.location='{% url 'logsApp:finec' %}'"
               >
                 حصر المخالفات
+              </button>
+            </li>
+            {% endcomment %}
+            <li>
+              <button
+                class="nav-link-btn-unique"
+                onclick="window.location='{% url 'logsApp:finesAccidents' %}'"
+              >
+                سجل المخالفات و الحوادث
               </button>
             </li>
             <li>
@@ -55,14 +66,6 @@
                 onclick="window.location='{% url 'logsApp:add' %}'"
               >
                 استلام و ارجاع المركبه
-              </button>
-            </li>
-            <li>
-              <button
-                class="nav-link-btn-unique"
-                onclick="window.location='{% url 'logsApp:finesAccidents' %}'"
-              >
-                سجل المخالفات و الحوادث
               </button>
             </li>
           </ul>
