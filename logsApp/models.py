@@ -92,4 +92,11 @@ class LicenseFile(models.Model):
     def __str__(self):
         return str(f" {self.fines_accident.pk} " )
 
+class FinesRecord (models.Model):
+    car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, null=True)
+    employe = models.ForeignKey(EmployesInfo, blank=True,on_delete=models.CASCADE, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    paidDate = models.DateField(null=True, blank=True)
+    def __str__(self):
+        return str(f" {self.pk} " )
 

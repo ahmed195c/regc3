@@ -29,44 +29,53 @@
           <div>
             <h1>بحث عن طريق</h1>
           </div>
-          <div class="search-input-conts">
-            <label for="carNumbers">رقــــــــم المركبه</label>
+          <div class="form-group">
+            <label for="carNumbers" class="form-label"
+              >رقــــــــم المركبه</label
+            >
             <input
               type="text"
               id="carNumbers"
               name="carNumper"
+              class="input"
               placeholder="ادخل رقم المركبه هنا "
             />
           </div>
-          <div class="search-input-conts">
-            <label for="ceoN">الــــــرقم الاداري</label>
+          <div class="form-group">
+            <label for="ceoN" class="form-label">الــــــرقم الاداري</label>
             <input
               type="text"
               name="ceoN"
+              class="input"
               placeholder="ادخل الرقم الاداري هنا"
             />
           </div>
-          <div class="search-input-conts">
-            <label for="dateType"> الــــتاريخ</label>
-            <select id="dateType" name="dateType" onchange="toggleDateInput()">
+          <div class="form-group">
+            <label for="dateType" class="form-label"> الــــتاريخ</label>
+            <select
+              id="dateType"
+              name="dateType"
+              class="input"
+              onchange="toggleDateInput()"
+            >
               <option value="day">يوم</option>
               <option value="month">شهر</option>
               <option value="year">سنة</option>
             </select>
           </div>
-          <div class="search-input-conts" id="dayInput">
-            <label for="date">تاريخ استلام المركبه</label>
-            <input type="date" id="date" name="date" />
+          <div class="form-group" id="dayInput">
+            <label for="date" class="form-label">تاريخ استلام المركبه</label>
+            <input type="date" id="date" name="date" class="input" />
           </div>
-          <div class="search-input-conts" id="monthInput" style="display: none">
-            <label for="year">السنة</label>
-            <select id="year" name="year">
+          <div class="form-group" id="monthInput" style="display: none">
+            <label for="year" class="form-label">السنة</label>
+            <select id="year" name="year" class="input">
               {% for year in years %}
               <option value="{{ year }}">{{ year }}</option>
               {% endfor %}
             </select>
-            <label for="month">الشهر</label>
-            <select id="month" name="month">
+            <label for="month" class="form-label">الشهر</label>
+            <select id="month" name="month" class="input">
               <option value="1">يناير</option>
               <option value="2">فبراير</option>
               <option value="3">مارس</option>
@@ -81,9 +90,9 @@
               <option value="12">ديسمبر</option>
             </select>
           </div>
-          <div class="search-input-conts" id="yearInput" style="display: none">
-            <label for="yearOnly">السنة</label>
-            <select id="yearOnly" name="yearOnly">
+          <div class="form-group" id="yearInput" style="display: none">
+            <label for="yearOnly" class="form-label">السنة</label>
+            <select id="yearOnly" name="yearOnly" class="input">
               {% for year in years %}
               <option value="{{ year }}">{{ year }}</option>
               {% endfor %}

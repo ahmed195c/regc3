@@ -8,3 +8,76 @@
 .main-fin {
   margin: 0 auto !important;
 }
+
+.fine-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 1em;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  margin-bottom: 5px;
+  display: block;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.input-file {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.input-date,
+.input-time,
+.input-text {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.submit-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4e6b31;
+  color: white;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out, transform 0.2s ease;
+  font-size: 1em;
+}
+
+.submit-btn:hover {
+  background-color: #b59958;
+  transform: translateY(-2px);
+}
