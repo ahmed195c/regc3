@@ -14,15 +14,15 @@ class RegCarsAdmin(admin.ModelAdmin):
     search_fields = ('vType','id',"carNumber")
     list_filter = ('vType',)
 
-class FinesAccidentsAdmin(admin.ModelAdmin):
-    list_display = ('car','text','created_at','report_date')
-    search_fields = ('text','car')
-    list_filter = ('created_at',)
+# class FinesAccidentsAdmin(admin.ModelAdmin):
+#     list_display = ('car','text','report_date')
+#     search_fields = ('text','car')
+#     list_filter = ('created_at',)
 
 admin.site.register(LicenseFile)
 admin.site.register(LogsC, LogsCAdmin)
 admin.site.register(RegistredCars, RegCarsAdmin)
 admin.site.register(EmployesInfo)
 admin.site.register(InUseCars)
-admin.site.register(FinesAccidents,FinesAccidentsAdmin)
+admin.site.register(FinesAccidents)
 admin.site.register(FinesAccidentsImage)

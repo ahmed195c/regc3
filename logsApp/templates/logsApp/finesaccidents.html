@@ -86,7 +86,7 @@
 
 <h2 class="cards-title">قائمة الحوادث</h2>
 <div class="cards-container" style="direction: rtl">
-  {% for fine in fines %}
+  {% if fines %} {% for fine in fines %}
   <div class="card">
     <!-- prettier-ignore -->
     <div
@@ -129,7 +129,7 @@
       </button>
     </div>
   </div>
-  {% endfor %}
+  {% endfor %} {% endif %}
 </div>
 
 {% endblock %}
