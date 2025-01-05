@@ -2,7 +2,7 @@ import pandas as pd
 import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from logsApp.models import RegistredCars, EmployesInfo, InUseCars, LogsC, FinesAccidents, FinesAccidentsImage,LicenseFile
+from logsApp.models import RegistredCars, EmployesInfo, InUseCars, LogsC, FinesAccidents, FinesAccidentsImage,LicenseFile,FinesRecord
 from django.http import HttpResponse
 from openpyxl.styles import Font, Alignment, PatternFill
 from datetime import datetime, timedelta
@@ -206,6 +206,7 @@ def is_pdf(file):
 
 def finesAccidents(request):
     fines = FinesAccidents.objects.all()
+    fine_records = FinesRecord.objects.all()
     if request.method == "POST":
         car_number = request.POST.get('carNumber')
         emp_number = request.POST.get('empNumber')
@@ -226,6 +227,7 @@ def finesAccidents(request):
             emp_err_message = "الرقم الاداري غير صحيح"
             return render(request, "logsApp/finesaccidents.html", {
                 'fines': fines,
+                'fine_records': fine_records,
                 'emp_err_message': emp_err_message,
                 'carNumber': car_number,
                 'empNumber': emp_number,
@@ -261,7 +263,7 @@ def finesAccidents(request):
         fines_accident.save()
 
     
-    return render(request, "logsApp/finesaccidents.html", {'fines': fines})
+    return render(request, "logsApp/finesaccidents.html", {'fines': fines, 'fine_records': fine_records})
 
 def export_to_excel(request):
     dubai_tz = pytz.timezone('Asia/Dubai')
@@ -410,6 +412,12 @@ def carddetails(request, fine_id):
         'license_images': license_images
     })
 
+def markasfixed(request, fine_id):
+    fine = get_object_or_404(FinesAccidents, id=fine_id)
+    fine.fixin_date = timezone.now()
+
+    fine.save()
+    return redirect('logsApp:carddetails', fine_id=fine_id)
 def markasfixed(request, fine_id):
     fine = get_object_or_404(FinesAccidents, id=fine_id)
     fine.fixin_date = timezone.now()

@@ -1,11 +1,17 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 <div class="main-fin">
   <div class="form-container">
-    <h1 class="page-title">المخالفات</h1>
+    <h1 class="page-title">بحث عن متسبب المخافلة</h1>
     <button class="nav-link-btn show-hide-btn" onclick="toggleFineForm()">
       إضافة مخالفة
     </button>
-    <form action="{% url 'logsApp:finec'%}" method="POST" class="fine-form" id="fineForm" style="display: none; opacity: 0; transition: opacity 0.5s ease-in-out;">
+    <form
+      action="{% url 'logsApp:finec'%}"
+      method="POST"
+      class="fine-form"
+      id="fineForm"
+      style="display: none; opacity: 0; transition: opacity 0.5s ease-in-out"
+    >
       {% csrf_token %}
       <div class="form-group">
         <label for="finedate" class="form-label">تاريخ المخالفة</label>
@@ -42,7 +48,7 @@
       </div>
     </form>
   </div>
-
+  {% if finon %}
   <div class="fine-details">
     <div class="fine-incont-flex">
       <div class="car-number">
@@ -54,5 +60,6 @@
       <div class="created-at">{{finon.created_at|date:"Y-m-d h:i A" }}</div>
     </div>
   </div>
+  {% endif %}
 </div>
 {% endblock %}

@@ -5,6 +5,13 @@
   margin: 0 auto;
 }
 
+.page-title {
+  text-align: center;
+  font-size: 2em;
+  color: #4e6b31;
+  margin: 20px 0;
+}
+
 .table-container {
   height: 100%;
   overflow-y: auto;

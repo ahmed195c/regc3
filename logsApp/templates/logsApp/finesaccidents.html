@@ -2,6 +2,7 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'logsApp/fiAc.css' %}" />
 
+<h2 class="cards-title">سجل الحوادث</h2>
 <button class="nav-link-btn show-hide-btn" onclick="toggleAccidentForm()">
   إضافة حادث
 </button>
@@ -91,10 +92,9 @@
     class="input-file"
   /><br />
 
-  <button class="submit-form" type="submit">إرسال</button>
+  <button class="submit-form" type="submit">تسجيل</button>
 </form>
 
-<h2 class="cards-title">قائمة الحوادث</h2>
 <div class="cards-container" style="direction: rtl">
   {% for fine in fines %}
   <div class="card">
@@ -137,6 +137,24 @@
       <button onclick="location.href='{% url 'logsApp:carddetails' fine.id %}'">
         اظهار تفاصيل اكثر
       </button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<h2 class="cards-title">سجل المخالفات</h2>
+<div class="cards-container" style="direction: rtl">
+  {% for record in fine_records %}
+  <div class="card">
+    <div class="card-header">
+      <p>{{ record.employe.ceoName }} - {{ record.car.carNumber }}</p>
+    </div>
+    <div class="card-body">
+      <p>
+        <strong>تاريخ المخالفة:</strong> {{ record.created_at|date:"Y-m-d" }}
+      </p>
+      <p><strong>وقت المخالفة:</strong> {{ record.created_at|time:"h:i A" }}</p>
+      <p><strong>رقم السيارة:</strong> {{ record.car.carNumber }}</p>
     </div>
   </div>
   {% endfor %}
