@@ -97,16 +97,7 @@ class Migration(migrations.Migration):
                 ('car', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='logsApp.registredcars')),
             ],
         ),
-        migrations.CreateModel(
-            name='FinesRecord',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, null=True)),
-                ('paidDate', models.DateField(blank=True, null=True)),
-                ('employe', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='logsApp.employesinfo')),
-                ('car', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='logsApp.registredcars')),
-            ],
-        ),
+
         migrations.AddIndex(
             model_name='logsc',
             index=models.Index(fields=['Logs_employee_ins', 'carIsInUse'], name='logsApp_log_Logs_em_1a66d2_idx'),

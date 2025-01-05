@@ -1,6 +1,7 @@
 {% extends "logsApp/layout.html" %} {% block body %} {% load static %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'logsApp/fiAc.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'logsApp/finesstyle.css' %}" />
 
 <h2 class="cards-title">سجل الحوادث</h2>
 <button class="nav-link-btn show-hide-btn" onclick="toggleAccidentForm()">
@@ -59,9 +60,7 @@
     class="input-file"
   /><br />
 
-  <label for="licenseFiles" class="form-label"
-    >تحميل رخصة القيادة (PDF أو صورة)</label
-  >
+  <label for="licenseFiles" class="form-label">تحميل رخصة القيادة (PDF أو صورة)</label>
   <input
     type="file"
     id="licenseFiles"
@@ -71,9 +70,7 @@
     class="input-file"
   /><br />
 
-  <label for="carPaperworkFile" class="form-label"
-    >تحميل أوراق السيارة (PDF)</label
-  >
+  <label for="carPaperworkFile" class="form-label">تحميل أوراق السيارة (PDF)</label>
   <input
     type="file"
     id="carPaperworkFile"
@@ -93,6 +90,54 @@
   /><br />
 
   <button class="submit-form" type="submit">تسجيل</button>
+</form>
+
+<h2 class="cards-title">سجل المخالفات</h2>
+<button class="nav-link-btn show-hide-btn" onclick="toggleFineForm()">
+  إضافة مخالفة
+</button>
+
+<form
+  action="{% url 'logsApp:finec' %}"
+  method="POST"
+  class="fine-form"
+  id="fineForm"
+  style="display: none; opacity: 0; transition: opacity 0.5s ease-in-out"
+>
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="finedate" class="form-label">تاريخ المخالفة</label>
+    <input
+      type="date"
+      name="finedate"
+      id="finedate"
+      class="input-date"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="finetime" class="form-label">وقت المخالفة</label>
+    <input
+      type="time"
+      name="finetime"
+      id="finetime"
+      class="input-time"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <label for="finecar" class="form-label">رقم السيارة</label>
+    <input
+      type="text"
+      name="finecar"
+      id="finecar"
+      class="input-text"
+      required
+    />
+  </div>
+  <div class="form-group">
+    <input type="submit" value="إرسال" class="submit-btn" />
+  </div>
 </form>
 
 <div class="cards-container" style="direction: rtl">
@@ -142,7 +187,6 @@
   {% endfor %}
 </div>
 
-<h2 class="cards-title">سجل المخالفات</h2>
 <div class="cards-container" style="direction: rtl">
   {% for record in fine_records %}
   <div class="card">

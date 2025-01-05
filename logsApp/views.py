@@ -363,12 +363,18 @@ def fineC(request):
                                       created_at__lte = combined_fine_datetime,
                                       ended_at__gte = combined_fine_datetime
                                       )
-            return render(request, "logsApp/finespage.html",{"finon":finon})
+            # Save the fine details in the FinesRecord model
+            FinesRecord.objects.create(
+                car=car_ins,
+                employe=finon.Logs_employee_ins,
+                created_at=combined_fine_datetime
+            )
+            return redirect('logsApp:finesAccidents')
         except RegistredCars.DoesNotExist:
             print(f"Car with number {fine_car_number} does not exist.")
         except Exception as e:
             print(f"An error occurred: {e}")
-    return render(request,"logsApp/finespage.html",)
+    return render(request, "logsApp/finespage.html")
 
 def carddetails(request, fine_id):
     fine = get_object_or_404(FinesAccidents, id=fine_id)
