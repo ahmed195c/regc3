@@ -1,4 +1,5 @@
 {% extends "logsApp/layout.html" %} {% block body %}
+
 <div class="main-fin">
   <div class="form-container">
     <h1 class="page-title">بحث عن متسبب المخافلة</h1>
@@ -48,18 +49,42 @@
       </div>
     </form>
   </div>
-  {% if finon %}
-  <div class="fine-details">
-    <div class="fine-incont-flex">
-      <div class="car-number">
-        {{finon.Logs_car_ins.carNumber}}
-        <p class="car-number-label">رقم المركبه</p>
+
+  <div class="cards-container" style="direction: rtl">
+    {% for i in allFines %}
+    <div class="card">
+      <div
+        class="card-header"
+        style="background-color: {% if i.paidDate %}lightgreen{% else %}red{% endif %};"
+      >
+        <!-- prettier-ignore -->
+        <p>
+          {% if i.paidDate %} المخالفة مدفوعة {% else %} المخالفة غير مدفوعة {% endif %}
+        </p>
+        <!-- prettier-ignore -->
       </div>
-      <div class="ceo-name">{{finon.Logs_employee_ins.ceoName}}</div>
-      <div class="ceo-number">{{finon.Logs_employee_ins.ceoNumber}}</div>
-      <div class="created-at">{{finon.created_at|date:"Y-m-d h:i A" }}</div>
+      <div class="card-body">
+        <p><strong>رقم السيارة:</strong> {{ i.car.carNumber }}</p>
+        <p><strong>اسم الموظف:</strong> {{ i.employe.ceoName }}</p>
+        <p><strong>الرقم الإداري:</strong> {{ i.employe.ceoNumber }}</p>
+        <p><strong>تاريخ المخالفة:</strong> {{ i.created_at|date:"Y-m-d" }}</p>
+        <p><strong>وقت المخالفة:</strong> {{ i.created_at|time:"h:i A" }}</p>
+        {% if i.paid_fine_image %}
+        <p><strong>صورة الدفع:</strong></p>
+        <img
+          src="{{ i.paid_fine_image.url }}"
+          alt="Paid Fine Image"
+          class="large-image"
+        />
+        {% endif %}
+      </div>
+      <div class="card-footer">
+        <button onclick="location.href='{% url 'logsApp:fineDetails' i.id %}'">
+          عرض التفاصيل
+        </button>
+      </div>
     </div>
+    {% endfor %}
   </div>
-  {% endif %}
 </div>
 {% endblock %}

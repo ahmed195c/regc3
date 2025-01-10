@@ -107,7 +107,7 @@ def returnCar(request):
             emp_instance = EmployesInfo.objects.get(ceoNumber=ceo_number)
         except EmployesInfo.DoesNotExist:
             ret_err_msg = "الرقم الاداري غير صحيح"
-            return render(request, "logsApp/registerCar.html", {
+            return render(request, "logsApp/registerCar.html",{
                 "retErrm": ret_err_msg,
                 "l": all_in_use_cars,
                 "ceonumber": "",
@@ -204,9 +204,8 @@ def logsfunc(request):
 def is_pdf(file):
     return file.file.url.endswith(".pdf")
 
-def finesAccidents(request):
+def AccidentsRecords(request):
     fines = FinesAccidents.objects.all()
-    fine_records = FinesRecord.objects.all()
     if request.method == "POST":
         car_number = request.POST.get('carNumber')
         emp_number = request.POST.get('empNumber')
@@ -220,32 +219,30 @@ def finesAccidents(request):
             car_instance = RegistredCars.objects.get(carNumber=car_number)
         except RegistredCars.DoesNotExist:
             car_instance = None
+            
+        emp_instance = None
+        if emp_number:
+            try:
+                emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number)
+            except EmployesInfo.DoesNotExist:
+                emp_err_message = "الرقم الاداري غير صحيح"
+                return render(request, "logsApp/accidentsPage.html", {
+                    'form_open': True,
+                    'fines': fines,
+                    'emp_err_message': emp_err_message,
+                    'images': images,
+                    'carNumber': car_number,
+                    'empNumber': emp_number,
+                    'text': text,
+                    'reportPdfFile': report_pdf_file,
+                    'carPaperworkFile': car_paperwork_file,
+                    'licenseFiles': license_files
+                })
 
-        try:
-            emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number)
-        except EmployesInfo.DoesNotExist:
-            emp_err_message = "الرقم الاداري غير صحيح"
-            return render(request, "logsApp/finesaccidents.html", {
-                'fines': fines,
-                'fine_records': fine_records,
-                'emp_err_message': emp_err_message,
-                'carNumber': car_number,
-                'empNumber': emp_number,
-                'text': text,
-                'reportPdfFile': report_pdf_file,
-                'carPaperworkFile': car_paperwork_file,
-                'licenseFiles': license_files,
-                'images': images,
-                'form_open': True
-            })
-
-        # Create the FinesAccidents object without files first
         fines_accident = FinesAccidents.objects.create(
             car=car_instance,
-            text=text
-        )
+            text=text)
 
-        # Add files after the object has been created and has an ID
         if report_pdf_file:
             fines_accident.report_pdf_file = report_pdf_file
         if car_paperwork_file:
@@ -262,8 +259,7 @@ def finesAccidents(request):
 
         fines_accident.save()
 
-    
-    return render(request, "logsApp/finesaccidents.html", {'fines': fines, 'fine_records': fine_records})
+    return render(request, "logsApp/accidentsPage.html", {'fines': fines, 'form_open': False})
 
 def export_to_excel(request):
     dubai_tz = pytz.timezone('Asia/Dubai')
@@ -349,13 +345,15 @@ def addNewEmp(request):
     return render(request,"logsApp/addNewEmp.html")
 
 def fineC(request):
+    finon = None
+    allFines = FinesRecord.objects.all()
     if request.method == "POST":
         fine_date = request.POST.get('finedate')
         fine_time = request.POST.get('finetime')
         fine_car_number = request.POST.get('finecar')
         dubai_tz = pytz.timezone('Asia/Dubai')
         combined_fine_datetime = dubai_tz.localize(timezone.datetime.strptime(f"{fine_date} {fine_time}", '%Y-%m-%d %H:%M'))
-        print(combined_fine_datetime.time())
+        
         try:
             car_ins = RegistredCars.objects.get(carNumber=fine_car_number)
 
@@ -368,14 +366,16 @@ def fineC(request):
                 car=car_ins,
                 employe=finon.Logs_employee_ins,
                 created_at=combined_fine_datetime
-            )
-            return redirect('logsApp:finesAccidents')
+            )               
+            return redirect('logsApp:finespage')
         except RegistredCars.DoesNotExist:
             print(f"Car with number {fine_car_number} does not exist.")
         except Exception as e:
             print(f"An error occurred: {e}")
-    return render(request, "logsApp/finespage.html")
 
+        return render(request, "logsApp/finespage.html", {'finon': finon})
+    return render(request, "logsApp/finespage.html", {'allFines':allFines,'finon': finon})
+    
 def carddetails(request, fine_id):
     fine = get_object_or_404(FinesAccidents, id=fine_id)
     if request.method == "POST":
@@ -429,3 +429,22 @@ def markasfixed(request, fine_id):
     fine.fixin_date = timezone.now()
     fine.save()
     return redirect('logsApp:carddetails', fine_id=fine_id)
+
+def fineDetails(request, fine_id):
+    fine = get_object_or_404(FinesRecord, id=fine_id)
+    if request.method == "POST":
+        paid_fine_image = request.FILES.get('paidFineImage')
+        if paid_fine_image:
+            fine.paid_fine_image = paid_fine_image
+            fine.paidDate = timezone.now().date()
+            fine.save()
+            
+    return render(request, 'logsApp/fineDetails.html', {'fine': fine})
+
+def deleteFineImage(request, fine_id):
+    fine = get_object_or_404(FinesRecord, id=fine_id)
+    if fine.paid_fine_image:
+        fine.paid_fine_image.delete()
+        fine.paidDate = None
+        fine.save()
+    return redirect('logsApp:fineDetails', fine_id=fine_id)
