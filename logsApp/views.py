@@ -204,6 +204,17 @@ def logsfunc(request):
 def is_pdf(file):
     return file.file.url.endswith(".pdf")
 
+def carsHistory(request):
+    cars = RegistredCars.objects.all()
+    return render(request, "logsApp/carshistroy.html", {'cars': cars})
+
+def carHistoryDetails(request, car_id):
+    car = get_object_or_404(RegistredCars, id=car_id)
+    return render(request, "logsApp/carhistorydetails.html", {'car': car})
+
+
+
+
 def finesAccidents(request):
     fines = FinesAccidents.objects.all()
     if request.method == "POST":

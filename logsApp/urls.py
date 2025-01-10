@@ -13,4 +13,5 @@ urlpatterns = [
     path("finesAccidents/", views.finesAccidents, name="finesAccidents"),
     path('carddetails/<int:fine_id>/', views.carddetails, name='carddetails'),
     path('markasfixed/<int:fine_id>/', views.markasfixed, name='markasfixed'),
+    path("carsHistory", views.carsHistory, name="carsHistory"),
 ]

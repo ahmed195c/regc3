@@ -69,7 +69,7 @@ class LogsC(models.Model):
 
 
 class FinesAccidents(models.Model):
-    car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, null=True)
+    car = models.ForeignKey(RegistredCars, related_name="finess", on_delete=models.CASCADE, null=True)
     employees = models.ManyToManyField(EmployesInfo, blank=True)
     text = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)

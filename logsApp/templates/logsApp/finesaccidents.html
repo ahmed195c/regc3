@@ -101,12 +101,8 @@
     <div class="card-body">
       <p><strong>رقم المركبه:</strong> {{ fine.car.carNumber }}</p>
       <p><strong>وصف الحادث:</strong> {{ fine.text }}</p>
-      <p>
-        <strong>تاريخ تسجيل الحادث:</strong> {{ fine.created_at|date:"Y-m-d" }}
-      </p>
-      <p>
-        <strong>وقت تسجيل الحادث:</strong> {{ fine.created_at|time:"h:i A" }}
-      </p>
+      <p></p>
+      <p></p>
       {% if fine.employees.all %}
       <p><strong>المتسبب في الحادث</strong></p>
       <ul>

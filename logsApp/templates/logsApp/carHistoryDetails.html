@@ -1,0 +1,27 @@
+{% block body %}
+
+<div>
+  <div><h1>سجل المركبات</h1></div>
+  <div>
+    <table>
+      <tr>
+        <th>رقم المركبة</th>
+        <th>الموظف</th>
+        <th>التاريخ</th>
+        <th>الوصف</th>
+        <th>تقرير الحادث</th>
+        <th>رخصة القيادة</th>
+      </tr>
+      {% for i in car %}
+      <tr>
+        <td>{{ i.carNumber }}</td>
+        <td>{{ i.empNumber }}</td>
+        <td>{{ i.date }}</td>
+        <td>{{ i.text }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+{% endblock %}
