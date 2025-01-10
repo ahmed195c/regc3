@@ -166,6 +166,14 @@
 }
 
 .card button:hover,
+.card-id-container {
+  position: absolute;
+  top: 150px;
+  right: 50px;
+  background-color: #b59958;
+  padding: 10px;
+}
+
 .downladbtn a:hover {
   background-color: #b59958;
   transform: translateY(-2px);

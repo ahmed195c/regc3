@@ -97,5 +97,7 @@ class FinesRecord (models.Model):
     employe = models.ForeignKey(EmployesInfo, blank=True,on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     paidDate = models.DateField(null=True, blank=True)
-    paid_fine_image = models.ImageField(upload_to='paid_fines/', null=True, blank=True)
+    paid_fine_image = models.FileField(upload_to='paid_fines/', null=True, blank=True, max_length=500)
+    def __str__(self):
+        return str(f" {self.pk} ")
 

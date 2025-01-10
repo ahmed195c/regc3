@@ -14,6 +14,10 @@
     </p>
   </div>
   <div class="card-details">
+    <div class="card-id-container">
+      <strong>رقم البطاقه :</strong>
+      <strong class="CardIdNumber"> {{ fine.id }} </strong>
+    </div>
     <div>
       <h2>رقم المركبه: {{ fine.car.carNumber }}</h2>
     </div>
@@ -90,7 +94,9 @@
       />
       {% endfor %}
     </div>
-    {% if not fine.report_pdf_file or not fine.car_paperwork_file or not fine.images.exists or not fine.license_files.exists or not fine.employees.exists %}
+    {% if not fine.report_pdf_file or not fine.car_paperwork_file or not
+    fine.images.exists or not fine.license_files.exists or not
+    fine.employees.exists %}
     <div>
       <form
         method="POST"

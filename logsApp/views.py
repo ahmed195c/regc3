@@ -201,25 +201,10 @@ def logsfunc(request):
 
     return render(request, "logsApp/logs.html", {'page_obj': page_obj, 'years': years})
 
-def is_pdf(file):
-    return file.file.url.endswith(".pdf")
+def is_pdf(file_field):
+    return file_field.url.endswith(".pdf")
 
-<<<<<<< HEAD
-def carsHistory(request):
-    cars = RegistredCars.objects.all()
-    return render(request, "logsApp/carshistroy.html", {'cars': cars})
-
-def carHistoryDetails(request, car_id):
-    car = get_object_or_404(RegistredCars, id=car_id)
-    return render(request, "logsApp/carhistorydetails.html", {'car': car})
-
-
-
-
-def finesAccidents(request):
-=======
 def AccidentsRecords(request):
->>>>>>> 5a276268bfc23f779f5a7629ffe6bfc6ad0b957c
     fines = FinesAccidents.objects.all()
     if request.method == "POST":
         car_number = request.POST.get('carNumber')
@@ -447,14 +432,28 @@ def markasfixed(request, fine_id):
 
 def fineDetails(request, fine_id):
     fine = get_object_or_404(FinesRecord, id=fine_id)
+    fine_files = []
+    fine_images = []
+    if fine.paid_fine_image:
+        if is_pdf(fine.paid_fine_image):
+            fine_files.append(fine.paid_fine_image)
+        else:
+            fine_images.append(fine.paid_fine_image)
     if request.method == "POST":
         paid_fine_image = request.FILES.get('paidFineImage')
         if paid_fine_image:
             fine.paid_fine_image = paid_fine_image
             fine.paidDate = timezone.now().date()
             fine.save()
-            
-    return render(request, 'logsApp/fineDetails.html', {'fine': fine})
+            fine = get_object_or_404(FinesRecord, id=fine_id)
+            fine_files = []
+            fine_images = []
+            if fine.paid_fine_image:
+                if is_pdf(fine.paid_fine_image):
+                    fine_files.append(fine.paid_fine_image)
+                else:
+                    fine_images.append(fine.paid_fine_image)
+    return render(request, 'logsApp/fineDetails.html', {'fine': fine, 'fine_files': fine_files, 'fine_images': fine_images})
 
 def deleteFineImage(request, fine_id):
     fine = get_object_or_404(FinesRecord, id=fine_id)
