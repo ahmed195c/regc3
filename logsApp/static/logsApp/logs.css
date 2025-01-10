@@ -5,6 +5,13 @@
   margin: 0 auto;
 }
 
+.page-title {
+  text-align: center;
+  font-size: 2em;
+  color: #4e6b31;
+  margin: 20px 0;
+}
+
 .table-container {
   height: 100%;
   overflow-y: auto;
@@ -58,7 +65,7 @@ tbody tr:hover td {
 
 .filters-cont {
   width: 100%;
-  max-width: 100%;
+  max-width: 500px;
   margin: 40px auto;
   padding: 20px;
   border: 1px solid #ddd;
@@ -71,7 +78,24 @@ tbody tr:hover td {
 .filter-cont {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  margin-bottom: 5px;
+  display: block;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
 }
 
 .search-input-conts {

@@ -8,7 +8,10 @@
     <link href="{% static 'logsApp/reg.css'%}" rel="stylesheet" />
     <link href="{% static 'logsApp/logs.css'%}" rel="stylesheet" />
     <link href="{% static 'logsApp/finesstyle.css'%}" rel="stylesheet" />
-    <link href="{% static 'logsApp/fiAc.css'%}" rel="stylesheet" />
+    <link
+      href="{% static 'logsApp/accidentsPageStyle.css'%}"
+      rel="stylesheet"
+    />
     <script src="{% static 'logsApp/js/script.js' %}" defer></script>
 
     <title>Document</title>
@@ -34,7 +37,7 @@
                 اضافة موظف جديد
               </button>
             </li>
-            {% endcomment %} {% comment %}
+            {% endcomment %}
             <li>
               <button
                 class="nav-link-btn-unique"
@@ -43,19 +46,10 @@
                 حصر المخالفات
               </button>
             </li>
-            {% endcomment %}
             <li>
               <button
                 class="nav-link-btn-unique"
-                onclick="window.location='{% url 'logsApp:carsHistory' %}'"
-              >
-                سجل المركبات
-              </button>
-            </li>
-            <li>
-              <button
-                class="nav-link-btn-unique"
-                onclick="window.location='{% url 'logsApp:finesAccidents' %}'"
+                onclick="window.location='{% url 'logsApp:AccidentsRecords' %}'"
               >
                 سجل المخالفات و الحوادث
               </button>

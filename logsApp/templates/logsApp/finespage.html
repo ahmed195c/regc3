@@ -1,26 +1,90 @@
 {% extends "logsApp/layout.html" %} {% block body %}
+
 <div class="main-fin">
-  <div>
-    <h1>المخالفات</h1>
-    <form action="{% url 'logsApp:finec'%}" method="POST">
+  <div class="form-container">
+    <h1 class="page-title">بحث عن متسبب المخافلة</h1>
+    <button class="nav-link-btn show-hide-btn" onclick="toggleFineForm()">
+      إضافة مخالفة
+    </button>
+    <form
+      action="{% url 'logsApp:finec'%}"
+      method="POST"
+      class="fine-form"
+      id="fineForm"
+      style="display: none; opacity: 0; transition: opacity 0.5s ease-in-out"
+    >
       {% csrf_token %}
-      <input type="date" name="finedate" required />
-      <input type="time" name="finetime" required />
-      <input type="text" name="finecar" required />
-      <input type="submit" value="submit btn" />
+      <div class="form-group">
+        <label for="finedate" class="form-label">تاريخ المخالفة</label>
+        <input
+          type="date"
+          name="finedate"
+          id="finedate"
+          class="input-date"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="finetime" class="form-label">وقت المخالفة</label>
+        <input
+          type="time"
+          name="finetime"
+          id="finetime"
+          class="input-time"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="finecar" class="form-label">رقم السيارة</label>
+        <input
+          type="text"
+          name="finecar"
+          id="finecar"
+          class="input-text"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <input type="submit" value="إرسال" class="submit-btn" />
+      </div>
     </form>
   </div>
 
-  <div>
-    <div class="fine-incont-flex">
-      <div>
-        {{finon.Logs_car_ins.carNumber}}
-        <p>رقم السياره</p>
+  <div class="cards-container" style="direction: rtl">
+    {% for i in allFines %}
+    <div class="card">
+      <div
+        class="card-header"
+        style="background-color: {% if i.paidDate %}lightgreen{% else %}red{% endif %};"
+      >
+        <!-- prettier-ignore -->
+        <p>
+          {% if i.paidDate %} المخالفة مدفوعة {% else %} المخالفة غير مدفوعة {% endif %}
+        </p>
+        <!-- prettier-ignore -->
       </div>
-      <div>{{finon.Logs_employee_ins.ceoName}}</div>
-      <div>{{finon.Logs_employee_ins.ceoNumber}}</div>
-      <div>{{finon.created_at|date:"Y-m-d h:i A" }}</div>
+      <div class="card-body">
+        <p><strong>رقم السيارة:</strong> {{ i.car.carNumber }}</p>
+        <p><strong>اسم الموظف:</strong> {{ i.employe.ceoName }}</p>
+        <p><strong>الرقم الإداري:</strong> {{ i.employe.ceoNumber }}</p>
+        <p><strong>تاريخ المخالفة:</strong> {{ i.created_at|date:"Y-m-d" }}</p>
+        <p><strong>وقت المخالفة:</strong> {{ i.created_at|time:"h:i A" }}</p>
+        {% if i.paid_fine_image %}
+        <p><strong>صورة الدفع:</strong></p>
+        <img
+          src="{{ i.paid_fine_image.url }}"
+          alt="Paid Fine Image"
+          class="large-image"
+        />
+        {% endif %}
+      </div>
+      <div class="card-footer">
+        <button onclick="location.href='{% url 'logsApp:fineDetails' i.id %}'">
+          عرض التفاصيل
+        </button>
+      </div>
     </div>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}

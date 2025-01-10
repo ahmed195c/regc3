@@ -1,21 +1,27 @@
 {% extends "logsApp/layout.html" %} {% block body %} {% load static %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'logsApp/fiAc.css' %}" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'logsApp/accidentsPageStyle.css' %}"
+/>
 
-<button class="nav-link-btn show-hide-btn" onclick="toggleForm()">
+<h2 class="cards-title">سجل الحوادث</h2>
+<button class="nav-link-btn show-hide-btn" onclick="toggleAccidentForm()">
   إضافة حادث
 </button>
 
 <form
+  class="fine-form addEventForm"
   method="POST"
   enctype="multipart/form-data"
-  class="addEventForm"
   id="addEventForm"
-  style="display: {% if form_open %}block{% else %}none{% endif %};"
+  style="display: {% if form_open %}block{% else %}none{% endif %}; opacity: {% if form_open %}1{% else %}0{% endif %}; transition: opacity 0.5s ease-in-out;"
 >
   {% csrf_token %}
-  <label for="carNumber">رقم المركبة</label>
+  <label for="carNumber" class="form-label">رقم المركبة</label>
   <input
+    class="input"
     type="text"
     id="carNumber"
     name="carNumber"
@@ -23,8 +29,9 @@
     required
   /><br />
 
-  <label for="empNumber">رقم الموظف</label>
+  <label for="empNumber" class="form-label">رقم الموظف</label>
   <input
+    class="input"
     type="text"
     id="empNumber"
     name="empNumber"
@@ -44,47 +51,55 @@
     {% endif %}
   </div>
 
-  <label for="text">وصف الحادث</label>
-  <textarea id="text" name="text">{{ text }}</textarea><br />
+  <label for="text" class="form-label">وصف الحادث</label>
+  <textarea id="text" name="text" class="textarea">{{ text }}</textarea><br />
 
-  <label for="reportPdfFile">تحميل تقرير (PDF)</label>
+  <label for="reportPdfFile" class="form-label">تحميل تقرير (PDF)</label>
   <input
     type="file"
     id="reportPdfFile"
     name="reportPdfFile"
     accept="application/pdf"
+    class="input-file"
+    value="{{ reportPdfFile }}"
   /><br />
 
-  <label for="licenseFiles">تحميل رخصة القيادة (PDF أو صورة)</label>
+  <label for="licenseFiles" class="form-label"
+    >تحميل رخصة القيادة (PDF أو صورة)</label
+  >
   <input
     type="file"
     id="licenseFiles"
     name="licenseFiles"
     accept="application/pdf,image/*"
     multiple
+    class="input-file"
   /><br />
 
-  <label for="carPaperworkFile">تحميل أوراق السيارة (PDF)</label>
+  <label for="carPaperworkFile" class="form-label"
+    >تحميل أوراق السيارة (PDF)</label
+  >
   <input
     type="file"
     id="carPaperworkFile"
     name="carPaperworkFile"
     accept="application/pdf"
+    class="input-file"
   /><br />
 
-  <label for="images">تحميل الصور</label>
+  <label for="images" class="form-label">تحميل الصور</label>
   <input
     type="file"
     id="images"
     name="images"
     accept="image/*"
     multiple
+    class="input-file"
   /><br />
 
-  <button class="submit-form" type="submit">إرسال</button>
+  <button class="submit-form" type="submit">تسجيل</button>
 </form>
 
-<h2 class="cards-title">قائمة الحوادث</h2>
 <div class="cards-container" style="direction: rtl">
   {% if fines %} {% for fine in fines %}
   <div class="card">
@@ -126,6 +141,7 @@
     </div>
   </div>
   {% endfor %} {% endif %}
+</div>
 </div>
 
 {% endblock %}

@@ -1,0 +1,50 @@
+{% extends "logsApp/layout.html" %} {% block body %}
+<div class="fine-details-container">
+  <h1 class="page-title">تفاصيل المخالفة</h1>
+  <div class="fine-details">
+    <p><strong>رقم السيارة:</strong> {{ fine.car.carNumber }}</p>
+    <p><strong>اسم الموظف:</strong> {{ fine.employe.ceoName }}</p>
+    <p><strong>الرقم الإداري:</strong> {{ fine.employe.ceoNumber }}</p>
+    <p><strong>تاريخ المخالفة:</strong> {{ fine.created_at|date:"Y-m-d" }}</p>
+    <p><strong>وقت المخالفة:</strong> {{ fine.created_at|time:"h:i A" }}</p>
+    <p><strong>تاريخ الدفع:</strong> {{ fine.paidDate|date:"Y-m-d" }}</p>
+    {% if fine.paid_fine_image %}
+    <p><strong>صورة الدفع:</strong></p>
+    <img
+      src="{{ fine.paid_fine_image.url }}"
+      alt="Paid Fine Image"
+      class="large-image"
+    />
+    <form method="POST" action="{% url 'logsApp:deleteFineImage' fine.id %}">
+      {% csrf_token %}
+      <button type="submit" class="submit-form">حذف الصورة</button>
+    </form>
+    {% endif %}
+  </div>
+  {% if not fine.paidDate %}
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="fineDate" class="form-label">تاريخ الدفع</label>
+    <input
+      type="date"
+      id="fineDate"
+      name="fineDate"
+      class="input-date"
+      required
+    /><br />
+    <label for="paidFineImage" class="form-label">تحميل صورة الدفع</label>
+    <input
+      type="file"
+      id="paidFineImage"
+      name="paidFineImage"
+      accept="image/*"
+      class="input-file"
+    /><br />
+    <button type="submit" class="submit-form">حفظ</button>
+  </form>
+  {% endif %}
+  <button onclick="window.location='{% url 'logsApp:finec' %}'">
+    العودة إلى صفحة المخالفات
+  </button>
+</div>
+{% endblock %}

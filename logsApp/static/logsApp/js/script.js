@@ -49,11 +49,32 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // forms show hide button
-function toggleForm() {
-  var form = document.getElementById("addEventForm");
-  if (form.style.display === "none") {
+function toggleFineForm() {
+  var form = document.getElementById("fineForm");
+  if (form.style.display === "none" || form.style.opacity === "0") {
     form.style.display = "block";
+    setTimeout(function () {
+      form.style.opacity = "1";
+    }, 10);
   } else {
-    form.style.display = "none";
+    form.style.opacity = "0";
+    setTimeout(function () {
+      form.style.display = "none";
+    }, 500);
+  }
+}
+
+function toggleAccidentForm() {
+  var form = document.getElementById("addEventForm");
+  if (form.style.display === "none" || form.style.opacity === "0") {
+    form.style.display = "block";
+    setTimeout(function () {
+      form.style.opacity = "1";
+    }, 10);
+  } else {
+    form.style.opacity = "0";
+    setTimeout(function () {
+      form.style.display = "none";
+    }, 500);
   }
 }
