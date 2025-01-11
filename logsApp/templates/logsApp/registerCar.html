@@ -1,4 +1,4 @@
-{% extends "logsApp/layout.html" %} {% block body %}
+{% extends "logsApp/layout.html" %} {% load static %} {% block body %}
 <div class="main">
   <h1>{{inUseErr}}</h1>
 
@@ -39,6 +39,7 @@
         {% csrf_token %}
         <div class="input-cont full-size">
           <div class="full-size"><h2>لاستلام المركبه</h2></div>
+
           <label class="labels" for="ceoNumber">الرقم الاداري</label>
           <input
             class="inpute"

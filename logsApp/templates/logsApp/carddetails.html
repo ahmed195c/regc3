@@ -94,9 +94,7 @@
       />
       {% endfor %}
     </div>
-    {% if not fine.report_pdf_file or not fine.car_paperwork_file or not
-    fine.images.exists or not fine.license_files.exists or not
-    fine.employees.exists %}
+    {% if not fine.report_pdf_file or not fine.car_paperwork_file or not fine.images.exists or not fine.license_files.exists or not fine.employees.exists %}
     <div>
       <form
         method="POST"

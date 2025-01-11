@@ -2,7 +2,7 @@ import pandas as pd
 import re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from logsApp.models import RegistredCars, EmployesInfo, InUseCars, LogsC, FinesAccidents, FinesAccidentsImage,LicenseFile,FinesRecord
+from logsApp.models import RegistredCars, EmployesInfo, InUseCars, LogsC, AccidentsRecord, FinesAccidentsImage, LicenseFile, FinesRecord
 from django.http import HttpResponse
 from openpyxl.styles import Font, Alignment, PatternFill
 from datetime import datetime, timedelta
@@ -10,6 +10,8 @@ from django.db.models import Q
 from django.db import IntegrityError
 import pytz
 from django.core.paginator import Paginator
+import shutil
+import os
 
 def remove_non_numeric(s):
     return re.sub(r'\D', '', s)
@@ -205,7 +207,7 @@ def is_pdf(file_field):
     return file_field.url.endswith(".pdf")
 
 def AccidentsRecords(request):
-    fines = FinesAccidents.objects.all()
+    fines = AccidentsRecord.objects.all()
     if request.method == "POST":
         car_number = request.POST.get('carNumber')
         emp_number = request.POST.get('empNumber')
@@ -239,25 +241,25 @@ def AccidentsRecords(request):
                     'licenseFiles': license_files
                 })
 
-        fines_accident = FinesAccidents.objects.create(
+        accidents_record = AccidentsRecord.objects.create(
             car=car_instance,
             text=text)
 
         if report_pdf_file:
-            fines_accident.report_pdf_file = report_pdf_file
+            accidents_record.report_pdf_file = report_pdf_file
         if car_paperwork_file:
-            fines_accident.car_paperwork_file = car_paperwork_file
+            accidents_record.car_paperwork_file = car_paperwork_file
 
         if emp_instance:
-            fines_accident.employees.add(emp_instance)
+            accidents_record.employees.add(emp_instance)
 
         for image in images:
-            FinesAccidentsImage.objects.create(fines_accident=fines_accident, image=image)
+            FinesAccidentsImage.objects.create(accidents_record=accidents_record, image=image)
 
         for license_file in license_files:
-            LicenseFile.objects.create(fines_accident=fines_accident, file=license_file)
+            LicenseFile.objects.create(accidents_record=accidents_record, file=license_file)
 
-        fines_accident.save()
+        accidents_record.save()
 
     return render(request, "logsApp/accidentsPage.html", {'fines': fines, 'form_open': False})
 
@@ -377,7 +379,7 @@ def fineC(request):
     return render(request, "logsApp/finespage.html", {'allFines':allFines,'finon': finon})
     
 def carddetails(request, fine_id):
-    fine = get_object_or_404(FinesAccidents, id=fine_id)
+    fine = get_object_or_404(AccidentsRecord, id=fine_id)
     if request.method == "POST":
         report_pdf_file = request.FILES.get('reportPdfFile')
         car_paperwork_file = request.FILES.get('carPaperworkFile')
@@ -391,10 +393,10 @@ def carddetails(request, fine_id):
             fine.car_paperwork_file = car_paperwork_file
 
         for image in images:
-            FinesAccidentsImage.objects.create(fines_accident=fine, image=image)
+            FinesAccidentsImage.objects.create(accidents_record=fine, image=image)
 
         for license_file in license_files:
-            LicenseFile.objects.create(fines_accident=fine, file=license_file)
+            LicenseFile.objects.create(accidents_record=fine, file=license_file)
 
         if emp_number:
             try:
@@ -408,7 +410,7 @@ def carddetails(request, fine_id):
     license_files = []
     license_images = []
     for license_file in fine.license_files.all():
-        if is_pdf(license_file):
+        if is_pdf(license_file.file):
             license_files.append(license_file)
         else:
             license_images.append(license_file)
@@ -419,13 +421,13 @@ def carddetails(request, fine_id):
     })
 
 def markasfixed(request, fine_id):
-    fine = get_object_or_404(FinesAccidents, id=fine_id)
+    fine = get_object_or_404(AccidentsRecord, id=fine_id)
     fine.fixin_date = timezone.now()
 
     fine.save()
     return redirect('logsApp:carddetails', fine_id=fine_id)
 def markasfixed(request, fine_id):
-    fine = get_object_or_404(FinesAccidents, id=fine_id)
+    fine = get_object_or_404(AccidentsRecord, id=fine_id)
     fine.fixin_date = timezone.now()
     fine.save()
     return redirect('logsApp:carddetails', fine_id=fine_id)
@@ -458,7 +460,12 @@ def fineDetails(request, fine_id):
 def deleteFineImage(request, fine_id):
     fine = get_object_or_404(FinesRecord, id=fine_id)
     if fine.paid_fine_image:
-        fine.paid_fine_image.delete()
+        # Get the directory path
+        directory = os.path.dirname(fine.paid_fine_image.path)
+        # Delete the entire directory
+        shutil.rmtree(directory)
+        # Clear the fields in the database
+        fine.paid_fine_image = None
         fine.paidDate = None
         fine.save()
     return redirect('logsApp:fineDetails', fine_id=fine_id)

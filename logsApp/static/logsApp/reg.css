@@ -142,13 +142,6 @@
   flex-direction: column;
 }
 
-.inpute {
-  padding: 5px;
-  width: 250px;
-  height: 40px;
-  border: 2px solid #4e6b31;
-}
-
 .forms-cont {
   margin-top: 20px;
   grid-row-start: 1;
@@ -189,6 +182,7 @@
 }
 
 .inpute {
+  margin: 10px;
   width: 100%;
   padding: 10px;
   border: 2px solid #c1c1c1;
