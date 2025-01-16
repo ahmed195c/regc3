@@ -104,6 +104,9 @@ class FinesRecord(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     paidDate = models.DateField(null=True, blank=True)
     paid_fine_image = models.FileField(upload_to=paid_fine_image_upload_to, null=True, blank=True, max_length=500)
+    fine_date = models.DateField(null=True, blank=True)
+    fine_time = models.TimeField(null=True, blank=True)
+    fine_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     def delete(self, *args, **kwargs):
         if self.paid_fine_image:

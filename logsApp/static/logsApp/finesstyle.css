@@ -57,6 +57,27 @@
   border-radius: 4px;
   font-size: 1em;
 }
+.fix-Ar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+.input-number {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  -moz-appearance: textfield;
+}
+
+.input-number:focus {
+  border-color: #4e6b31;
+  box-shadow: 0 0 5px rgba(78, 107, 49, 0.5);
+  outline: none;
+}
 
 .textarea {
   width: 100%;
@@ -211,4 +232,10 @@
   height: auto;
   border-radius: 4px;
   margin-top: 8px;
+}
+
+.fine-carNumber {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }

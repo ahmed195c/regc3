@@ -1,10 +1,6 @@
-{% extends "logsApp/layout.html" %} {% block body %} {% load static %}
+{% extends "logsApp/layout.html" %} {% block body %} 
 
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="{% static 'logsApp/accidentsPageStyle.css' %}"
-/>
+
 
 <h2 class="cards-title">سجل الحوادث</h2>
 <button class="nav-link-btn show-hide-btn" onclick="toggleAccidentForm()">
@@ -134,8 +130,8 @@
         {% endfor %}
       </div>
     </div>
-    <div class="card-footer">
-      <button onclick="location.href='{% url 'logsApp:carddetails' fine.id %}'">
+    <div class="card-footer-accidents-page">
+      <button class="card-footer-button" onclick="location.href='{% url 'logsApp:carddetails' fine.id %}'">
         اظهار تفاصيل اكثر
       </button>
     </div>

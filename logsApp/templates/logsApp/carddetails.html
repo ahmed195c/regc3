@@ -47,10 +47,11 @@
         <strong>وقت تسجيل الحادث:</strong> {{ fine.created_at|time:"h:i A" }}
       </p>
     </div>
+    {% if fine.fixin_date %}
     <div>
       <p><strong>تاريخ الإصلاح:</strong> {{ fine.fixin_date }}</p>
     </div>
-    {% if fine.report_pdf_file %}
+    {% endif %} {% if fine.report_pdf_file %}
     <div>
       <p class="downladbtn">
         <a
@@ -94,6 +95,7 @@
       />
       {% endfor %}
     </div>
+    <!-- prettier-ignore -->
     {% if not fine.report_pdf_file or not fine.car_paperwork_file or not fine.images.exists or not fine.license_files.exists or not fine.employees.exists %}
     <div>
       <form
@@ -105,6 +107,7 @@
         {% csrf_token %} {% if not fine.report_pdf_file %}
         <label for="reportPdfFile">تحميل تقرير (PDF)</label>
         <input
+          class="input-hide"
           type="file"
           id="reportPdfFile"
           name="reportPdfFile"
@@ -113,6 +116,7 @@
         {% endif %} {% if not fine.license_files.exists %}
         <label for="licenseFiles">تحميل رخصة القيادة (PDF أو صورة)</label>
         <input
+          class="input-hide"
           type="file"
           id="licenseFiles"
           name="licenseFiles"
@@ -122,6 +126,7 @@
         {% endif %} {% if not fine.car_paperwork_file %}
         <label for="carPaperworkFile">تحميل أوراق السيارة (PDF أو صورة)</label>
         <input
+          class="input-hide"
           type="file"
           id="carPaperworkFile"
           name="carPaperworkFile"
@@ -131,6 +136,7 @@
         {% endif %} {% if not fine.images.exists %}
         <label for="images">تحميل الصور</label>
         <input
+          class="input-hide"
           type="file"
           id="images"
           name="images"

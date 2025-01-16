@@ -1,12 +1,15 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 <div class="fine-details-container">
   <h1 class="page-title">تفاصيل المخالفة</h1>
-  <div class="fine-details">
+  <div class="fine-details" dir="rtl">
     <p><strong>رقم السيارة:</strong> {{ fine.car.carNumber }}</p>
     <p><strong>اسم الموظف:</strong> {{ fine.employe.ceoName }}</p>
     <p><strong>الرقم الإداري:</strong> {{ fine.employe.ceoNumber }}</p>
-    <p><strong>تاريخ المخالفة:</strong> {{ fine.created_at|date:"Y-m-d" }}</p>
-    <p><strong>وقت المخالفة:</strong> {{ fine.created_at|time:"h:i A" }}</p>
+    <p><strong>تاريخ المخالفة:</strong>{{ fine.fine_date }}</p>
+    <div class="fix-Ar" direction="rtl">
+      <p><strong>وقت المخالفة:</strong></p>
+      <p>{{ fine.fine_time }}</p>
+    </div>
     <p><strong>تاريخ الدفع:</strong> {{ fine.paidDate|date:"Y-m-d" }}</p>
     <div>
       <h2>ملفات الدفع:</h2>

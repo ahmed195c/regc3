@@ -353,6 +353,7 @@ def fineC(request):
         fine_date = request.POST.get('finedate')
         fine_time = request.POST.get('finetime')
         fine_car_number = request.POST.get('finecar')
+        fine_amount = request.POST.get('fineamount')
         dubai_tz = pytz.timezone('Asia/Dubai')
         combined_fine_datetime = dubai_tz.localize(timezone.datetime.strptime(f"{fine_date} {fine_time}", '%Y-%m-%d %H:%M'))
         
@@ -367,8 +368,11 @@ def fineC(request):
             FinesRecord.objects.create(
                 car=car_ins,
                 employe=finon.Logs_employee_ins,
-                created_at=combined_fine_datetime
-            )               
+                created_at=combined_fine_datetime,
+                fine_date=fine_date,
+                fine_time=fine_time,
+                fine_amount=fine_amount
+            )
             return redirect('logsApp:finespage')
         except RegistredCars.DoesNotExist:
             print(f"Car with number {fine_car_number} does not exist.")
