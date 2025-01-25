@@ -116,7 +116,7 @@
 
 <div class="mainlog">
   <div class="table-container" id="tableContainer">
-    <table>
+    <table class="logs-table">
       <thead>
         <tr class="headtr">
           <th>رقم السياره</th>
@@ -131,7 +131,7 @@
       </thead>
       <tbody>
         {% for k in page_obj %}
-        <tr>
+        <tr class="logtr">
           <td>{{k.Logs_car_ins.carNumber}}</td>
           <td>{{k.Logs_employee_ins.ceoNumber}}</td>
           <td class="ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
