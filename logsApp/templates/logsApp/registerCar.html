@@ -19,6 +19,8 @@
             </div>
             <p>تاريخ و وقت الاستلام</p>
             <p class="created-at">{{ n.created_at|date:"Y-m-d / h:i A" }}</p>
+            <p>{{ n.taken_date|date:"Y-m-d" }}</p>
+            <p>{{ n.taken_time|time:"h:i A" }}</p>
           </div>
         </div>
       </div>

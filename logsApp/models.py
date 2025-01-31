@@ -17,12 +17,12 @@ def paid_fine_image_upload_to(instance, filename):
 
 class RegistredCars(models.Model):
     carYear = models.IntegerField(null=True)
-    cownerEmpNumber = models.IntegerField(null=True)
-    cownerName= models.TextField(null=True)
-    cownerPhone = models.TextField(null=True)
-    section = models.TextField(null=True)
-    carNumber = models.TextField(default='0')
-    vType = models.TextField(max_length=100,null=True)
+    cownerEmpNumber = models.CharField(max_length=100,null=True)
+    cownerName= models.CharField(max_length=100,null=True)
+    cownerPhone = models.CharField(max_length=100,null=True)
+    section = models.CharField(max_length=100,null=True)
+    carNumber = models.CharField(max_length=100,default='0')
+    vType = models.CharField(max_length=100,null=True)
     carIsInparking = models.BooleanField(default=True)
     def __str__(self):
         return str(f" رقم المركبه: {self.carNumber}")    
@@ -55,12 +55,12 @@ class LogsC(models.Model):
     Logs_car_ins = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
     carIsInUse = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    taken_date = models.DateField(null=True, blank=True)
+    taken_time = models.TimeField(null=True, blank=True)
     ended_at = models.DateTimeField(null=True, blank=True)
     return_date = models.DateField(null=True, blank=True)
     return_time = models.TimeField(null=True, blank=True)
     carNote = models.TextField(null=True, blank=True)
-    taken_date = models.DateField(null=True, blank=True)
-    taken_time = models.TimeField(null=True, blank=True)
 
     class Meta:
         indexes = [

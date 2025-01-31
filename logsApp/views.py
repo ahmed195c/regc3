@@ -13,6 +13,7 @@ from django.core.paginator import Paginator
 import shutil
 import os
 
+
 def remove_non_numeric(s):
     return re.sub(r'\D', '', s)
 
@@ -29,7 +30,8 @@ def index(request):
 
 def registerCar(request):
     all_in_use_cars = InUseCars.objects.all().order_by('-id')
-    
+    dubai_tz = pytz.timezone('Asia/Dubai')
+    current_time = timezone.now().astimezone(dubai_tz)
     if request.method == "POST":
         ceo_number = request.POST.get("ceoNumber").strip()
         car_number = request.POST.get("carNumber").strip()
@@ -81,9 +83,9 @@ def registerCar(request):
                 "carNumber": "",
                 "form_open": True
             })
-
+        current_time = timezone.now().astimezone(dubai_tz)
         InUseCars.objects.create(car=car_exists, employee=emp_exists)
-        LogsC.objects.create(Logs_employee_ins=emp_exists, Logs_car_ins=car_exists)
+        LogsC.objects.create(Logs_employee_ins=emp_exists, Logs_car_ins=car_exists, taken_date=current_time.date(), taken_time=current_time.time())
 
         emp_exists.EmpHaveCar = True
         emp_exists.save()
