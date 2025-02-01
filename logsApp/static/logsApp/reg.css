@@ -157,11 +157,10 @@
 }
 
 .msg-cont {
-  position: fixed;
   position: absolute;
   height: auto;
-  top: 35%;
-  right: 33%;
+  top: 30%;
+  right: 30%;
   z-index: 9000;
 }
 
@@ -213,6 +212,7 @@
   background-color: #d9534f;
   color: #ffffff;
   border: 1px solid #d43f3a;
+  max-width: 50%;
 }
 
 .submit-btn {

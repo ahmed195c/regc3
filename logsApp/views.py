@@ -35,7 +35,7 @@ def registerCar(request):
     if request.method == "POST":
         ceo_number = request.POST.get("ceoNumber").strip()
         car_number = request.POST.get("carNumber").strip()
-
+       # تاكد اذا كان الرقم الاداري مستعمل 
         try:
             its_in_use = LogsC.objects.get(Logs_employee_ins__ceoNumber=ceo_number, carIsInUse=True)
             return render(request, "logsApp/registerCar.html", {
@@ -43,11 +43,10 @@ def registerCar(request):
                 "l": all_in_use_cars,
                 "ceoNumber": "",
                 "carNumber": car_number,
-                "form_open": True
             })
         except LogsC.DoesNotExist:
             pass
-
+        # تاكد اذا كانت المركبه قيد الاستخدام 
         try:
             car_is_in_use = LogsC.objects.get(Logs_car_ins__carNumber=car_number, carIsInUse=True)
             return render(request, "logsApp/registerCar.html", {
@@ -55,11 +54,10 @@ def registerCar(request):
                 "l": all_in_use_cars,
                 "ceoNumber": ceo_number,
                 "carNumber": "",
-                "form_open": True
             })
         except LogsC.DoesNotExist:
             pass
-
+        # تاكد اذا كان الرقم الاداري صحيح وليس لديه مركبه
         try:
             emp_exists = EmployesInfo.objects.get(ceoNumber=ceo_number, EmpHaveCar=False)
         except EmployesInfo.DoesNotExist:
@@ -69,9 +67,8 @@ def registerCar(request):
                 "l": all_in_use_cars,
                 "ceoNumber": "",
                 "carNumber": car_number,
-                "form_open": True
             })
-
+        #تاكد اذا كان رقم المركبه صحيح وفي الباركنج
         try:
             car_exists = RegistredCars.objects.get(carNumber=car_number, carIsInparking=True)
         except RegistredCars.DoesNotExist:
@@ -81,10 +78,11 @@ def registerCar(request):
                 "l": all_in_use_cars,
                 "ceoNumber": ceo_number,
                 "carNumber": "",
-                "form_open": True
             })
         current_time = timezone.now().astimezone(dubai_tz)
-        InUseCars.objects.create(car=car_exists, employee=emp_exists)
+        # حفظ بينات المستلم في قائمة مركبات قيد الاستخدام 
+        InUseCars.objects.create(car=car_exists, employee=emp_exists ,create_date=current_time.date(), create_time=current_time.time())
+        #حفظ البيانات في سجل الاستلام و التسجيل 
         LogsC.objects.create(Logs_employee_ins=emp_exists, Logs_car_ins=car_exists, taken_date=current_time.date(), taken_time=current_time.time())
 
         emp_exists.EmpHaveCar = True

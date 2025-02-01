@@ -45,6 +45,8 @@ class InUseCars(models.Model):
     employee = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE)
     start_date = models.DateField(auto_now=True)
     created_at = models.DateTimeField(auto_now=True)
+    create_date = models.DateField(null=True, blank=True)
+    create_time = models.TimeField(null=True, blank=True)
     logsc_ley = models.ForeignKey('LogsC', on_delete=models.CASCADE,null=True)
     def __str__(self):
         return str(f"مستخدم المركبه : {self.employee.ceoName} |||  رقم المركبه : {self.car.carNumber}")
