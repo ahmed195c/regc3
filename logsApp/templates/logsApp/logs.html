@@ -2,61 +2,66 @@
 
 <div class="logs-btns">
   {% comment %}
-  <div class="dbtn-cont">
+  <div class="logs-dbtn-cont">
     <button
-      class="nav-link-btn"
+      class="logs-nav-link-btn"
       onclick="window.location='{% url 'logsApp:export_to_excel' %}'"
     >
       تحميل السجل
     </button>
   </div>
   {% endcomment %}
-  <h1 class="page-title">سجل الاستلام والتسليم</h1>
-  <button class="nav-link-btn show-hide-btn" onclick="toggleFilters()">
+  <h1 class="logs-page-title">سجل الاستلام والتسليم</h1>
+  <button
+    class="logs-nav-link-btn logs-show-hide-btn"
+    onclick="toggleFilters()"
+  >
     بحث
   </button>
 </div>
 
-<div class="filtersMain" id="filtersMain">
-  <div class="filtersDw">
-    <div class="filters-cont">
+<div class="logs-filtersMain" id="filtersMain">
+  <div class="logs-filtersDw">
+    <div class="logs-filters-cont">
       <form
-        class="filtersForm"
+        class="logs-filtersForm"
         action="{% url 'logsApp:logslink' %}"
         method="get"
       >
         {% csrf_token %}
-        <div class="filter-cont">
+        <div class="logs-filter-cont">
           <div>
             <h1>بحث عن طريق</h1>
           </div>
-          <div class="form-group">
-            <label for="carNumbers" class="form-label"
+          <div class="logs-form-group">
+            <label for="carNumbers" class="logs-form-label"
               >رقــــــــم المركبه</label
             >
             <input
               type="text"
               id="carNumbers"
               name="carNumper"
-              class="input"
+              class="logs-input"
               placeholder="ادخل رقم المركبه هنا "
             />
           </div>
-          <div class="form-group">
-            <label for="ceoN" class="form-label">الــــــرقم الاداري</label>
+          <div class="logs-form-group">
+            <label for="ceoN" class="logs-form-label"
+              >الــــــرقم الاداري</label
+            >
             <input
               type="text"
               name="ceoN"
-              class="input"
+              class="logs-input"
               placeholder="ادخل الرقم الاداري هنا"
             />
           </div>
-          <div class="form-group">
-            <label for="dateType" class="form-label"> الــــتاريخ</label>
+          <div class="logs-form-group">
+            <label for="dateType" class="logs-form-label"> الــــتاريخ</label>
             <select
               id="dateType"
               name="dateType"
-              class="input"
+              class="logs-input"
               onchange="toggleDateInput()"
             >
               <option value="day">يوم</option>
@@ -64,19 +69,21 @@
               <option value="year">سنة</option>
             </select>
           </div>
-          <div class="form-group" id="dayInput">
-            <label for="date" class="form-label">تاريخ استلام المركبه</label>
-            <input type="date" id="date" name="date" class="input" />
+          <div class="logs-form-group" id="dayInput">
+            <label for="date" class="logs-form-label"
+              >تاريخ استلام المركبه</label
+            >
+            <input type="date" id="date" name="date" class="logs-input" />
           </div>
-          <div class="form-group" id="monthInput" style="display: none">
-            <label for="year" class="form-label">السنة</label>
-            <select id="year" name="year" class="input">
+          <div class="logs-form-group" id="monthInput" style="display: none">
+            <label for="year" class="logs-form-label">السنة</label>
+            <select id="year" name="year" class="logs-input">
               {% for year in years %}
               <option value="{{ year }}">{{ year }}</option>
               {% endfor %}
             </select>
-            <label for="month" class="form-label">الشهر</label>
-            <select id="month" name="month" class="input">
+            <label for="month" class="logs-form-label">الشهر</label>
+            <select id="month" name="month" class="logs-input">
               <option value="1">يناير</option>
               <option value="2">فبراير</option>
               <option value="3">مارس</option>
@@ -91,9 +98,9 @@
               <option value="12">ديسمبر</option>
             </select>
           </div>
-          <div class="form-group" id="yearInput" style="display: none">
-            <label for="yearOnly" class="form-label">السنة</label>
-            <select id="yearOnly" name="yearOnly" class="input">
+          <div class="logs-form-group" id="yearInput" style="display: none">
+            <label for="yearOnly" class="logs-form-label">السنة</label>
+            <select id="yearOnly" name="yearOnly" class="logs-input">
               {% for year in years %}
               <option value="{{ year }}">{{ year }}</option>
               {% endfor %}
@@ -101,24 +108,28 @@
           </div>
         </div>
 
-        <input class="nav-link-btn" type="submit" value="بحث" />
+        <input class="logs-nav-link-btn" type="submit" value="بحث" />
       </form>
       <div>
         <form action="{% url 'logsApp:logslink' %}" method="get">
           {% csrf_token %}
           <input type="hidden" value="showall" id="showAll" name="showAll" />
-          <input class="nav-link-btn" type="submit" value="اظهار كامل السجل " />
+          <input
+            class="logs-nav-link-btn"
+            type="submit"
+            value="اظهار كامل السجل "
+          />
         </form>
       </div>
     </div>
   </div>
 </div>
 
-<div class="mainlog">
-  <div class="table-container" id="tableContainer">
-    <table class="logs-table">
+<div class="logs-mainlog">
+  <div class="logs-table-container" id="tableContainer">
+    <table class="logs-logs-table">
       <thead>
-        <tr class="headtr">
+        <tr class="logs-headtr">
           <th>رقم السياره</th>
           <th>الرقم الاداري</th>
           <th>الاسم</th>
@@ -131,10 +142,10 @@
       </thead>
       <tbody>
         {% for k in page_obj %}
-        <tr class="logtr">
+        <tr class="logs-logtr">
           <td>{{k.Logs_car_ins.carNumber}}</td>
           <td>{{k.Logs_employee_ins.ceoNumber}}</td>
-          <td class="ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
+          <td class="logs-ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
           <td>{{ k.taken_date|date:"Y-m-d" }}</td>
           <td>{{ k.taken_time|time:"h:i A" }}</td>
 
@@ -147,9 +158,9 @@
           {% else %}
           <td></td>
           {% endif %} {% if k.carNote %}
-          <td class="logs_not_cell">{{k.carNote}}</td>
+          <td class="logs-logs_not_cell">{{k.carNote}}</td>
           {% else %}
-          <td class="logs_not_cell"></td>
+          <td class="logs-logs_not_cell"></td>
           {% endif %}
         </tr>
         {% endfor %}
@@ -158,15 +169,15 @@
   </div>
 </div>
 
-<div class="pagination-container">
-  <div class="pagination">
-    <span class="step-links">
+<div class="logs-pagination-container">
+  <div class="logs-pagination">
+    <span class="logs-step-links">
       {% if page_obj.has_previous %}
       <a href="?page=1">&laquo; first</a>
       <a href="?page={{ page_obj.previous_page_number }}">previous</a>
       {% endif %}
 
-      <span class="current">
+      <span class="logs-current">
         Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
       </span>
 

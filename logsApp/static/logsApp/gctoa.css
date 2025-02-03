@@ -1,0 +1,72 @@
+.page-title {
+  text-align: center;
+  font-size: 2em;
+  color: #4e6b31;
+  margin: 20px 0;
+}
+
+.success-message {
+  color: green;
+  text-align: center;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+}
+
+.form-container {
+  width: 60%;
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: right;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gctoa-form {
+  direction: rtl;
+}
+
+.gctoa-form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  margin-bottom: 5px;
+  display: block;
+  font-weight: bold;
+  color: #4e6b31;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.nav-link-btn {
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #4e6b31;
+  color: #fff;
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.4s ease-in-out, transform 0.2s ease;
+  margin: 10px auto;
+  text-align: center;
+  display: block;
+  line-height: 50px;
+}
+
+.nav-link-btn:hover {
+  background-color: #b59958;
+  transform: translateY(-2px);
+}

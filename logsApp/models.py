@@ -27,14 +27,31 @@ class RegistredCars(models.Model):
     def __str__(self):
         return str(f" رقم المركبه: {self.carNumber}")    
 
+class GivenCarsToOtherAdminstrations(models.Model):
+    car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
+    otherAdminstration = models.CharField(max_length=100)
+    empNumber = models.CharField(max_length=100)
+    empName = models.CharField(max_length=100)
+    telephone = models.CharField(max_length=100)
+    carIsInUse = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now=True)
+    taken_date = models.DateField(null=True, blank=True)
+    taken_time = models.TimeField(null=True, blank=True)
+    ended_at = models.DateTimeField(auto_now=True)
+    return_date = models.DateField(null=True, blank=True)
+    retern_time = models.TimeField(null=True, blank=True)
+    def __str__(self):
+        return str(f" {self.car.carNumber} ")
 
 class EmployesInfo(models.Model):
     EmpHaveCar = models.BooleanField(default=False)
     ceoNumber = models.CharField(default='0', max_length=100, unique=True)
     ceoName = models.CharField(max_length=100)
     phoneNumber = models.CharField(max_length=100, default='0000000000')
-    position = models.CharField(max_length=100,default="الوظيفه")
-    section = models.CharField(max_length=100,default="القسم")
+    jobTtile = models.CharField(max_length=100,default="المسمى الوظيفي")
+    department = models.CharField(max_length=100,default="الشعبه")
+    unit = models.CharField(max_length=100,default="الوحده")
+    nationality = models.CharField(max_length=100,default="الجنسيه")
     email = models.EmailField(default='example@example.com')
     def __str__(self):
         return str(f"  الرقم الاداري: {self.ceoNumber}  :الاسم {self.ceoName} ")

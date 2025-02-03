@@ -1,0 +1,69 @@
+{% extends "logsApp/layout.html" %} {% block body %}
+
+<h1 class="page-title">Given Car to Other Administrations</h1>
+
+{% if success_message %}
+<p class="success-message">{{ success_message }}</p>
+{% endif %} {% if error_message %}
+<p class="error-message">{{ error_message }}</p>
+{% endif %}
+
+<div class="form-container">
+  <form method="POST" class="gctoa-form">
+    {% csrf_token %}
+    <div class="gctoa-form-group">
+      <label for="carNumber" class="form-label">Car Number:</label>
+      <input
+        type="text"
+        id="carNumber"
+        name="carNumber"
+        class="input"
+        required
+      />
+    </div>
+
+    <div class="gctoa-form-group">
+      <label for="other_adminstration" class="form-label"
+        >Other Administration:</label
+      >
+      <input
+        type="text"
+        id="other_adminstration"
+        name="other_adminstration"
+        class="input"
+        required
+      />
+    </div>
+
+    <div class="gctoa-form-group">
+      <label for="emp_number" class="form-label">Employee Number:</label>
+      <input
+        type="text"
+        id="emp_number"
+        name="emp_number"
+        class="input"
+        required
+      />
+    </div>
+
+    <div class="gctoa-form-group">
+      <label for="emp_name" class="form-label">Employee Name:</label>
+      <input type="text" id="emp_name" name="emp_name" class="input" required />
+    </div>
+
+    <div class="gctoa-form-group">
+      <label for="telephone" class="form-label">Telephone:</label>
+      <input
+        type="text"
+        id="telephone"
+        name="telephone"
+        class="input"
+        required
+      />
+    </div>
+
+    <button type="submit" class="nav-link-btn">Save</button>
+  </form>
+</div>
+
+{% endblock %}

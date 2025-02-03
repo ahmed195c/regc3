@@ -12,6 +12,25 @@ import pytz
 from django.core.paginator import Paginator
 import shutil
 import os
+from .empinfo import empInfo
+from .newempData import newemp
+from .models import GivenCarsToOtherAdminstrations
+
+
+def seedemp(request):
+    for i in newemp:
+        emp, created = EmployesInfo.objects.update_or_create(
+            ceoNumber=i["empId"],
+            defaults={
+                'ceoName': i["empName"],
+                'phoneNumber': i["tel"],
+                'jobTtile': i["jobTitle"],
+                'department': i["department"],
+                'unit': i["unit"],
+                'nationality': i["nationality"]
+            }
+        )
+    return HttpResponse("done")
 
 
 def remove_non_numeric(s):
@@ -383,7 +402,7 @@ def fineC(request):
     return render(request, "logsApp/finespage.html", {'allFines':allFines,'finon': finon})
     
 def carddetails(request, fine_id):
-    fine = get_object_or_404(AccidentsRecord, id=fine_id)
+    accident = get_object_or_404(AccidentsRecord, id=fine_id)
     if request.method == "POST":
         report_pdf_file = request.FILES.get('reportPdfFile')
         car_paperwork_file = request.FILES.get('carPaperworkFile')
@@ -392,34 +411,34 @@ def carddetails(request, fine_id):
         emp_number = request.POST.get('empNumber')
 
         if report_pdf_file:
-            fine.report_pdf_file = report_pdf_file
+            accident.report_pdf_file = report_pdf_file
         if car_paperwork_file:
-            fine.car_paperwork_file = car_paperwork_file
+            accident.car_paperwork_file = car_paperwork_file
 
         for image in images:
-            FinesAccidentsImage.objects.create(accidents_record=fine, image=image)
+            FinesAccidentsImage.objects.create(accidents_record=accident, image=image)
 
         for license_file in license_files:
-            LicenseFile.objects.create(accidents_record=fine, file=license_file)
+            LicenseFile.objects.create(accidents_record=accident, file=license_file)
 
         if emp_number:
             try:
                 emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number)
-                fine.employees.add(emp_instance)
+                accident.employees.add(emp_instance)
             except EmployesInfo.DoesNotExist:
                 pass
 
-        fine.save()
+        accident.save()
 
     license_files = []
     license_images = []
-    for license_file in fine.license_files.all():
+    for license_file in accident.license_files.all():
         if is_pdf(license_file.file):
             license_files.append(license_file)
         else:
             license_images.append(license_file)
     return render(request, 'logsApp/carddetails.html', {
-        'fine': fine,
+        'accident': accident,
         'license_files': license_files,
         'license_images': license_images
     })
@@ -473,3 +492,30 @@ def deleteFineImage(request, fine_id):
         fine.paidDate = None
         fine.save()
     return redirect('logsApp:fineDetails', fine_id=fine_id)
+
+
+
+def gCTOA(request):
+    if request.method == "POST":
+        carNumberq = request.POST.get("carNumber")
+        other_adminstration = request.POST.get("other_adminstration")
+        emp_number = request.POST.get("emp_number")
+        emp_name = request.POST.get("emp_name")
+        telephone = request.POST.get("telephone")
+
+        try:
+            car_instance = RegistredCars.objects.get(carNumber=carNumberq, carIsInparking=True)
+            GivenCarsToOtherAdminstrations.objects.create(
+                car=car_instance,
+                otherAdminstration=other_adminstration,
+                empNumber=emp_number,
+                empName=emp_name,
+                telephone=telephone
+            )
+            success_message = "تم حفظ البيانات بنجاح"
+            return render(request, "logsApp/gctoa.html", {"success_message": success_message})
+        except RegistredCars.DoesNotExist:
+            error_message = "رقم السيارة غير صحيح او المركبه قيد الاستخدام"
+            return render(request, "logsApp/gctoa.html", {"error_message": error_message})
+
+    return render(request, "logsApp/gctoa.html")

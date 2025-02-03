@@ -16,4 +16,6 @@ urlpatterns = [
     path('fine/<int:fine_id>/', views.fineDetails, name='fineDetails'),
     path('fine/<int:fine_id>/delete-image/', views.deleteFineImage, name='deleteFineImage'),
     path('fines/', views.fineC, name='finespage'),
+    path('gctoa/', views.gCTOA, name='gctoa'),
+    path('q', views.seedemp, name='seedemp'),
 ]

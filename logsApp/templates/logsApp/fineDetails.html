@@ -2,31 +2,57 @@
 <div class="fine-details-container">
   <h1 class="page-title">تفاصيل المخالفة</h1>
   <div class="fine-details" dir="rtl">
-    <p><strong>رقم السيارة:</strong> {{ fine.car.carNumber }}</p>
-    <p><strong>اسم الموظف:</strong> {{ fine.employe.ceoName }}</p>
-    <p><strong>الرقم الإداري:</strong> {{ fine.employe.ceoNumber }}</p>
-    <p><strong>تاريخ المخالفة:</strong>{{ fine.fine_date }}</p>
-    <div class="fix-Ar" direction="rtl">
-      <p><strong>وقت المخالفة:</strong></p>
-      <p>{{ fine.fine_time }}</p>
-    </div>
-    <p><strong>تاريخ الدفع:</strong> {{ fine.paidDate|date:"Y-m-d" }}</p>
-    <div>
-      <h2>ملفات الدفع:</h2>
-      {% for file in fine_files %}
-      <p class="downladbtn">
-        <a class="downladbtn" target="_blank" href="{{ file.url }}"
-          >تحميل ملف الدفع (PDF)</a
-        >
+    <div class="fineDetail-card-detail">
+      <p class="fine-detail-item">
+        <strong>رقم السيارة:</strong> {{ fine.car.carNumber }}
       </p>
+    </div>
+    <div class="fineDetail-card-detail">
+      <p class="fine-detail-item">
+        <strong>اسم الموظف:</strong> {{ fine.employe.ceoName }}
+      </p>
+    </div>
+    <div class="fineDetail-card-detail">
+      <p class="fine-detail-item">
+        <strong>الرقم الإداري:</strong> {{ fine.employe.ceoNumber }}
+      </p>
+    </div>
+    <div class="fineDetail-card-detail">
+      <p class="fine-detail-item">
+        <strong>تاريخ المخالفة:</strong>{{ fine.fine_date }}
+      </p>
+    </div>
+    <div class="fineDetail-card-detail">
+      <p class="fine-detail-item">
+        <strong>وقت المخالفة:</strong>{{ fine.fine_time|time:"h:i A" }}
+      </p>
+    </div>
+    {% if fine.paidDate %}
+    <div class="fineDetail-card-detail">
+      <p class="fine-detail-item">
+        <strong>تاريخ الدفع:</strong> {{ fine.paidDate|date:"Y-m-d" }}
+      </p>
+    </div>
+    {% endif %}
+    <div>
+      {% for file in fine_files %}
+      <div class="fineDetail-show-pdf">
+        <p>
+          <a target="_blank" href="{{ file.url }}">عرض الملف</a>
+        </p>
+      </div>
       {% endfor %} {% for image in fine_images %}
       <img src="{{ image.url }}" alt="صورة الدفع" class="large-image" />
       {% endfor %}
     </div>
     {% if fine_files or fine_images %}
-    <form method="POST" action="{% url 'logsApp:deleteFineImage' fine.id %}">
+    <form
+      method="POST"
+      action="{% url 'logsApp:deleteFineImage' fine.id %}"
+      class="fine-detail-form"
+    >
       {% csrf_token %}
-      <button type="submit" class="submit-form">حذف ملف الدفع</button>
+      <button type="submit" class="fine-detail-button">حذف ملف الدفع</button>
     </form>
     {% endif %}
   </div>
@@ -35,6 +61,7 @@
     method="POST"
     action="{% url 'logsApp:fineDetails' fine.id %}"
     enctype="multipart/form-data"
+    class="fine-detail-form"
   >
     {% csrf_token %}
     <label for="fineDate" class="form-label">تاريخ الدفع</label>
@@ -55,10 +82,13 @@
       accept="application/pdf,image/*"
       class="input-file"
     /><br />
-    <button type="submit" class="submit-form">حفظ</button>
+    <button type="submit" class="fine-detail-button">حفظ</button>
   </form>
   {% endif %}
-  <button onclick="window.location='{% url 'logsApp:finec' %}'">
+  <button
+    onclick="window.location='{% url 'logsApp:finec' %}'"
+    class="fine-detail-button"
+  >
     العودة إلى صفحة المخالفات
   </button>
 </div>

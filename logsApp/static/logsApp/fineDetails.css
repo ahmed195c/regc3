@@ -1,0 +1,109 @@
+.fine-details-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: larger;
+  font-weight: bold;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
+  font-size: 2em;
+  margin-bottom: 20px;
+  color: #4e6b31;
+}
+
+.fine-details {
+  text-align: start;
+  width: 100%;
+  color: black;
+}
+
+.fine-detail-item {
+  margin-bottom: 10px;
+}
+
+.fineDetail-card-detail {
+  margin-right: 40%;
+}
+
+.fine-detail-subtitle {
+  font-size: 1.5em;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.download-btn {
+  margin-bottom: 10px;
+}
+
+.download-link {
+  color: #4e6b31;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.large-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.fine-detail-form {
+  direction: rtl;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.fine-detail-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4e6b31;
+  color: white;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out, transform 0.2s ease;
+  font-size: 1em;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.fine-detail-button:hover {
+  background-color: #b59958;
+  transform: translateY(-2px);
+}
+
+.input-date,
+.input-file {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+.fineDetail-show-pdf {
+  text-align: center;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4e6b31;
+  color: white;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out, transform 0.2s ease;
+  font-size: 1em;
+  width: 20%;
+  margin-top: 10px;
+}
+.fineDetail-show-pdf:hover {
+  background-color: #b59958;
+  transform: translateY(-2px);
+}
