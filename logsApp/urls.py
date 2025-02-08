@@ -18,4 +18,5 @@ urlpatterns = [
     path('fines/', views.fineC, name='finespage'),
     path('gctoa/', views.gCTOA, name='gctoa'),
     path('q', views.seedemp, name='seedemp'),
+    path('return_car/<int:car_id>/', views.return_car, name='return_car'),
 ]

@@ -1,69 +1,213 @@
 {% extends "logsApp/layout.html" %} {% block body %}
 
-<h1 class="page-title">Given Car to Other Administrations</h1>
+<h1 class="page-title gctoa-page-title">مركبات مسلمة لإدارات أخرى</h1>
 
-{% if success_message %}
-<p class="success-message">{{ success_message }}</p>
-{% endif %} {% if error_message %}
-<p class="error-message">{{ error_message }}</p>
-{% endif %}
+<button id="toggleFormButton" class="nav-link-btn gctoa-nav-link-btn-form">
+  لتسليم مركبه
+</button>
 
-<div class="form-container">
-  <form method="POST" class="gctoa-form">
+<div
+  id="formContainer"
+  class="form-container gctoa-form-container"
+  style="display: none; opacity: 0; transition: opacity 0.5s ease"
+>
+  <form method="POST" class="gctoa-form" action="{% url 'logsApp:gctoa' %}">
     {% csrf_token %}
     <div class="gctoa-form-group">
-      <label for="carNumber" class="form-label">Car Number:</label>
+      <label for="carNumber" class="form-label gctoa-form-label"
+        >رقم المركبه</label
+      >
       <input
+        placeholder="رقم المركبه"
         type="text"
         id="carNumber"
         name="carNumber"
-        class="input"
+        class="input gctoa-input"
+        value="{{ carNumber|default_if_none:'' }}"
         required
       />
     </div>
 
     <div class="gctoa-form-group">
-      <label for="other_adminstration" class="form-label"
-        >Other Administration:</label
+      <label for="other_adminstration" class="form-label gctoa-form-label"
+        >الاداره</label
       >
       <input
         type="text"
         id="other_adminstration"
         name="other_adminstration"
-        class="input"
+        class="input gctoa-input"
+        value="{{ other_adminstration|default_if_none:'' }}"
         required
       />
     </div>
 
     <div class="gctoa-form-group">
-      <label for="emp_number" class="form-label">Employee Number:</label>
+      <label for="emp_number" class="form-label gctoa-form-label"
+        >الرقم الاداري</label
+      >
       <input
         type="text"
         id="emp_number"
         name="emp_number"
-        class="input"
+        class="input gctoa-input"
+        value="{{ emp_number|default_if_none:'' }}"
         required
       />
     </div>
 
     <div class="gctoa-form-group">
-      <label for="emp_name" class="form-label">Employee Name:</label>
-      <input type="text" id="emp_name" name="emp_name" class="input" required />
+      <label for="emp_name" class="form-label gctoa-form-label">الاسم</label>
+      <input
+        type="text"
+        id="emp_name"
+        name="emp_name"
+        class="input gctoa-input"
+        value="{{ emp_name|default_if_none:'' }}"
+        required
+      />
     </div>
 
     <div class="gctoa-form-group">
-      <label for="telephone" class="form-label">Telephone:</label>
+      <label for="telephone" class="form-label gctoa-form-label"
+        >رقم الهاتف</label
+      >
       <input
         type="text"
         id="telephone"
         name="telephone"
-        class="input"
+        class="input gctoa-input"
+        value="{{ telephone|default_if_none:'' }}"
         required
       />
     </div>
 
-    <button type="submit" class="nav-link-btn">Save</button>
+    <button type="submit" class="nav-link-btn gctoa-nav-link-btn">حفظ</button>
   </form>
+  <!-- رسالة الخطى اذا كانى المركبه مسمله لادارتنا -->
+  <div>{% if ourAdmin %} sdfdsfsadfs {% endif %}</div>
+  <!-- #رسالة الخطى اذا كانت المركبه مسملة لادارة اخرى  -->
+  <div>
+    {%if otheradmin %}
+
+    <div id="error-message-gct" class="gctoa-error-cont" style="display: block">
+      <div class="gctoa-car-details">
+        <div class="gctoa-info-group">
+          <h4 class="info-p">المركبه معطى لإدارة أخرى</h4>
+        </div>
+        <div class="gctoa-info-group">
+          <p class="info-p">
+            <strong> اسم المستلم :</strong>
+            {{otheradmin.empName}}
+          </p>
+        </div>
+        <div class="gctoa-info-group">
+          <p class="info-p">الرقم الاداري: {{otheradmin.empNumber}}</p>
+        </div>
+        <div class="gctoa-info-group">
+          <p><strong>الإدارة :</strong> {{otheradmin.otherAdminstration}}</p>
+        </div>
+        <div class="gctoa-info-group-carPlate">
+          <div class="car-plate">
+            <p><strong> رقم اللوحه : </strong>{{otheradmin.car.carNumber}}</p>
+          </div>
+        </div>
+        <div class="gctoa-info-group">
+          <p>تاريخ و وقت تسليم المركبه</p>
+          <p class="created-at">
+            {{ otheradmin.created_at|date:"Y-m-d / h:i A" }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <script>
+      setTimeout(function () {
+        fadeOutMessage("error-message-gct");
+      }, 10000);
+    </script>
+
+    {%endif%}
+  </div>
 </div>
+
+<div class="gctoa-card-title">
+  <h1>معلومات المركباة المسلمه لاداراة اخرى</h1>
+</div>
+
+<div class="card-container gctoa-card-container">
+  {% for car in cgtoa %}
+  <div class="card gctoa-card" dir="rtl">
+    <div class="gctoa-group-info-display card-id">
+      <p><strong>رقم البطاقه :</strong> {{ car.id }}</p>
+    </div>
+    <div class="gctoa-group-info-display">
+      <p><strong>رقم المركبه:</strong> {{ car.car.carNumber }}</p>
+    </div>
+    <div class="gctoa-group-info-display">
+      <p><strong>الإدارة:</strong> {{ car.otherAdminstration }}</p>
+    </div>
+    <div class="gctoa-group-info-display">
+      <p><strong>الاسم:</strong> {{ car.empName }}</p>
+    </div>
+    <div class="gctoa-group-info-display">
+      <p><strong>الرقم الإداري:</strong> {{ car.empNumber }}</p>
+    </div>
+    <div class="gctoa-group-info-display">
+      <p><strong>رقم الهاتف:</strong> {{ car.telephone }}</p>
+    </div>
+    <div class="gctoa-group-info-display">
+      <p>
+        <strong>تاريخ تسليم المركبه:</strong> {{ car.taken_date|date:"Y/m/d" }}
+      </p>
+    </div>
+    <div class="gctoa-group-info-display">
+      <p>
+        <strong>وقت تسليم المركبه:</strong> {{ car.taken_time|time:"h:i A" }}
+      </p>
+    </div>
+    {% if car.carIsInUse %}
+    <form method="POST" action="{% url 'logsApp:return_car' car.id %}">
+      {% csrf_token %}
+      <button type="submit" class="nav-link-btn gctoa-nav-link-btn">
+        تسجيل عودة المركبة
+      </button>
+    </form>
+    {% else %}
+    <div class="cgtoa-returned-car-message-cont">
+      <h4 class="car-returned-message">تم اعادة المركبة</h4>
+    </div>
+    <div class="gctoa-group-info-display">
+      <p>
+        <strong>تاريخ اعادة المركبه:</strong> {{ car.return_date|date:"Y/m/d" }}
+      </p>
+    </div>
+    <div class="gctoa-group-info-display">
+      <p>
+        <strong>وقت اعادة المركبه:</strong> {{ car.retern_time|time:"h:i A" }}
+      </p>
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+  document
+    .getElementById("toggleFormButton")
+    .addEventListener("click", function () {
+      let formContainer = document.getElementById("formContainer");
+      if (formContainer.style.display === "none") {
+        formContainer.style.display = "block";
+        setTimeout(function () {
+          formContainer.style.opacity = 1;
+        }, 10);
+      } else {
+        formContainer.style.opacity = 0;
+        setTimeout(function () {
+          formContainer.style.display = "none";
+        }, 500);
+      }
+    });
+</script>
 
 {% endblock %}

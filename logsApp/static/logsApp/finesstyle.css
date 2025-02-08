@@ -258,3 +258,9 @@
   flex-direction: row;
   gap: 10px;
 }
+
+.fines-card-id {
+  padding: 10px;
+  background-color: #b59958;
+  border-radius: 4px;
+}

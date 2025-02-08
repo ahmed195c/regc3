@@ -28,7 +28,7 @@ class RegistredCars(models.Model):
         return str(f" رقم المركبه: {self.carNumber}")    
 
 class GivenCarsToOtherAdminstrations(models.Model):
-    car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
+    car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, related_name='given_cars')
     otherAdminstration = models.CharField(max_length=100)
     empNumber = models.CharField(max_length=100)
     empName = models.CharField(max_length=100)
@@ -37,7 +37,7 @@ class GivenCarsToOtherAdminstrations(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     taken_date = models.DateField(null=True, blank=True)
     taken_time = models.TimeField(null=True, blank=True)
-    ended_at = models.DateTimeField(auto_now=True)
+    ended_at = models.DateTimeField(null=True, blank=True)
     return_date = models.DateField(null=True, blank=True)
     retern_time = models.TimeField(null=True, blank=True)
     def __str__(self):

@@ -107,3 +107,16 @@
   background-color: #b59958;
   transform: translateY(-2px);
 }
+
+.fineDetail-card-id-cont {
+  position: absolute;
+  padding: 20px;
+  background-color: #b59958;
+  border-radius: 4px;
+  top: 20%;
+  right: 5%;
+}
+
+.fine-detail-id {
+  font-size: 26px;
+}
