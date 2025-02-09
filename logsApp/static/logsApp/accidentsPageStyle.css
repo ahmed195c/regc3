@@ -1,4 +1,83 @@
-.cards-container {
+.accident-page-title {
+  text-align: center;
+  font-size: 2em;
+  color: #4e6b31;
+  margin: 20px 0;
+}
+
+.accident-nav-link-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4e6b31;
+  color: white;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out, transform 0.2s ease;
+  font-size: 1em;
+  width: 100%;
+}
+
+.accident-nav-link-btn:hover {
+  background-color: #b59958;
+  transform: translateY(-2px);
+}
+
+.accident-form {
+  color: #4e6b31;
+}
+
+.accident-form-group {
+  margin-bottom: 20px;
+}
+
+.accident-form-label {
+  direction: rtl;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.accident-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.accident-input-file {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.accident-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.accident-submit-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4e6b31;
+  color: white;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out, transform 0.2s ease;
+  font-size: 1em;
+  width: 100%;
+}
+
+.accident-submit-btn:hover {
+  background-color: #b59958;
+  transform: translateY(-2px);
+}
+
+.accident-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 40px;
@@ -9,63 +88,7 @@
   margin: 0 auto;
 }
 
-.addEventForm {
-  display: none;
-}
-
-.addEventForm-carDetails {
-  display: block;
-  direction: rtl;
-}
-
-.addEventForm-carDetails label {
-  display: inline-block;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  background-color: #4e6b31;
-  color: white;
-  cursor: pointer;
-  transition: all 0.4s ease-in-out, transform 0.2s ease;
-  font-size: 1em;
-  margin-bottom: 20px;
-}
-
-.addEventForm-carDetails label[for="empNumber"] {
-  background-color: transparent;
-  color: #4e6b31;
-  cursor: default;
-  padding: 0;
-  margin-bottom: 10px;
-}
-
-.addEventForm-carDetails label:hover:not([for="empNumber"]) {
-  background-color: #b59958;
-  transform: translateY(-2px);
-}
-
-.page-title {
-  text-align: center;
-  font-size: 2em;
-  color: #4e6b31;
-  margin: 20px 0;
-}
-
-.form-title {
-  text-align: center;
-  font-size: 1.5em;
-  color: #4e6b31;
-  margin: 20px 0;
-}
-
-.cards-title {
-  text-align: center;
-  font-size: 1.5em;
-  color: #4e6b31;
-  margin: 20px 0;
-}
-
-.card {
+.accident-card {
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
@@ -78,12 +101,12 @@
   max-width: 400px;
 }
 
-.card:hover {
+.accident-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.card-header {
+.accident-card-header {
   background-color: #4e6b31;
   color: #fff;
   padding: 15px;
@@ -91,7 +114,7 @@
   font-size: 1.2em;
 }
 
-.card-body {
+.accident-card-body {
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -100,17 +123,17 @@
   align-items: flex-start;
 }
 
-.card-body p {
+.accident-card-body p {
   margin: 0;
 }
 
-.card-footer-accidents-page {
+.accident-card-footer {
   background-color: #f9f9f9;
   padding: 15px;
   text-align: center;
 }
 
-.card-footer-button {
+.accident-card-footer-button {
   padding: 12px 20px;
   border: none;
   border-radius: 8px;
@@ -121,106 +144,49 @@
   font-size: 1em;
 }
 
-.card-footer-button:hover {
+.accident-card-footer-button:hover {
   background-color: #b59958;
   transform: translateY(-2px);
 }
 
-.card .images img {
+.accident-images img {
   max-width: 100%;
   height: auto;
   border-radius: 4px;
   margin-top: 8px;
 }
 
-.downladbtn {
-  text-decoration: none;
-  color: #4e6b31;
+.accident-error-msg {
+  color: red;
   font-weight: bold;
-  font-size: 1em;
 }
 
-.downladbtn:hover {
-  color: #b59958;
-}
-
-.card-main {
-  margin: auto;
-  max-width: 800px;
-}
-
-.card-details {
-  text-align: center;
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: grid;
-  gap: 20px;
-  justify-content: center;
-  font-size: 1em;
-}
-
-.card-details h2 {
-  margin-top: 0;
-  font-size: 1.5em;
-}
-
-.card-details .images img.large-image {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-  margin-top: 8px;
-}
-
-.flex-carnumber {
+.accident-main-container {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  align-items: center;
+  font-size: larger;
+  font-weight: bold;
 }
 
-.card button,
-.downladbtn a {
-  padding: 12px 20px;
-  border: none;
+.accident-form-container {
+  width: 387px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #4e6b31;
-  color: white;
-  cursor: pointer;
-  transition: all 0.4s ease-in-out, transform 0.2s ease;
-  text-decoration: none;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-size: 1em;
 }
 
-.card-id-container {
-  position: absolute;
-  top: 150px;
-  right: 50px;
-  background-color: #b59958;
-  padding: 10px;
-}
-
-.downladbtn a:hover {
-  background-color: #b59958;
-  transform: translateY(-2px);
-}
-
-.submit-form {
-  font-weight: bold;
-  cursor: pointer;
-  background-color: #4e6b31;
-  color: #fff;
-  width: 100%;
-  height: 50px;
-  border: none;
-  border-radius: 8px;
-  transition: all 0.4s ease-in-out, transform 0.2s ease;
-  margin: 10px auto;
+.accident-id-box {
   text-align: center;
-  display: block;
-  line-height: 50px;
-}
-.submit-form:hover {
-  background-color: #b59958;
-  transform: translateY(-2px);
+  background-color: rgb(194, 173, 117);
+  padding: 10px;
+  border-radius: 8px 8px 0 0;
 }

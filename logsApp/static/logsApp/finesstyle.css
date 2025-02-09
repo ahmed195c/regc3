@@ -1,15 +1,12 @@
-.fine-incont-flex {
+.fines-main-fin {
   display: flex;
   flex-direction: column;
+  align-items: center;
   font-size: larger;
   font-weight: bold;
 }
 
-.main-fin {
-  margin: 0 auto !important;
-}
-
-.fine-form {
+.fines-form-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -23,16 +20,21 @@
   font-size: 1em;
 }
 
-.form-group {
+.fines-fine-form {
+  color: #4e6b31;
+}
+
+.fines-form-group {
   margin-bottom: 20px;
 }
 
-.form-label {
+.fines-form-label {
+  direction: rtl;
   margin-bottom: 5px;
   display: block;
 }
 
-.input {
+.fines-input {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -40,7 +42,7 @@
   font-size: 1em;
 }
 
-.input-file {
+.fines-input-file {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -48,22 +50,21 @@
   font-size: 1em;
 }
 
-.input-date,
-.input-time,
-.input-text {
+.fines-input-date,
+.fines-input-time,
+.fines-input-text {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1em;
 }
-.fix-Ar {
+.fines-fix-Ar {
   display: flex;
   align-items: center;
   justify-content: center;
-  
 }
-.input-number {
+.fines-input-number {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -73,13 +74,13 @@
   -moz-appearance: textfield;
 }
 
-.input-number:focus {
+.fines-input-number:focus {
   border-color: #4e6b31;
   box-shadow: 0 0 5px rgba(78, 107, 49, 0.5);
   outline: none;
 }
 
-.textarea {
+.fines-textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -87,7 +88,7 @@
   font-size: 1em;
 }
 
-.submit-btn {
+.fines-nav-link-btn {
   padding: 12px 20px;
   border: none;
   border-radius: 8px;
@@ -96,14 +97,32 @@
   cursor: pointer;
   transition: all 0.4s ease-in-out, transform 0.2s ease;
   font-size: 1em;
+  width: 100%;
 }
 
-.submit-btn:hover {
+.fines-nav-link-btn:hover {
   background-color: #b59958;
   transform: translateY(-2px);
 }
 
-.fine-details-container {
+.fines-submit-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4e6b31;
+  color: white;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out, transform 0.2s ease;
+  font-size: 1em;
+  width: 100%;
+}
+
+.fines-submit-btn:hover {
+  background-color: #b59958;
+  transform: translateY(-2px);
+}
+
+.fines-details-container {
   max-width: 800px;
   margin: auto;
   padding: 20px;
@@ -112,22 +131,22 @@
   text-align: center;
 }
 
-.fine-details {
+.fines-details {
   margin-bottom: 20px;
 }
 
-.fine-details p {
+.fines-details p {
   margin: 10px 0;
 }
 
-.large-image {
+.fines-large-image {
   max-width: 100%;
   height: auto;
   border-radius: 4px;
   margin-top: 8px;
 }
 
-.submit-form {
+.fines-submit-form {
   font-weight: bold;
   cursor: pointer;
   background-color: #4e6b31;
@@ -143,12 +162,12 @@
   line-height: 50px;
 }
 
-.submit-form:hover {
+.fines-submit-form:hover {
   background-color: #b59958;
   transform: translateY(-2px);
 }
 
-.cards-container {
+.fines-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 40px;
@@ -159,7 +178,7 @@
   margin: 0 auto;
 }
 
-.card {
+.fines-card {
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
@@ -172,12 +191,12 @@
   max-width: 400px;
 }
 
-.card:hover {
+.fines-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.card-header {
+.fines-card-header {
   background-color: #4e6b31;
   color: #fff;
   padding: 15px;
@@ -185,7 +204,7 @@
   font-size: 1.2em;
 }
 
-.card-body {
+.fines-card-body {
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -194,17 +213,17 @@
   align-items: flex-start;
 }
 
-.card-body p {
+.fines-card-body p {
   margin: 0;
 }
 
-.card-footer {
+.fines-card-footer {
   background-color: #f9f9f9;
   padding: 15px;
   text-align: center;
 }
 
-.card-footer button {
+.fines-card-footer button {
   padding: 12px 20px;
   border: none;
   border-radius: 8px;
@@ -215,27 +234,33 @@
   font-size: 1em;
 }
 
-.card-footer button:hover {
+.fines-card-footer button:hover {
   background-color: #b59958;
   transform: translateY(-2px);
 }
 
-.card .images img {
+.fines-card .fines-images img {
   max-width: 100%;
   height: auto;
   border-radius: 4px;
   margin-top: 8px;
 }
 
-.large-image {
+.fines-large-image {
   max-width: 100%;
   height: auto;
   border-radius: 4px;
   margin-top: 8px;
 }
 
-.fine-carNumber {
+.fines-carNumber {
   display: flex;
   flex-direction: row;
   gap: 10px;
+}
+
+.fines-card-id {
+  padding: 10px;
+  background-color: #b59958;
+  border-radius: 4px;
 }

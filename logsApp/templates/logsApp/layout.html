@@ -5,20 +5,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="{% static 'logsApp/layout.css'%}" rel="stylesheet" />
-    <link href="{% static 'logsApp/reg.css'%}" rel="stylesheet" />
-    <link href="{% static 'logsApp/logs.css'%}" rel="stylesheet" />
-    <link href="{% static 'logsApp/finesstyle.css'%}" rel="stylesheet" />
-    <link
-      href="{% static 'logsApp/accidentsPageStyle.css' %}"
-      rel="stylesheet"
-    />
-    <link
-      href="{% static 'logsApp/accidentDetailsPageStyles.css' %}"
-      rel="stylesheet"
-    />
+    {% block css %} {% endblock %}
     <script src="{% static 'logsApp/js/script.js' %}" defer></script>
-
-    <title>Document</title>
+    {% block title %} {% endblock %}
+    <title>regc3</title>
   </head>
   <body>
     <header class="dd">
@@ -42,6 +32,14 @@
               </button>
             </li>
             {% endcomment %}
+            <li>
+              <button
+                class="nav-link-btn-unique"
+                onclick="window.location='{% url 'logsApp:gctoa' %}'"
+              >
+                مركبات مسلمه لادارات اخرى
+              </button>
+            </li>
             <li>
               <button
                 class="nav-link-btn-unique"

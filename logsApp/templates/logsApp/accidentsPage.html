@@ -1,143 +1,169 @@
-{% extends "logsApp/layout.html" %} {% block body %} 
+{% extends "logsApp/layout.html" %} {% load static %} {% block css %} 
+{{block.super }}
+<link href="{% static 'logsApp/accidentsPageStyle.css' %}" rel="stylesheet" />
+{% endblock %} {% block body %}
+<div class="accident-main-container">
+  <div class="accident-form-container">
+    <h2 class="accident-page-title">سجل الحوادث</h2>
+    <button class="accident-nav-link-btn" onclick="toggleAccidentForm()">
+      إضافة حادث
+    </button>
 
+    <form
+      class="accident-form"
+      method="POST"
+      enctype="multipart/form-data"
+      id="addEventForm"
+      style="display: {% if form_open %}block{% else %}none{% endif %}; opacity: {% if form_open %}1{% else %}0{% endif %}; transition: opacity 0.5s ease-in-out;"
+    >
+      {% csrf_token %}
+      <div class="accident-form-group">
+        <label for="carNumber" class="accident-form-label">رقم المركبة</label>
+        <input
+          type="text"
+          id="carNumber"
+          name="carNumber"
+          class="accident-input"
+          value="{{ carNumber }}"
+          required
+        /><br />
+      </div>
 
+      <div class="accident-form-group">
+        <label for="empNumber" class="accident-form-label">رقم الموظف</label>
+        <input
+          type="text"
+          id="empNumber"
+          name="empNumber"
+          class="accident-input"
+          value="{{ empNumber }}"
+        /><br />
+      </div>
 
-<h2 class="cards-title">سجل الحوادث</h2>
-<button class="nav-link-btn show-hide-btn" onclick="toggleAccidentForm()">
-  إضافة حادث
-</button>
+      <div class="accident-msg-cont">
+        {% if emp_err_message %}
+        <div id="error-message-emp-not-exists" class="accident-error-msg">
+          {{ emp_err_message }}
+        </div>
+        <script>
+          setTimeout(function () {
+            fadeOutMessage("error-message-emp-not-exists");
+          }, 7000);
+        </script>
+        {% endif %}
+      </div>
 
-<form
-  class="fine-form addEventForm"
-  method="POST"
-  enctype="multipart/form-data"
-  id="addEventForm"
-  style="display: {% if form_open %}block{% else %}none{% endif %}; opacity: {% if form_open %}1{% else %}0{% endif %}; transition: opacity 0.5s ease-in-out;"
->
-  {% csrf_token %}
-  <label for="carNumber" class="form-label">رقم المركبة</label>
-  <input
-    class="input"
-    type="text"
-    id="carNumber"
-    name="carNumber"
-    value="{{ carNumber }}"
-    required
-  /><br />
+      <div class="accident-form-group">
+        <label for="text" class="accident-form-label">وصف الحادث</label>
+        <textarea id="text" name="text" class="accident-textarea">
+{{ text }}</textarea
+        ><br />
+      </div>
 
-  <label for="empNumber" class="form-label">رقم الموظف</label>
-  <input
-    class="input"
-    type="text"
-    id="empNumber"
-    name="empNumber"
-    value="{{ empNumber }}"
-  /><br />
+      <div class="accident-form-group">
+        <label for="reportPdfFile" class="accident-form-label"
+          >تحميل تقرير (PDF)</label
+        >
+        <input
+          type="file"
+          id="reportPdfFile"
+          name="reportPdfFile"
+          accept="application/pdf"
+          class="accident-input-file"
+          value="{{ reportPdfFile }}"
+        /><br />
+      </div>
 
-  <div class="msg-cont">
-    {% if emp_err_message %}
-    <div id="error-message-emp-not-exists" class="error-msg">
-      {{ emp_err_message }}
-    </div>
-    <script>
-      setTimeout(function () {
-        fadeOutMessage("error-message-emp-not-exists");
-      }, 7000);
-    </script>
-    {% endif %}
+      <div class="accident-form-group">
+        <label for="licenseFiles" class="accident-form-label"
+          >تحميل رخصة القيادة (PDF أو صورة)</label
+        >
+        <input
+          type="file"
+          id="licenseFiles"
+          name="licenseFiles"
+          accept="application/pdf,image/*"
+          multiple
+          class="accident-input-file"
+        /><br />
+      </div>
+
+      <div class="accident-form-group">
+        <label for="carPaperworkFile" class="accident-form-label"
+          >تحميل أوراق السيارة (PDF)</label
+        >
+        <input
+          type="file"
+          id="carPaperworkFile"
+          name="carPaperworkFile"
+          accept="application/pdf"
+          class="accident-input-file"
+        /><br />
+      </div>
+
+      <div class="accident-form-group">
+        <label for="images" class="accident-form-label">تحميل الصور</label>
+        <input
+          type="file"
+          id="images"
+          name="images"
+          accept="image/*"
+          multiple
+          class="accident-input-file"
+        /><br />
+      </div>
+
+      <button class="accident-submit-btn" type="submit">تسجيل</button>
+    </form>
   </div>
 
-  <label for="text" class="form-label">وصف الحادث</label>
-  <textarea id="text" name="text" class="textarea">{{ text }}</textarea><br />
-
-  <label for="reportPdfFile" class="form-label">تحميل تقرير (PDF)</label>
-  <input
-    type="file"
-    id="reportPdfFile"
-    name="reportPdfFile"
-    accept="application/pdf"
-    class="input-file"
-    value="{{ reportPdfFile }}"
-  /><br />
-
-  <label for="licenseFiles" class="form-label"
-    >تحميل رخصة القيادة (PDF أو صورة)</label
-  >
-  <input
-    type="file"
-    id="licenseFiles"
-    name="licenseFiles"
-    accept="application/pdf,image/*"
-    multiple
-    class="input-file"
-  /><br />
-
-  <label for="carPaperworkFile" class="form-label"
-    >تحميل أوراق السيارة (PDF)</label
-  >
-  <input
-    type="file"
-    id="carPaperworkFile"
-    name="carPaperworkFile"
-    accept="application/pdf"
-    class="input-file"
-  /><br />
-
-  <label for="images" class="form-label">تحميل الصور</label>
-  <input
-    type="file"
-    id="images"
-    name="images"
-    accept="image/*"
-    multiple
-    class="input-file"
-  /><br />
-
-  <button class="submit-form" type="submit">تسجيل</button>
-</form>
-
-<div class="cards-container" style="direction: rtl">
-  {% if fines %} {% for fine in fines %}
-  <div class="card">
-    <!-- prettier-ignore -->
-    <div
-      class="card-header"
-      style="background-color: {% if fine.fixin_date %}green{% elif fine.report_pdf_file %}lightblue{% else %}red{% endif %};"
-    >
-      <p>
-        {% if fine.fixin_date %} السيارة تم إصلاحها {% elif fine.report_pdf_file %} السيارة في انتظار الإصلاح {% else %} الشخص الذي تسبب في الحادث غير
-        محدد {% endif %}
-      </p>
-    </div>
-    <div class="card-body">
-      <p><strong>رقم المركبه:</strong> {{ fine.car.carNumber }}</p>
-      <p><strong>وصف الحادث:</strong> {{ fine.text }}</p>
-      <p></p>
-      <p></p>
-      {% if fine.employees.all %}
-      <p><strong>المتسبب في الحادث</strong></p>
-      <ul>
+  <div class="accident-cards-container" style="direction: rtl">
+    {% if fines %} {% for fine in fines %}
+    <div class="accident-card">
+      <!-- prettier-ignore -->
+      <div class="accident-id-box">
+          <p><strong>رقم البطاقه :</strong> {{ fine.id }}</p>
+        </div>
+      <div
+        class="accident-card-header"
+        style="background-color: {% if fine.fixin_date %}green{% elif fine.report_pdf_file %}lightblue{% else %}red{% endif %};"
+      >
+        <p>
+          {% if fine.fixin_date %} السيارة تم إصلاحها {% elif
+          fine.report_pdf_file %} السيارة في انتظار الإصلاح {% else %} الشخص
+          الذي تسبب في الحادث غير محدد {% endif %}
+        </p>
+      </div>
+      <div class="accident-card-body">
+        <p><strong>رقم المركبه:</strong> {{ fine.car.carNumber }}</p>
+        <p><strong>وصف الحادث:</strong> {{ fine.text }}</p>
+        {% if fine.employees.all %}
+        <div class="accident-employee">
+          <h4><strong>المتسبب في الحادث</strong></h4>
+        </div>
         {% for emp in fine.employees.all %}
-        <li>{{ emp.ceoName }}</li>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p>المتسبب في الحادث: مجهول</p>
-      {% endif %}
-      <div class="images">
-        {% for image in fine.images.all %}
-        <img src="{{ image.image.url }}" alt="Fine Image" />
-        {% endfor %}
+        <p><strong>الاسم : </strong> {{ emp.ceoName }}</p>
+        <p>{% endfor %} {% else %}</p>
+
+        <p>المتسبب في الحادث: مجهول</p>
+        {% endif %}
+        <div class="accident-images">
+          {% for image in fine.images.all %}
+          <img src="{{ image.image.url }}" alt="Fine Image" />
+          {% endfor %}
+        </div>
+      </div>
+      <div class="accident-card-footer">
+        <button
+          class="accident-card-footer-button"
+          onclick="location.href='{% url 'logsApp:carddetails' fine.id %}'"
+        >
+          اظهار تفاصيل اكثر
+        </button>
       </div>
     </div>
-    <div class="card-footer-accidents-page">
-      <button class="card-footer-button" onclick="location.href='{% url 'logsApp:carddetails' fine.id %}'">
-        اظهار تفاصيل اكثر
-      </button>
-    </div>
+    {% endfor %} {% endif %}
   </div>
-  {% endfor %} {% endif %}
-</div>
 </div>
 
 {% endblock %}

@@ -12,6 +12,25 @@ import pytz
 from django.core.paginator import Paginator
 import shutil
 import os
+from .empinfo import empInfo
+from .newempData import newemp
+from .models import GivenCarsToOtherAdminstrations
+
+
+def seedemp(request):
+    for i in newemp:
+        emp, created = EmployesInfo.objects.update_or_create(
+            ceoNumber=i["empId"],
+            defaults={
+                'ceoName': i["empName"],
+                'phoneNumber': i["tel"],
+                'jobTtile': i["jobTitle"],
+                'department': i["department"],
+                'unit': i["unit"],
+                'nationality': i["nationality"]
+            }
+        )
+    return HttpResponse("done")
 
 
 def remove_non_numeric(s):
@@ -56,6 +75,19 @@ def registerCar(request):
                 "carNumber": "",
             })
         except LogsC.DoesNotExist:
+            pass
+        # تاكد اذا كانت المركبه معطاه لاداره اخرى
+        try:
+            car_given_to_other_admin = GivenCarsToOtherAdminstrations.objects.get(car__carNumber=car_number, carIsInUse=True)
+            message = "المركبه معطاه لاداره اخرى"
+            return render(request, "logsApp/registerCar.html", {
+                "message": message,
+                "carGivenToOtherAdmin": car_given_to_other_admin,
+                "l": all_in_use_cars,
+                "ceoNumber": ceo_number,
+                "carNumber": "",
+            })
+        except GivenCarsToOtherAdminstrations.DoesNotExist:
             pass
         # تاكد اذا كان الرقم الاداري صحيح وليس لديه مركبه
         try:
@@ -131,7 +163,6 @@ def returnCar(request):
         ret_success_msg = "تم اعاده المركبه بنجاح"
         registered_car_instance = RegistredCars.objects.get(carNumber=in_use_car_instance.car.carNumber)
         log_instance = LogsC.objects.select_related('Logs_employee_ins', 'Logs_car_ins').get(Logs_employee_ins=emp_instance, carIsInUse=True)
-
         current_time = timezone.now().astimezone(dubai_tz)
         log_instance.ended_at = current_time
         log_instance.return_date = current_time.date()
@@ -381,9 +412,9 @@ def fineC(request):
 
         return render(request, "logsApp/finespage.html", {'finon': finon})
     return render(request, "logsApp/finespage.html", {'allFines':allFines,'finon': finon})
-    
+
 def carddetails(request, fine_id):
-    fine = get_object_or_404(AccidentsRecord, id=fine_id)
+    accident = get_object_or_404(AccidentsRecord, id=fine_id)
     if request.method == "POST":
         report_pdf_file = request.FILES.get('reportPdfFile')
         car_paperwork_file = request.FILES.get('carPaperworkFile')
@@ -392,34 +423,34 @@ def carddetails(request, fine_id):
         emp_number = request.POST.get('empNumber')
 
         if report_pdf_file:
-            fine.report_pdf_file = report_pdf_file
+            accident.report_pdf_file = report_pdf_file
         if car_paperwork_file:
-            fine.car_paperwork_file = car_paperwork_file
+            accident.car_paperwork_file = car_paperwork_file
 
         for image in images:
-            FinesAccidentsImage.objects.create(accidents_record=fine, image=image)
+            FinesAccidentsImage.objects.create(accidents_record=accident, image=image)
 
         for license_file in license_files:
-            LicenseFile.objects.create(accidents_record=fine, file=license_file)
+            LicenseFile.objects.create(accidents_record=accident, file=license_file)
 
         if emp_number:
             try:
                 emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number)
-                fine.employees.add(emp_instance)
+                accident.employees.add(emp_instance)
             except EmployesInfo.DoesNotExist:
                 pass
 
-        fine.save()
+        accident.save()
 
     license_files = []
     license_images = []
-    for license_file in fine.license_files.all():
+    for license_file in accident.license_files.all():
         if is_pdf(license_file.file):
             license_files.append(license_file)
         else:
             license_images.append(license_file)
-    return render(request, 'logsApp/carddetails.html', {
-        'fine': fine,
+    return render(request, 'logsApp/accidentDetails.html', {
+        'accident': accident,
         'license_files': license_files,
         'license_images': license_images
     })
@@ -429,12 +460,12 @@ def markasfixed(request, fine_id):
     fine.fixin_date = timezone.now()
 
     fine.save()
-    return redirect('logsApp:carddetails', fine_id=fine_id)
+    return redirect('logsApp:accidentDetails', fine_id=fine_id)
 def markasfixed(request, fine_id):
     fine = get_object_or_404(AccidentsRecord, id=fine_id)
     fine.fixin_date = timezone.now()
     fine.save()
-    return redirect('logsApp:carddetails', fine_id=fine_id)
+    return redirect('logsApp:accidentDetails', fine_id=fine_id)
 
 def fineDetails(request, fine_id):
     fine = get_object_or_404(FinesRecord, id=fine_id)
@@ -473,3 +504,99 @@ def deleteFineImage(request, fine_id):
         fine.paidDate = None
         fine.save()
     return redirect('logsApp:fineDetails', fine_id=fine_id)
+
+
+
+def gCTOA(request):
+    cgtoa = GivenCarsToOtherAdminstrations.objects.all()
+    if request.method == "POST":
+        dubai_tz = pytz.timezone('Asia/Dubai')
+        current_time = timezone.now().astimezone(dubai_tz)
+        carNumberq = request.POST.get("carNumber")
+        other_adminstration = request.POST.get("other_adminstration")
+        emp_number = request.POST.get("emp_number")
+        emp_name = request.POST.get("emp_name")
+        telephone = request.POST.get("telephone")
+        #تاكد اذا كانت المركبه قيد الاستخدام من قبل ادارتنا 
+        try:
+            ourAdmin = LogsC.objects.get(Logs_car_ins__carNumber=carNumberq, carIsInUse=True)
+            error_message = "المركبه قيد الاستخدام"
+            return render(request, "logsApp/gctoa.html", {
+                "ourAdmin": ourAdmin,
+                "cgtoa": cgtoa,
+                "error_message": error_message,
+                "carNumber": carNumberq,
+                "other_adminstration": other_adminstration,
+                "emp_number": emp_number,
+                "emp_name": emp_name,
+                "telephone": telephone
+            })
+        except LogsC.DoesNotExist:
+            pass
+        
+        #تاكد اذا كانت الاداره مسجله من قبل ادارة ارخى
+        try:
+            otheradmin = GivenCarsToOtherAdminstrations.objects.get(car__carNumber=carNumberq, carIsInUse=True)
+            error_message = "المركبه معطاه لاداره اخرى"
+            return render(request, "logsApp/gctoa.html", {
+                "otheradmin": otheradmin,
+                "cgtoa": cgtoa,
+                "error_message": error_message,
+                "carNumber": carNumberq,
+                "other_adminstration": other_adminstration,
+                "emp_number": emp_number,
+                "emp_name": emp_name,
+                "telephone": telephone
+            })
+        except GivenCarsToOtherAdminstrations.DoesNotExist:
+            pass
+
+        try:
+            car_instance = RegistredCars.objects.get(carNumber=carNumberq, carIsInparking=True)
+            GivenCarsToOtherAdminstrations.objects.create(
+                car=car_instance,
+                otherAdminstration=other_adminstration,
+                empNumber=emp_number,
+                empName=emp_name,
+                telephone=telephone,
+                taken_date=current_time.date(),
+                taken_time=current_time.time(),
+                carIsInUse=True
+            )
+            car_instance.carIsInparking = False
+            car_instance.save()
+            cgtoa = GivenCarsToOtherAdminstrations.objects.all()
+            success_message = "تم حفظ البيانات بنجاح"
+            return render(request, "logsApp/gctoa.html", {"cgtoa": cgtoa, "success_message": success_message})
+        except RegistredCars.DoesNotExist:
+            error_message = "رقم السيارة غير صحيح او المركبه قيد الاستخدام"
+            return render(request, "logsApp/gctoa.html", {
+                "cgtoa": cgtoa,
+                "error_message": error_message,
+                "carNumber": carNumberq,
+                "other_adminstration": other_adminstration,
+                "emp_number": emp_number,
+                "emp_name": emp_name,
+                "telephone": telephone
+            })
+
+    return render(request, "logsApp/gctoa.html", {"cgtoa": cgtoa})
+
+def return_car(request, car_id):
+    car_instance = get_object_or_404(GivenCarsToOtherAdminstrations, id=car_id)
+    dubai_tz = pytz.timezone('Asia/Dubai')
+    current_time = timezone.now().astimezone(dubai_tz)
+    carNumberq = car_instance.car.carNumber
+    print(carNumberq)
+    car_instance_original = RegistredCars.objects.get(carNumber=carNumberq, carIsInparking=False)
+    car_instance_original.carIsInparking = True
+    car_instance.ended_at = current_time
+    car_instance.return_date = current_time.date()
+    car_instance.retern_time = current_time.time()
+    car_instance.carIsInUse = False
+    car_instance.save()
+    car_instance_original.save()
+    
+    success_message = "تم تسجيل عودة المركبة بنجاح"
+    cgtoa = GivenCarsToOtherAdminstrations.objects.all()
+    return render(request, "logsApp/gctoa.html", {"cgtoa": cgtoa, "success_message": success_message})

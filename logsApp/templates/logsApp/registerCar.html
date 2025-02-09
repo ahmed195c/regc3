@@ -1,4 +1,7 @@
-{% extends "logsApp/layout.html" %} {% load static %} {% block body %}
+{% extends "logsApp/layout.html" %} {% load static %} {% block css %} 
+{{block.super }}
+<link rel="stylesheet" href="{% static 'logsApp/reg.css' %}" />
+{% endblock %} {% block body %}
 <div class="main">
   <h1>{{inUseErr}}</h1>
 
@@ -9,17 +12,30 @@
       {% for n in l %}
       <div class="car-details">
         <div class="details">
-          <div class="info">
+          <div class="group-info">
             <p class="info-p">اسم المستخدم: {{n.employee.ceoName}}</p>
+          </div>
+          <div class="group-info">
             <p class="info-p">الرقم الاداري: {{n.employee.ceoNumber}}</p>
-            <p>{{n.employee.section}}</p>
-            <div class="car-plate">
-              <p>{{n.car.carNumber}}</p>
-              <p>رقم اللوحه</p>
-            </div>
+          </div>
+          <div class="group-info">
+            <p>{{n.employee.department}}</p>
+          </div>
+          <div class="group-info">
+            <p>{{n.employee.unit}}</p>
+          </div>
+          <div class="group-info car-plate">
+            <p>{{n.car.carNumber}}</p>
+            <p>رقم اللوحه</p>
+          </div>
+          <div class="group-info">
             <p>تاريخ و وقت الاستلام</p>
             <p class="created-at">{{ n.created_at|date:"Y-m-d / h:i A" }}</p>
+          </div>
+          <div class="group-info">
             <p>{{ n.taken_date|date:"Y-m-d" }}</p>
+          </div>
+          <div class="group-info">
             <p>{{ n.taken_time|time:"h:i A" }}</p>
           </div>
         </div>
@@ -71,23 +87,29 @@
             <div id="error-message-emp-in-use" class="error-msg-empinuse">
               <div class="car-detailserr">
                 <div class="details">
-                  <div class="infoerr">
-                    <div>
-                      <p class="info-p">
-                        تنبية: الرقم الاداري الذي أدخلته مستخدم حاليا
-                      </p>
-                    </div>
+                  <div class="group-info">
+                    <p class="info-p">
+                      تنبية: الرقم الاداري الذي أدخلته مستخدم حاليا
+                    </p>
+                  </div>
+                  <div class="group-info">
                     <p class="info-p">
                       اسم الموظف : {{itsinuse.Logs_employee_ins.ceoName}}
                     </p>
+                  </div>
+                  <div class="group-info">
                     <p class="info-p">
                       الرقم الاداري: {{itsinuse.Logs_employee_ins.ceoNumber}}
                     </p>
+                  </div>
+                  <div class="group-info">
                     <p>{{itsinuse.Logs_employee_ins.section}}</p>
-                    <div class="car-plate">
-                      <p>رقم اللوحه</p>
-                      <p>{{itsinuse.Logs_car_ins.carNumber}}</p>
-                    </div>
+                  </div>
+                  <div class="group-info car-plate">
+                    <p>رقم اللوحه</p>
+                    <p>{{itsinuse.Logs_car_ins.carNumber}}</p>
+                  </div>
+                  <div class="group-info">
                     <p>تاريخ و وقت الاستلام</p>
                     <p class="created-at">
                       {{ itsinuse.created_at|date:"Y-m-d / h:i A" }}
@@ -105,21 +127,27 @@
             <div id="error-message-car-in-use" class="error-msg-empinuse">
               <div class="car-detailserr">
                 <div class="details">
-                  <div class="infoerr">
-                    <div>
-                      <p class="info-p">المركبه مسجله من قبل</p>
-                    </div>
+                  <div class="group-info">
+                    <p class="info-p">المركبه مسجله من قبل</p>
+                  </div>
+                  <div class="group-info">
                     <p class="info-p">
                       الاسم : {{carIsInUse.Logs_employee_ins.ceoName}}
                     </p>
+                  </div>
+                  <div class="group-info">
                     <p class="info-p">
                       الرقم الاداري: {{carIsInUse.Logs_employee_ins.ceoNumber}}
                     </p>
+                  </div>
+                  <div class="group-info">
                     <p>{{carIsInUse.Logs_employee_ins.section}}</p>
-                    <div class="car-plate">
-                      <p>رقم اللوحه</p>
-                      <p>{{carIsInUse.Logs_car_ins.carNumber}}</p>
-                    </div>
+                  </div>
+                  <div class="group-info car-plate">
+                    <p>رقم اللوحه</p>
+                    <p>{{carIsInUse.Logs_car_ins.carNumber}}</p>
+                  </div>
+                  <div class="group-info">
                     <p>تاريخ و وقت الاستلام</p>
                     <p class="created-at">
                       {{ carIsInUse.created_at|date:"Y-m-d / h:i A" }}
@@ -133,15 +161,46 @@
                 fadeOutMessage("error-message-car-in-use");
               }, 10000);
             </script>
-
+            {% endif %} {% if carGivenToOtherAdmin %}
+            <div id="error-message-gct" class="Gct-errormsg">
+              <div class="car-detailserr">
+                <div class="details">
+                  <div class="group-info">
+                    <p class="info-p">المركبه مسجله من قبل</p>
+                  </div>
+                  <div class="group-info">
+                    <p class="info-p">
+                      الاسم : {{carGivenToOtherAdmin.empName}}
+                    </p>
+                  </div>
+                  <div class="group-info">
+                    <p class="info-p">
+                      الرقم الاداري: {{carIsInUse.Logs_employee_ins.ceoNumber}}
+                    </p>
+                  </div>
+                  <div class="group-info">
+                    <p>{{carIsInUse.Logs_employee_ins.section}}</p>
+                  </div>
+                  <div class="group-info car-plate">
+                    <p>رقم اللوحه</p>
+                    <p>{{carIsInUse.Logs_car_ins.carNumber}}</p>
+                  </div>
+                  <div class="group-info">
+                    <p>تاريخ و وقت الاستلام</p>
+                    <p class="created-at">
+                      {{ carIsInUse.created_at|date:"Y-m-d / h:i A" }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <script>
+              setTimeout(function () {
+                fadeOutMessage("error-message-gct");
+              }, 10000);
+            </script>
             {% endif %}
           </div>
-
-          {% if EmpMErr %}
-          <h3>{{EmpMErr}}</h3>
-          {% endif %} {% if InUseCar_exists %}
-          <h3>{{InUseCar_exists}}</h3>
-          {% endif %}
         </div>
 
         <div class="input-cont full-size">
