@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = "logsApp"
 urlpatterns = [
@@ -17,3 +19,6 @@ urlpatterns = [
     path('fine/<int:fine_id>/delete-image/', views.deleteFineImage, name='deleteFineImage'),
     path('fines/', views.fineC, name='finespage'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

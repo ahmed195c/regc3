@@ -31,7 +31,7 @@ class RegistredCars(models.Model):
 class EmployesInfo(models.Model):
     EmpHaveCar = models.BooleanField(default=False)
     ceoNumber = models.CharField(default='0', max_length=100, unique=True)
-    ceoName = models.CharField(max_length=100)
+    ceoName = models.CharField(max_length=100,default="الاسم")
     phoneNumber = models.CharField(max_length=100, default='0000000000')
     position = models.CharField(max_length=100,default="الوظيفه")
     section = models.CharField(max_length=100,default="القسم")
@@ -86,17 +86,17 @@ class AccidentsRecord(models.Model):
     report_pdf_file = models.FileField(upload_to=fines_accident_pdf_upload_to, null=True, blank=True, max_length=500)
     car_paperwork_file = models.FileField(upload_to=fines_accident_pdf_upload_to, null=True, blank=True, max_length=500)
     def __str__(self):
-        return str(f" {self.pk} " )
+        return f"Accident on {self.accident_date}"
 
 class FinesAccidentsImage(models.Model):
     accidents_record = models.ForeignKey(AccidentsRecord, related_name='images', on_delete=models.CASCADE,default=None)
-    image = models.ImageField(upload_to=fines_accident_file_upload_to)
+    image = models.ImageField(upload_to=fines_accident_file_upload_to,default=None)
     def __str__(self):
         return str(f" {self.accidents_record.pk} " )
 
 class LicenseFile(models.Model):
     accidents_record = models.ForeignKey(AccidentsRecord, related_name='license_files', on_delete=models.CASCADE,default=None)
-    file = models.FileField(upload_to=fines_accident_file_upload_to)
+    file = models.FileField(upload_to=fines_accident_file_upload_to,default=None)
     def __str__(self):
         return str(f" {self.accidents_record.pk} " )
 
