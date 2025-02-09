@@ -1,4 +1,17 @@
-{% extends "logsApp/layout.html" %} {% block body %}
+{% extends "logsApp/layout.html" %} 
+
+{% load static %}
+
+{% block title %}
+<title>سجل الاستلام والتسليم</title>
+{% endblock %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'logsApp/logs.css' %}" />
+{% endblock %}
+
+{% block body %}
 
 <div class="logs-btns">
   {% comment %}

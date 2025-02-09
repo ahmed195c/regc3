@@ -1,4 +1,10 @@
-{% extends "logsApp/layout.html" %} {% block body %}
+{% extends "logsApp/layout.html" %} {% load static %}
+{% block css %}
+{{ block.super }}
+<link href="{% static 'logsApp/fineDetails.css'%}" rel="stylesheet" />
+{% endblock %} 
+
+{% block body %}
 <div class="fine-details-container">
   <h1 class="page-title">تفاصيل المخالفة</h1>
   <div class="fine-details" dir="rtl">

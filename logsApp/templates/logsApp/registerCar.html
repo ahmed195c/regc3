@@ -1,4 +1,7 @@
-{% extends "logsApp/layout.html" %} {% load static %} {% block body %}
+{% extends "logsApp/layout.html" %} {% load static %} {% block css %} 
+{{block.super }}
+<link rel="stylesheet" href="{% static 'logsApp/reg.css' %}" />
+{% endblock %} {% block body %}
 <div class="main">
   <h1>{{inUseErr}}</h1>
 

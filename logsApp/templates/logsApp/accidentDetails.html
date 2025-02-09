@@ -1,5 +1,9 @@
-{% extends "logsApp/layout.html" %} {% block body %} {% load static %}
-
+{% extends "logsApp/layout.html" %} {% block css %} {{block.super }}
+<link
+  href="{% static 'logsApp/accidentDetailsPageStyles.css' %}"
+  rel="stylesheet"
+/>
+{% endblock %} {% block body %}
 <div class="A-D-card-main">
   <!-- prettier-ignore -->
   <div

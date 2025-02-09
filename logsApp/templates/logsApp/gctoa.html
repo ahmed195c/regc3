@@ -1,4 +1,12 @@
-{% extends "logsApp/layout.html" %} {% block body %}
+{% extends "logsApp/layout.html" %} 
+
+{% load static %}
+{% block css %}
+{{ block.super }}
+<link href="{% static 'logsApp/gctoa.css'%}" rel="stylesheet" />
+{% endblock %} 
+
+{% block body %}
 
 <h1 class="page-title gctoa-page-title">مركبات مسلمة لإدارات أخرى</h1>
 
