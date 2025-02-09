@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'parkingLogsapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'verceldb',
-        'USER': 'default',
-        'PASSWORD': 'k9Z1oiMtcOdj',
-        'HOST': 'ep-lucky-wood-a4fcgjae-pooler.us-east-1.aws.neon.tech',
-        'PORT': '5432',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'PtfSYiGCByzDshUfDsuTktTnnIMfRMsg',
+        'HOST': 'roundhouse.proxy.rlwy.net',
+        'PORT': '20874',
         'OPTIONS': {
             'sslmode': 'require',
         },

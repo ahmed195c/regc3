@@ -103,7 +103,7 @@ class AccidentsRecord(models.Model):
     report_pdf_file = models.FileField(upload_to=fines_accident_pdf_upload_to, null=True, blank=True, max_length=500)
     car_paperwork_file = models.FileField(upload_to=fines_accident_pdf_upload_to, null=True, blank=True, max_length=500)
     def __str__(self):
-        return f"Accident on {self.accident_date}"
+        return f"Accident on {self.report_date}"
 
 class FinesAccidentsImage(models.Model):
     accidents_record = models.ForeignKey(AccidentsRecord, related_name='images', on_delete=models.CASCADE,default=None)

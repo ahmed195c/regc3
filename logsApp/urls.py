@@ -18,14 +18,7 @@ urlpatterns = [
     path('fine/<int:fine_id>/', views.fineDetails, name='fineDetails'),
     path('fine/<int:fine_id>/delete-image/', views.deleteFineImage, name='deleteFineImage'),
     path('fines/', views.fineC, name='finespage'),
-<<<<<<< HEAD
-]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-=======
     path('gctoa/', views.gCTOA, name='gctoa'),
     path('q', views.seedemp, name='seedemp'),
     path('return_car/<int:car_id>/', views.return_car, name='return_car'),
 ]
->>>>>>> b1573c2409400f062f61980581d0870cb03df697
