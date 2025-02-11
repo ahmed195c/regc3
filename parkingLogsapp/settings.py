@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-cnmdbsktx*k=t7nyg3&p4ea9qujux3vy949cyr^*gga4%($pn5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app','127.0.0.1','now.sh']
 
 
 # Application definition
@@ -76,11 +76,17 @@ WSGI_APPLICATION = 'parkingLogsapp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'PtfSYiGCByzDshUfDsuTktTnnIMfRMsg',
+        'HOST': 'roundhouse.proxy.rlwy.net',
+        'PORT': '20874',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
