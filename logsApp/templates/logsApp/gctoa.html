@@ -1,12 +1,7 @@
-{% extends "logsApp/layout.html" %} 
-
-{% load static %}
-{% block css %}
-{{ block.super }}
+{% extends "logsApp/layout.html" %} {% load static %} {% block css %}
+{{block.super }}
 <link href="{% static 'logsApp/gctoa.css'%}" rel="stylesheet" />
-{% endblock %} 
-
-{% block body %}
+{% endblock %} {% block body %}
 
 <h1 class="page-title gctoa-page-title">مركبات مسلمة لإدارات أخرى</h1>
 
@@ -17,7 +12,7 @@
 <div
   id="formContainer"
   class="form-container gctoa-form-container"
-  style="display: none; opacity: 0; transition: opacity 0.5s ease"
+  style="display: {% if ourAdmin or otheradmin %}block{% else %}none{% endif %}; opacity: {% if ourAdmin or otheradmin %}1{% else %}0{% endif %}; transition: opacity 0.5s ease"
 >
   <form method="POST" class="gctoa-form" action="{% url 'logsApp:gctoa' %}">
     {% csrf_token %}
@@ -92,12 +87,52 @@
 
     <button type="submit" class="nav-link-btn gctoa-nav-link-btn">حفظ</button>
   </form>
+</div>
+<div>
   <!-- رسالة الخطى اذا كانى المركبه مسمله لادارتنا -->
-  <div>{% if ourAdmin %} sdfdsfsadfs {% endif %}</div>
-  <!-- #رسالة الخطى اذا كانت المركبه مسملة لادارة اخرى  -->
+  {% if ourAdmin %}
   <div>
-    {%if otheradmin %}
-
+    <div id="error-message-gct" class="gctoa-error-cont" style="display: block">
+      <div class="gctoa-car-details">
+        <div class="gctoa-info-group">
+          <h4 class="info-p">المركبة قيد الاستخدام من قبل</h4>
+        </div>
+        <div class="gctoa-info-group">
+          <p class="info-p">
+            <strong> اسم المستلم :</strong>
+            {{ourAdmin.Logs_employee_ins.ceoName}}
+          </p>
+        </div>
+        <div class="gctoa-info-group">
+          <p class="info-p">
+            الرقم الاداري: {{ourAdmin.Logs_employee_ins.ceoNumber}}
+          </p>
+        </div>
+        <div class="gctoa-info-group-carPlate">
+          <div class="car-plate">
+            <p>
+              <strong> رقم اللوحه : </strong>{{ourAdmin.Logs_car_ins.carNumber}}
+            </p>
+          </div>
+        </div>
+        <div class="gctoa-info-group">
+          <p>تاريخ و وقت تسليم المركبه</p>
+          <p class="created-at">
+            {{ ourAdmin.created_at|date:"Y-m-d / h:i A" }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <script>
+      setTimeout(function () {
+        fadeOutMessage("error-message-gct");
+      }, 10000);
+    </script>
+  </div>
+  {% endif %}
+  <!-- #رسالة الخطى اذا كانت المركبه مسلمة لادارة اخرى  -->
+  {% if otheradmin %}
+  <div>
     <div id="error-message-gct" class="gctoa-error-cont" style="display: block">
       <div class="gctoa-car-details">
         <div class="gctoa-info-group">
@@ -133,11 +168,9 @@
         fadeOutMessage("error-message-gct");
       }, 10000);
     </script>
-
-    {%endif%}
   </div>
+  {%endif%}
 </div>
-
 <div class="gctoa-card-title">
   <h1>معلومات المركباة المسلمه لاداراة اخرى</h1>
 </div>

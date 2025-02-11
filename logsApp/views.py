@@ -93,7 +93,7 @@ def registerCar(request):
         try:
             emp_exists = EmployesInfo.objects.get(ceoNumber=ceo_number, EmpHaveCar=False)
         except EmployesInfo.DoesNotExist:
-            emp_does_not_exist = "الرقم الاداري غير صحيح"
+            emp_does_not_exist = "الرقم الاداري المدخل غير صحيح"
             return render(request, "logsApp/registerCar.html", {
                 "empDoseNotEXISTS": emp_does_not_exist,
                 "l": all_in_use_cars,
@@ -104,7 +104,7 @@ def registerCar(request):
         try:
             car_exists = RegistredCars.objects.get(carNumber=car_number, carIsInparking=True)
         except RegistredCars.DoesNotExist:
-            car_dne = "رقم المركبة غير صحيح"
+            car_dne = "رقم المركبة المدخل غير صحيح"
             return render(request, "logsApp/registerCar.html", {
                 "carDNE": car_dne,
                 "l": all_in_use_cars,
@@ -140,7 +140,7 @@ def returnCar(request):
         try:
             emp_instance = EmployesInfo.objects.get(ceoNumber=ceo_number)
         except EmployesInfo.DoesNotExist:
-            ret_err_msg = "الرقم الاداري غير صحيح"
+            ret_err_msg = "الرقم الاداري المدخل لاعادة مركبه غير صحيح"
             return render(request, "logsApp/registerCar.html",{
                 "retErrm": ret_err_msg,
                 "l": all_in_use_cars,
@@ -152,7 +152,7 @@ def returnCar(request):
         try:
             in_use_car_instance = InUseCars.objects.select_related('car', 'employee').get(employee=emp_instance)
         except InUseCars.DoesNotExist:
-            ret_car_err = "لاتوجد مركبه مرتبطه بل رقم الاداري"
+            ret_car_err = "لاتوجد مركبه مرتبطه بل رقم الاداري المدخل"
             return render(request, "logsApp/registerCar.html", {
                 "retCarErr": ret_car_err,
                 "l": all_in_use_cars,
@@ -534,7 +534,7 @@ def gCTOA(request):
         except LogsC.DoesNotExist:
             pass
         
-        #تاكد اذا كانت الاداره مسجله من قبل ادارة ارخى
+        #تاكد اذا كانت المركبه مسجله من قبل ادارة ارخى
         try:
             otheradmin = GivenCarsToOtherAdminstrations.objects.get(car__carNumber=carNumberq, carIsInUse=True)
             error_message = "المركبه معطاه لاداره اخرى"

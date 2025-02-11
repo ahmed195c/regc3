@@ -1,9 +1,206 @@
-{% extends "logsApp/layout.html" %} {% load static %} {% block css %} 
+{% extends "logsApp/layout.html" %} {% load static %} {% block css %}
 {{block.super }}
 <link rel="stylesheet" href="{% static 'logsApp/reg.css' %}" />
 {% endblock %} {% block body %}
 <div class="main">
-  <h1>{{inUseErr}}</h1>
+  {% comment %} كل الرسائل لصفحة تسجيل المركبات {% endcomment %}
+  <div class="reg-page-all-messages">
+    {% comment %} رسالة خطى اذا كان الموظف لديه مركبه مسجله باسمه {% endcomment %}
+     {% if itsinuse %}
+    <div id="error-message-emp-in-use" class="reg-error-cont">
+      <div class="reg-card-error-details">
+        <div class="reg-info-group">
+          <h1 class="info-p">الرقم الاداري الذي أدخلته مستخدم حاليا</h1>
+        </div>
+        <div class="reg-info-group">
+          <p class="info-p">
+            <strong> اسم الموظف : </strong
+            >{{itsinuse.Logs_employee_ins.ceoName}}
+          </p>
+        </div>
+        <div class="reg-info-group">
+          <p class="info-p">
+            <strong> الرقم الاداري: </strong>
+            {{itsinuse.Logs_employee_ins.ceoNumber}}
+          </p>
+        </div>
+        <div class="reg-info-group">
+          <p><strong>القسم : </strong>{{itsinuse.Logs_employee_ins.department}}</p>
+        </div>
+        <div class="reg-info-group-carPlate">
+         
+          <p>  {{itsinuse.Logs_car_ins.carNumber}} <strong>  : رقم اللوحه  </strong></p>
+        </div>
+        <div class="reg-info-group">
+          <p>تاريخ و وقت الاستلام</p>
+          <p class="created-at">
+            {{ itsinuse.created_at|date:"Y-m-d / h:i A" }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <script>
+      setTimeout(function () {
+        fadeOutMessage("error-message-emp-in-use");
+      }, 10000);
+    </script>
+    <!-- رسالى الخطئ اذا كانت المركبة مسجله من قبل ادارتنا  -->
+    {% elif carIsInUse %}
+    <div id="error-message-car-in-use" class="reg-error-cont">
+        <div class="reg-card-error-details">
+          <div class="reg-info-group">
+            <h1 class="info-p">المركبه مسجله من قبل</h1>
+          </div>
+          <div class="reg-info-group">
+            <p class="info-p">
+             <strong>الاسم : </strong> {{carIsInUse.Logs_employee_ins.ceoName}}
+            </p>
+          </div>
+          <div class="reg-info-group">
+            <p class="info-p">
+              <strong> الرقم الاداري : </strong>{{carIsInUse.Logs_employee_ins.ceoNumber}}
+            </p>
+          </div>
+          <div class="reg-info-group">
+            <p> <strong>القسم : </strong> {{carIsInUse.Logs_employee_ins.department}}</p>
+          </div>
+          <div class="reg-info-group-carPlate">
+            <p>{{carIsInUse.Logs_car_ins.carNumber}} <strong>  : رقم اللوحه   </strong></p>
+          </div>
+          <div class="reg-info-group">
+            <p>تاريخ و وقت الاستلام</p>
+            <p class="created-at">
+              {{ carIsInUse.created_at|date:"Y-m-d / h:i A" }}
+            </p>
+          </div>
+        </div>
+    </div>
+    <script>
+      setTimeout(function () {
+        fadeOutMessage("error-message-car-in-use");
+      }, 10000);
+    </script>
+    {% endif %} 
+    <!-- رسالى الخطى اذا كانت المركبه معطى لادارة اخرى  -->
+    {% if carGivenToOtherAdmin %}
+    <div id="error-message-gct" class="reg-error-cont">
+        <div class="reg-card-error-details">
+          <div class="reg-info-group">
+            <h1 class="info-p"> المركبة معطى لاداره اخرى   </h1>
+          </div>
+          <div class="reg-info-group">
+            <p class="info-p"><strong>  الاسم : </strong>  {{carGivenToOtherAdmin.empName}} </p>
+          </div>
+          <div class="reg-info-group">
+            <p class="info-p">
+              الرقم الاداري: {{carGivenToOtherAdmin.empNumber}}
+            </p>
+          </div>
+          <div class="reg-info-group">
+            <p> <strong> الادارة :</strong> {{carGivenToOtherAdmin.otherAdminstration}} </p>
+          </div>
+          <div class="reg-info-group-carPlate">
+            <p>{{carGivenToOtherAdmin.car.carNumber}} <strong> : رقم اللوحه  </strong></p>
+          </div>
+          <div class="reg-info-group">
+            <p>تاريخ و وقت الاستلام</p>
+            <p class="created-at">
+              {{ carGivenToOtherAdmin.created_at|date:"Y-m-d / h:i A" }}
+            </p>
+          </div>
+        </div>
+    </div>
+    <script>
+      setTimeout(function () {
+        fadeOutMessage("error-message-gct");
+      }, 10000);
+    </script>
+    {% endif %}
+    <!-- رسالى الخطى اذا كان الموظف غير موجود  -->
+      {% if empDoseNotEXISTS %}
+      <div id="error-message-emp-not-exists" class="reg-error-cont">
+        <h1 class="reg-info-group empDoseNotExists">
+          {{ empDoseNotEXISTS }}
+        </h1>
+      </div>
+      <script>
+        setTimeout(function () {
+          fadeOutMessage("error-message-emp-not-exists");
+        }, 7000);
+      </script>
+      {% endif %}
+
+      <!-- رسالى الخطى اذا كانت المركبه غير موجوده  -->
+        {% if carDNE %}
+        <div id="error-message-car-not-exists" class="reg-error-cont">
+          <h1 class="reg-info-group">
+            {{carDNE}}
+          </h1>
+        </div>
+        <script>
+          setTimeout(function () {
+            fadeOutMessage("error-message-car-not-exists");
+          }, 7000);
+        </script>
+        {% endif %}
+
+        <!-- رسالة خطى اذا كان الرقم الاداري المسجل لاعادة المركبه غير مرتبط بمركبه  -->
+          {% if retCarErr %}
+          <div id="error-message-return-car-not-exists" class="reg-error-cont">
+            <h1 class="reg-info-group">
+              {{retCarErr}}
+            </h1>
+          </div>
+          <script>
+            setTimeout(function () {
+              fadeOutMessage("error-message-return-car-not-exists");
+            }, 7000);
+          </script>
+          {% endif %}
+          <!-- رسالى خطى اذا كان الرقم الاداري المدخل لاعادة المركبه غير صحص -->
+          {% if retErrm %}
+          <div id="error-message-return-emp-not-exists" class="reg-error-cont">
+            <h1 class="reg-info-group">
+              {{retErrm}}
+            </h1>
+          </div>
+          <script>
+            setTimeout(function () {
+              fadeOutMessage("error-message-return-emp-not-exists");
+            }, 7000);
+          </script>
+          {% endif %}
+        <!-- رسالى نجاح تسجيل المركبه  -->
+          {% if sucssuMessge %}
+          <div id="success-message-registration" class="reg-success-cont">
+            <h1 class="reg-info-group">
+              {{sucssuMessge}}
+            </h1>
+          </div>
+          <script>
+            setTimeout(function () {
+              fadeOutMessage("success-message-registration");
+            }, 7000);
+          </script>
+          {% endif %}
+      
+    <!-- رسالى نجاح اعادة المركبه  -->
+        {% if retSucssM %}
+        <div id="success-message-return" class="reg-success-cont">
+         <h1 class="reg-info-group">
+           {{retSucssM}}
+         </h1>
+        </div>
+        <script>
+          setTimeout(function () {
+            fadeOutMessage("success-message-return");
+          }, 7000);
+        </script>
+        {% endif %}
+
+
+  </div>
+
 
   <div class="inuseBorder">
     <div class="inUsCont">
@@ -69,138 +266,7 @@
             placeholder="مثال: 23945"
           />
 
-          <div class="msg-cont">
-            {% if empDoseNotEXISTS %}
-            <div id="error-message-emp-not-exists" class="error-msg">
-              {{ empDoseNotEXISTS }}
-            </div>
-            <script>
-              setTimeout(function () {
-                fadeOutMessage("error-message-emp-not-exists");
-              }, 7000);
-            </script>
-            {% endif %}
-          </div>
 
-          <div class="msg-cont">
-            {% if itsinuse %}
-            <div id="error-message-emp-in-use" class="error-msg-empinuse">
-              <div class="car-detailserr">
-                <div class="details">
-                  <div class="group-info">
-                    <p class="info-p">
-                      تنبية: الرقم الاداري الذي أدخلته مستخدم حاليا
-                    </p>
-                  </div>
-                  <div class="group-info">
-                    <p class="info-p">
-                      اسم الموظف : {{itsinuse.Logs_employee_ins.ceoName}}
-                    </p>
-                  </div>
-                  <div class="group-info">
-                    <p class="info-p">
-                      الرقم الاداري: {{itsinuse.Logs_employee_ins.ceoNumber}}
-                    </p>
-                  </div>
-                  <div class="group-info">
-                    <p>{{itsinuse.Logs_employee_ins.section}}</p>
-                  </div>
-                  <div class="group-info car-plate">
-                    <p>رقم اللوحه</p>
-                    <p>{{itsinuse.Logs_car_ins.carNumber}}</p>
-                  </div>
-                  <div class="group-info">
-                    <p>تاريخ و وقت الاستلام</p>
-                    <p class="created-at">
-                      {{ itsinuse.created_at|date:"Y-m-d / h:i A" }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <script>
-              setTimeout(function () {
-                fadeOutMessage("error-message-emp-in-use");
-              }, 10000);
-            </script>
-            {% elif carIsInUse %}
-            <div id="error-message-car-in-use" class="error-msg-empinuse">
-              <div class="car-detailserr">
-                <div class="details">
-                  <div class="group-info">
-                    <p class="info-p">المركبه مسجله من قبل</p>
-                  </div>
-                  <div class="group-info">
-                    <p class="info-p">
-                      الاسم : {{carIsInUse.Logs_employee_ins.ceoName}}
-                    </p>
-                  </div>
-                  <div class="group-info">
-                    <p class="info-p">
-                      الرقم الاداري: {{carIsInUse.Logs_employee_ins.ceoNumber}}
-                    </p>
-                  </div>
-                  <div class="group-info">
-                    <p>{{carIsInUse.Logs_employee_ins.section}}</p>
-                  </div>
-                  <div class="group-info car-plate">
-                    <p>رقم اللوحه</p>
-                    <p>{{carIsInUse.Logs_car_ins.carNumber}}</p>
-                  </div>
-                  <div class="group-info">
-                    <p>تاريخ و وقت الاستلام</p>
-                    <p class="created-at">
-                      {{ carIsInUse.created_at|date:"Y-m-d / h:i A" }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <script>
-              setTimeout(function () {
-                fadeOutMessage("error-message-car-in-use");
-              }, 10000);
-            </script>
-            {% endif %} {% if carGivenToOtherAdmin %}
-            <div id="error-message-gct" class="Gct-errormsg">
-              <div class="car-detailserr">
-                <div class="details">
-                  <div class="group-info">
-                    <p class="info-p">المركبه مسجله من قبل</p>
-                  </div>
-                  <div class="group-info">
-                    <p class="info-p">
-                      الاسم : {{carGivenToOtherAdmin.empName}}
-                    </p>
-                  </div>
-                  <div class="group-info">
-                    <p class="info-p">
-                      الرقم الاداري: {{carIsInUse.Logs_employee_ins.ceoNumber}}
-                    </p>
-                  </div>
-                  <div class="group-info">
-                    <p>{{carIsInUse.Logs_employee_ins.section}}</p>
-                  </div>
-                  <div class="group-info car-plate">
-                    <p>رقم اللوحه</p>
-                    <p>{{carIsInUse.Logs_car_ins.carNumber}}</p>
-                  </div>
-                  <div class="group-info">
-                    <p>تاريخ و وقت الاستلام</p>
-                    <p class="created-at">
-                      {{ carIsInUse.created_at|date:"Y-m-d / h:i A" }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <script>
-              setTimeout(function () {
-                fadeOutMessage("error-message-gct");
-              }, 10000);
-            </script>
-            {% endif %}
-          </div>
         </div>
 
         <div class="input-cont full-size">
@@ -215,33 +281,9 @@
             required
           />
 
-          <div class="msg-cont">
-            {% if carDNE %}
-            <div id="error-message-car-not-exists" class="error-msg">
-              {{carDNE}}
-            </div>
-            <script>
-              setTimeout(function () {
-                fadeOutMessage("error-message-car-not-exists");
-              }, 7000);
-            </script>
-            {% endif %}
-          </div>
 
           <input class="submit-btn" type="submit" value="تسجيل المركبه" />
 
-          <div class="msg-cont">
-            {% if sucssuMessge %}
-            <div id="success-message-registration" class="success-msg">
-              {{sucssuMessge}}
-            </div>
-            <script>
-              setTimeout(function () {
-                fadeOutMessage("success-message-registration");
-              }, 7000);
-            </script>
-            {% endif %}
-          </div>
         </div>
       </form>
     </div>
@@ -266,18 +308,6 @@
             id="ceonumber"
             value="{{ ceonumber }}"
           />
-          <div class="msg-cont">
-            {% if retErrm %}
-            <div id="error-message-return-emp-not-exists" class="error-msg">
-              {{retErrm}}
-            </div>
-            <script>
-              setTimeout(function () {
-                fadeOutMessage("error-message-return-emp-not-exists");
-              }, 7000);
-            </script>
-            {% endif %}
-          </div>
         </div>
 
         <div class="input-cont full-size">
@@ -290,33 +320,8 @@
             value="{{ empnote }}"
           />
 
-          <div class="msg-cont">
-            {% if retCarErr %}
-            <div id="error-message-return-car-not-exists" class="error-msg">
-              {{retCarErr}}
-            </div>
-            <script>
-              setTimeout(function () {
-                fadeOutMessage("error-message-return-car-not-exists");
-              }, 7000);
-            </script>
-            {% endif %}
-          </div>
 
           <input class="submit-btn" type="submit" value="إعادة المركبه" />
-
-          <div class="msg-cont">
-            {% if retSucssM %}
-            <div id="success-message-return" class="success-msg">
-              {{retSucssM}}
-            </div>
-            <script>
-              setTimeout(function () {
-                fadeOutMessage("success-message-return");
-              }, 7000);
-            </script>
-            {% endif %}
-          </div>
         </div>
       </form>
     </div>

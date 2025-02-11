@@ -28,8 +28,7 @@
 }
 
 .car-details {
-  height: 100%;
-  max-height: 250px;
+  height: auto;
   width: 100%;
   max-width: 280px;
   font-family: Arial, sans-serif;
@@ -47,20 +46,6 @@
 .car-details:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-}
-
-.car-detailserr {
-  color: #ffffff;
-  height: 45%;
-  width: 100%;
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  border-radius: 25px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  opacity: 0;
-  animation: fadeIn 0.6s forwards;
-  animation-delay: 0.2s;
 }
 
 #carisInuse {
@@ -109,30 +94,27 @@
   color: #000;
 }
 
-.car-plate {
-  width: 50%;
-  color: #000;
-  background-color: #fff;
-  border: 2px solid #000;
-  border-radius: 5px;
+.reg-info-group-carPlate {
+  background-color: #f1f1f1;
   padding: 10px;
-  font-weight: bold;
-  font-size: 18px;
-  letter-spacing: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  gap: 20px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.2em;
+  color: #333;
+  display: flex;
+  justify-content: right;
 }
-
 .pk,
 .employee-name,
 .employee-number,
 .car-name,
 .created-at {
-  font-size: 16px;
+  font-size: 24px;
 }
 
 .created-at {
-  font-size: 18px;
+  font-size: 28px;
   font-weight: bold;
 }
 
@@ -155,12 +137,13 @@
   position: sticky;
 }
 
-.msg-cont {
+.reg-page-all-messages {
   position: absolute;
   height: auto;
   top: 30%;
   right: 30%;
   z-index: 9000;
+  width: 100%;
 }
 
 .regCont {
@@ -207,11 +190,46 @@
   border: 1px solid #f5c6cb;
 }
 
-.error-msg-empinuse {
-  background-color: #d9534f;
-  color: #ffffff;
-  border: 1px solid #d43f3a;
-  max-width: 80%;
+.reg-error-cont {
+  background-color: #de4b4b;
+  color: #000000;
+  border: 1px solid #bcbcbc;
+  padding: 30px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: right;
+  position: absolute;
+  top: 20%;
+  right: 3%;
+  font-size: 30px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  width: auto;
+}
+
+.reg-success-cont {
+  background-color: #70bc66;
+  color: #155724;
+  border: 1px solid #70bc66;
+  padding: 30px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: right;
+  position: absolute;
+  top: 20%;
+  right: 3%;
+  font-size: 30px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  width: auto;
+}
+
+.reg-info-group {
+  background-color: #f1f1f1;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.2em;
+  color: #333;
 }
 
 .submit-btn {
