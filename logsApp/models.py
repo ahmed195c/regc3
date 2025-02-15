@@ -60,7 +60,6 @@ class EmployesInfo(models.Model):
 class InUseCars(models.Model):
     car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
     employee = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE)
-    start_date = models.DateField(auto_now=True)
     created_at = models.DateTimeField(auto_now=True)
     create_date = models.DateField(null=True, blank=True)
     create_time = models.TimeField(null=True, blank=True)
@@ -118,7 +117,7 @@ class LicenseFile(models.Model):
         return str(f" {self.accidents_record.pk} " )
 
 class FinesRecord(models.Model):
-    car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, null=True)
+    car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, null=True, related_name="fines")
     employe = models.ForeignKey(EmployesInfo, blank=True,on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     paidDate = models.DateField(null=True, blank=True)
