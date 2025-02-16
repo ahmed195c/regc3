@@ -1,6 +1,6 @@
 .main {
   display: grid;
-  grid-template-columns: [first]75% [line2]25%;
+  grid-template-columns: [first]74% [line2]27%;
   grid-template-rows: [first]10% [second]90%;
   padding: 0 30px 0 0;
 }
@@ -16,27 +16,66 @@
   scroll-snap-type: y mandatory;
   margin: auto;
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-end;
   width: 90%;
   height: 100%;
-  max-height: 750px;
+  max-height: 850px;
   gap: 20px;
-  flex-wrap: wrap;
   overflow-y: scroll;
   border: 2px solid rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   font-weight: bold;
 }
 
+.reg-cards-cont {
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 15px;
+  gap: 20px;
+}
+
+.reg-card-info-cont {
+  max-width: 320px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex: 1 1 calc(33.333% - 20px);
+  box-sizing: border-box;
+  margin: 10px;
+}
+
+.force100 {
+  flex: 1;
+  white-space: nowrap;
+  background-color: #8b8888;
+  height: 100%;
+}
+
+.reg-card-info-group {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  background-color: #f0f8f0;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.2em;
+  color: #333;
+}
 
 .card-details {
   height: auto;
   width: 100%;
   max-width: 295px;
   font-family: Arial, sans-serif;
-  padding: 20px;
+  padding: 5px;
   background-color: #ffffff;
   border-radius: 18px;
   border: 1px solid #000;
@@ -47,12 +86,12 @@
   animation-delay: 0.2s;
 }
 
-.car-details:hover {
+.card-details:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-.details{
+.details {
   text-align: right;
 }
 
@@ -83,8 +122,6 @@
   align-items: flex-start;
   gap: 10px;
 }
-
-
 
 .info {
   padding: 0 15px 0 0;
@@ -134,7 +171,7 @@
   font-weight: bold;
 }
 
-.created-at-display{
+.created-at-display {
   font-size: 16px;
   font-weight: bold;
 }
@@ -215,6 +252,7 @@
   color: #ffffff;
   border: 2px solid rgba(0, 0, 0, 0.1);
 }
+
 .reg-inpute-note {
   width: 100%;
   padding: 10px;
@@ -239,7 +277,7 @@
   font-size: 24px;
   font-weight: bold;
   color: #ffffff;
-  width: 40%;
+  width: 50%;
   border: 2px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -274,7 +312,7 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
-  transition: all 0.4s ease-in-out, transform 0.2s ease;
+  transition: all 0.5s ease-in-out, transform 0.3s ease-in-out;
 }
 
 .submit-btn:hover {
@@ -409,10 +447,6 @@ input[type="number"]::-webkit-outer-spin-button {
   animation: fadeIn 0.5s ease-in-out;
 }
 
-.submit-btn:hover {
-  background-color: #3b4d27;
-}
-
 .success-msg,
 .error-msg,
 .error-msg-empinuse {
@@ -426,4 +460,21 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .form-container {
   transition: opacity 0.5s ease;
+}
+
+.id {
+  background-color: rgb(194, 173, 117);
+  padding: 5px;
+}
+
+.reg-car-number {
+  display: flex;
+
+  background-color: #eae6e6;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.2em;
+  color: #333;
 }

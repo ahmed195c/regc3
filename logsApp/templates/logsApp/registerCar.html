@@ -52,7 +52,7 @@
     <div id="error-message-car-in-use" class="reg-error-cont">
       <div class="reg-card-error-details">
         <div class="reg-info-group">
-          <h1 class="info-p">المركبه مسجله من قبل</h1>
+          <h1 class="info-p">المركبه قيد الاستخدام حاليا</h1>
         </div>
         <div class="reg-info-group">
           <p class="info-p">
@@ -209,39 +209,40 @@
     <div class="inUsCont">
       {% if l %}
       <div class="h1n"><h1>مركبات قيد الاستخدام</h1></div>
-      {% for n in l %}
-      <div class="card-details">
-        <div class="details">
-          <div class="reg-info-group">
-            <p class="info-p"><strong>اسم المستخدم :</strong>{{n.employee.ceoName}}</p>
+      <div class="reg-cards-cont">
+        {% for n in l %}
+
+        <div class="reg-card-info-cont">
+          <div class="reg-card-info-group id" dir="rtl">
+            <p><strong>رقم البطاقه: </strong> {{n.id}}</p>
           </div>
-          <div class="reg-info-group">
-            <p class="info-p">الرقم الاداري: {{n.employee.ceoNumber}}</p>
+          <div class="reg-card-info-group" dir="rtl">
+            <p><strong>اسم المستخدم :</strong> {{n.employee.ceoName}}</p>
           </div>
-          <div class="reg-info-group">
-            <p class="info-p">{{n.employee.department}}</p>
+          <div class="reg-card-info-group" dir="rtl">
+            <p><strong>الرقم الاداري : </strong> {{n.employee.ceoNumber}}</p>
           </div>
-          <div class="reg-info-group">
-            <p class="info-p">{{n.employee.unit}}</p>
-          </div >
-          <div class="reg-info-group car-plate">
-            <p class="info-p">{{n.car.carNumber}}</p>
-            <p>رقم اللوحه</p>
+
+          <div class="reg-card-info-group reg-car-number" dir="rtl">
+            <p><strong> رقم المركبه : </strong></p>
+            <div>{{n.car.carNumber}}</div>
           </div>
-          <div class="reg-info-group">
-            <p class="info-p">{{ n.create_date|date:"Y-m-d" }}</p>
+
+          <div class="reg-card-info-group" dir="rtl">
+            <p>
+              <strong>تاريخ الاستلام : </strong> {{ n.create_date|date:"Y-m-d"}}
+            </p>
           </div>
-          <div class="reg-info-group">
-            <p class="info-p">{{ n.create_time|time:"h:i A" }}</p>
-          </div>
-          <div class="reg-info-group">
-            <p  class="created-at-display info-p">
-            {{ n.created_at|date:"Y-m-d / h:i A" }} 
-             </p>
+          <div class="reg-card-info-group" dir="rtl">
+            <p>
+              <strong>وقت الاستلام : </strong> {{ n.create_time|time:"h:i A" }}
+            </p>
           </div>
         </div>
+
+        {% endfor %}
       </div>
-      {% endfor %} {% else %}
+      {% else %}
       <div><h1>لاتوجد مركبات قيد الاستخدام</h1></div>
       {% endif %}
     </div>
@@ -338,13 +339,6 @@
       </form>
     </div>
   </div>
-  <!-- <script>
-    inUsContElement = document.querySelector(".inUsCont");
-    inUsContElement.addEventListener("wheel", function (e) {
-      e.preventDefault();
-      inUsContElement.scrollBy({top: e.deltaY > 0 ?50 :-50, behavior: "smooth"});
-    });
-  </script> -->
 </div>
 
 {% endblock %}
