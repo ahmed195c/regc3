@@ -1,17 +1,8 @@
-{% extends "logsApp/layout.html" %} 
-
-{% load static %}
-
-{% block title %}
+{% extends "logsApp/layout.html" %} {% load static %} {% block title %}
 <title>سجل الاستلام والتسليم</title>
-{% endblock %}
-
-{% block css %}
-{{ block.super }}
+{% endblock %} {% block css %} {{ block.super }}
 <link rel="stylesheet" href="{% static 'logsApp/logs.css' %}" />
-{% endblock %}
-
-{% block body %}
+{% endblock %} {% block body %}
 
 <div class="logs-btns">
   {% comment %}
@@ -159,10 +150,15 @@
           <td>{{k.Logs_car_ins.carNumber}}</td>
           <td>{{k.Logs_employee_ins.ceoNumber}}</td>
           <td class="logs-ceoNameS">{{k.Logs_employee_ins.ceoName}}</td>
+          {% if k.taken_date %}
           <td>{{ k.taken_date|date:"Y-m-d" }}</td>
+          {% else %}
+          <td>{{ k.created_at|date:"Y-m-d" }}</td>
+          {% endif %} {% if k.taken_time %}
           <td>{{ k.taken_time|time:"h:i A" }}</td>
-
-          {% if k.return_date %}
+          {% else %}
+          <td>{{ k.created_at|time:"h:i A" }}</td>
+          {% endif %} {% if k.return_date %}
           <td>{{k.return_date|date:"Y-m-d"}}</td>
           {% else %}
           <td></td>

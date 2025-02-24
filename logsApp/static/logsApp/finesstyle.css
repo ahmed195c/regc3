@@ -88,6 +88,31 @@
   font-size: 1em;
 }
 
+.fine-error-message-cont {
+  background-color: #de4b4b;
+  color: #000000;
+  border: 1px solid #bcbcbc;
+  padding: 30px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: right;
+  position: absolute;
+  top: 20%;
+  right: 19%;
+  font-size: 30px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  width: auto;
+}
+.finesPage-info-group {
+  border-radius: 8px;
+  padding: 5px;
+  background-color: #f1f1f1;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.2em;
+  color: #333;
+}
+
 .fines-nav-link-btn {
   padding: 12px 20px;
   border: none;

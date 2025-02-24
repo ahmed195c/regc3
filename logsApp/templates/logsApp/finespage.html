@@ -1,10 +1,7 @@
-{% extends "logsApp/layout.html" %} {% load static %}
-{% block css %}
-{{ block.super }}
+{% extends "logsApp/layout.html" %} {% load static %} {% block css %} 
+{{block.super }}
 <link href="{% static 'logsApp/finesstyle.css'%}" rel="stylesheet" />
-{% endblock %} 
-
-{% block body %}
+{% endblock %} {% block body %}
 <div class="fines-main-fin">
   <div class="fines-form-container">
     <h1 class="fines-page-title">بحث عن متسبب المخافلة</h1>
@@ -15,13 +12,33 @@
       إضافة مخالفة
     </button>
     <form
-      action="{% url 'logsApp:finec'%}"
+      action="{% url 'logsApp:finec' %}"
       method="POST"
       class="fines-fine-form"
       id="fineForm"
-      style="display: none; opacity: 0; transition: opacity 0.5s ease-in-out"
+      style="display: {% if form_open %}block{% else %}none{% endif %}; opacity: {% if form_open %}1{% else %}0{% endif %}; transition: opacity 0.5s ease-in-out"
     >
-      {% csrf_token %}
+      {% csrf_token %} {% if car_err_message %}
+      <div id="error-message-car-not-exists" class="fine-error-message-cont">
+        <h1 class="finesPage-info-group">{{ car_err_message }}</h1>
+      </div>
+      <script>
+        setTimeout(function () {
+          fadeOutMessage("error-message-car-not-exists");
+        }, 7000);
+      </script>
+      {% endif %}
+      <div class="fines-form-group">
+        <label for="finecar" class="fines-form-label">رقم السيارة</label>
+        <input
+          type="text"
+          name="finecar"
+          id="finecar"
+          class="fines-input-text"
+          value="{{ fine_car_number }}"
+          required
+        />
+      </div>
       <div class="fines-form-group">
         <label for="finedate" class="fines-form-label">تاريخ المخالفة</label>
         <input
@@ -29,6 +46,7 @@
           name="finedate"
           id="finedate"
           class="fines-input-date"
+          value="{{ fine_date }}"
           required
         />
       </div>
@@ -39,16 +57,7 @@
           name="finetime"
           id="finetime"
           class="fines-input-time"
-          required
-        />
-      </div>
-      <div class="fines-form-group">
-        <label for="finecar" class="fines-form-label">رقم السيارة</label>
-        <input
-          type="text"
-          name="finecar"
-          id="finecar"
-          class="fines-input-text"
+          value="{{ fine_time }}"
           required
         />
       </div>
@@ -59,8 +68,8 @@
           name="fineamount"
           id="fineamount"
           class="fines-input-number"
+          value="{{ fine_amount }}"
           step="1"
-          required
         />
       </div>
       <div class="fines-form-group">
@@ -90,19 +99,23 @@
           </p>
         </div>
         <p><strong>رقم السيارة:</strong> {{ i.car.carNumber }}</p>
+        {% comment %} تاكد اذا كان الموظف من ادارتنا ام من ادارة اخرى  {% endcomment %}
+        {% if i.employe.ceoName %}
         <p><strong>اسم الموظف:</strong> {{ i.employe.ceoName }}</p>
+        {% else %}
+        <p><strong>اسم الموظف:</strong> {{ i.unRegistredEmpName }}</p>
+        {% endif %}
+        {% comment %} تاكيد الرقم الاداري {% endcomment %}
+        {% if i.employe.ceoNumber %}
         <p><strong>الرقم الإداري:</strong> {{ i.employe.ceoNumber }}</p>
+        {% else %}
+        <p><strong>الرقم الإداري:</strong> {{ i.unRegistredEmpCeoNumber }}</p>
+        {% endif%}
         <p><strong>تاريخ المخالفة:</strong> {{ i.fine_date }}</p>
         <p><strong>وقت المخالفة:</strong> {{ i.fine_time|time:"h:i A" }}</p>
         <p><strong>مبلغ المخالفة:</strong> {{ i.fine_amount }}</p>
         <p><strong>معرف المخالفة:</strong> {{ i.id }}</p>
         {% if i.paid_fine_image %}
-        <p><strong>صورة الدفع:</strong></p>
-        <img
-          src="{{ i.paid_fine_image.url }}"
-          alt="Paid Fine Image"
-          class="fines-large-image"
-        />
         {% endif %}
       </div>
       <div class="fines-card-footer">

@@ -1,49 +1,49 @@
-import pandas as pd
-import re
+from logsApp.models import RegistredCars, EmployesInfo, InUseCars, LogsC, AccidentsRecord, FinesAccidentsImage, LicenseFile, FinesRecord, GivenCarsToOtherAdminstrations
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils import timezone
-from logsApp.models import RegistredCars, EmployesInfo, InUseCars, LogsC, AccidentsRecord, FinesAccidentsImage, LicenseFile, FinesRecord
-from django.http import HttpResponse
 from openpyxl.styles import Font, Alignment, PatternFill
-from datetime import datetime, timedelta
-from django.db.models import Q
-from django.db import IntegrityError
-import pytz
 from django.core.paginator import Paginator
-import shutil
-import os
+from datetime import datetime, timedelta
+from django.db import IntegrityError
+from django.http import HttpResponse
+from django.utils import timezone
+from django.db.models import Q
+from .newempData import newemp
 from .empinfo import empInfo
 from .cars import carsList
-from .newempData import newemp
-from .models import GivenCarsToOtherAdminstrations
+import pandas as pd
+import shutil
+import pytz
+import os
+import re
 
 
-def seedemp(request):
-    # for i in newemp:
-    #     emp, created = EmployesInfo.objects.update_or_create(
-    #         ceoNumber=i["empId"],
-    #         defaults={
-    #             'ceoName': i["empName"],
-    #             'phoneNumber': i["tel"],
-    #             'jobTtile': i["jobTitle"],
-    #             'department': i["department"],
-    #             'unit': i["unit"],
-    #             'nationality': i["nationality"]
-    #         }
-    #     )
 
-    for q in carsList:
-        car, created = RegistredCars.objects.update_or_create(
-            carNumber=q["vnumber"],
-            defaults={
-                'vType': q["vType"],
-                'carYear': q['Myear'],
-                'cownerEmpNumber': q['empid'],
-                'cownerName': q['empName'],          
-            }
-        )
+# def seedemp(request):
+#     for i in newemp:
+#         emp, created = EmployesInfo.objects.update_or_create(
+#             ceoNumber=i["empId"],
+#             defaults={
+#                 'ceoName': i["empName"],
+#                 'phoneNumber': i["tel"],
+#                 'jobTtile': i["jobTitle"],
+#                 'department': i["department"],
+#                 'unit': i["unit"],
+#                 'nationality': i["nationality"]
+#             }
+#         )
 
-    return HttpResponse("done")
+#     for q in carsList:
+#         car, created = RegistredCars.objects.update_or_create(
+#             carNumber=q["vnumber"],
+#             defaults={
+#                 'vType': q["vType"],
+#                 'carYear': q['Myear'],
+#                 'cownerEmpNumber': q['empid'],
+#                 'cownerName': q['empName'],          
+#             }
+#         )
+
+#     return HttpResponse("done")
 
 
 def remove_non_numeric(s):
@@ -242,7 +242,7 @@ def logsfunc(request):
     current_date = datetime.now().date()
     today_logs = LogsC.objects.filter(Q(taken_date=current_date) | Q(taken_date__isnull=True)).order_by('-id')
     
-    paginator = Paginator(today_logs, 50) 
+    paginator = Paginator(today_logs, 50)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -404,12 +404,23 @@ def fineC(request):
         
         try:
             car_ins = RegistredCars.objects.get(carNumber=fine_car_number)
-
+        except RegistredCars.DoesNotExist:
+            car_err_message = "رقم المركبه المدخل غير صحيح"
+            return render(request, "logsApp/finespage.html", {
+                'form_open': True,
+                'allFines': allFines,
+                'car_err_message': car_err_message,
+                'fine_date': fine_date,
+                'fine_time': fine_time,
+                'fine_car_number': fine_car_number,
+                'fine_amount': fine_amount
+            })
+            
+        try:
             finon = LogsC.objects.get(Logs_car_ins=car_ins,
-                                      created_at__lte = combined_fine_datetime,
-                                      ended_at__gte = combined_fine_datetime
+                                      created_at__lte=combined_fine_datetime,
+                                      ended_at__gte=combined_fine_datetime
                                       )
-            # Save the fine details in the FinesRecord model
             FinesRecord.objects.create(
                 car=car_ins,
                 employe=finon.Logs_employee_ins,
@@ -419,67 +430,46 @@ def fineC(request):
                 fine_amount=fine_amount
             )
             return redirect('logsApp:finespage')
-        except RegistredCars.DoesNotExist:
+        except LogsC.DoesNotExist:
+            pass
+
+        try:
+            finon = LogsC.objects.get(Logs_car_ins=car_ins,
+                                      created_at__lte=combined_fine_datetime,
+                                      ended_at__isnull=True
+                                      )
+            FinesRecord.objects.create(
+                car=car_ins,
+                employe=finon.Logs_employee_ins,
+                created_at=combined_fine_datetime,
+                fine_date=fine_date,
+                fine_time=fine_time,
+                fine_amount=fine_amount
+            )
+        except LogsC.DoesNotExist:
             print(f"Car with number {fine_car_number} does not exist.")
-        except Exception as e:
-            print(f"An error occurred: {e}")
-
+        # check if the fine is on a give  car to other adminstration 
+        try:
+            finon = GivenCarsToOtherAdminstrations.objects.get(car=car_ins,
+                                      created_at__lte=combined_fine_datetime,
+                                      ended_at__gte=combined_fine_datetime
+                                      )
+            
+            FinesRecord.objects.create(
+                car=car_ins,
+                unRegistredEmpCeoNumber=finon.empNumber,
+                unRegistredEmpName=finon.empName,
+                created_at=combined_fine_datetime,
+                fine_date=fine_date,
+                fine_time=fine_time,
+                fine_amount=fine_amount
+            )
+            return redirect('logsApp:finespage')
+        except GivenCarsToOtherAdminstrations.DoesNotExist:
+            pass
+        
         return render(request, "logsApp/finespage.html", {'finon': finon})
-    return render(request, "logsApp/finespage.html", {'allFines':allFines,'finon': finon})
-
-def carddetails(request, fine_id):
-    accident = get_object_or_404(AccidentsRecord, id=fine_id)
-    if request.method == "POST":
-        report_pdf_file = request.FILES.get('reportPdfFile')
-        car_paperwork_file = request.FILES.get('carPaperworkFile')
-        license_files = request.FILES.getlist('licenseFiles')
-        images = request.FILES.getlist('images')
-        emp_number = request.POST.get('empNumber')
-
-        if report_pdf_file:
-            accident.report_pdf_file = report_pdf_file
-        if car_paperwork_file:
-            accident.car_paperwork_file = car_paperwork_file
-
-        for image in images:
-            FinesAccidentsImage.objects.create(accidents_record=accident, image=image)
-
-        for license_file in license_files:
-            LicenseFile.objects.create(accidents_record=accident, file=license_file)
-
-        if emp_number:
-            try:
-                emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number)
-                accident.employees.add(emp_instance)
-            except EmployesInfo.DoesNotExist:
-                pass
-
-        accident.save()
-
-    license_files = []
-    license_images = []
-    for license_file in accident.license_files.all():
-        if is_pdf(license_file.file):
-            license_files.append(license_file)
-        else:
-            license_images.append(license_file)
-    return render(request, 'logsApp/accidentDetails.html', {
-        'accident': accident,
-        'license_files': license_files,
-        'license_images': license_images
-    })
-
-def markasfixed(request, fine_id):
-    fine = get_object_or_404(AccidentsRecord, id=fine_id)
-    fine.fixin_date = timezone.now()
-
-    fine.save()
-    return redirect('logsApp:accidentDetails', fine_id=fine_id)
-def markasfixed(request, fine_id):
-    fine = get_object_or_404(AccidentsRecord, id=fine_id)
-    fine.fixin_date = timezone.now()
-    fine.save()
-    return redirect('logsApp:accidentDetails', fine_id=fine_id)
+    return render(request, "logsApp/finespage.html", {'allFines': allFines, 'finon': finon})
 
 def fineDetails(request, fine_id):
     fine = get_object_or_404(FinesRecord, id=fine_id)
@@ -506,18 +496,80 @@ def fineDetails(request, fine_id):
                     fine_images.append(fine.paid_fine_image)
     return render(request, 'logsApp/fineDetails.html', {'fine': fine, 'fine_files': fine_files, 'fine_images': fine_images})
 
-def deleteFineImage(request, fine_id):
-    fine = get_object_or_404(FinesRecord, id=fine_id)
-    if fine.paid_fine_image:
-        # Get the directory path
-        directory = os.path.dirname(fine.paid_fine_image.path)
-        # Delete the entire directory
-        shutil.rmtree(directory)
-        # Clear the fields in the database
-        fine.paid_fine_image = None
-        fine.paidDate = None
-        fine.save()
-    return redirect('logsApp:fineDetails', fine_id=fine_id)
+def carddetails(request, fine_id):
+    accident = get_object_or_404(AccidentsRecord, id=fine_id)
+    employees = EmployesInfo.objects.all()
+    cars = RegistredCars.objects.all()
+    if request.method == "POST":
+        report_pdf_file = request.FILES.get('reportPdfFile')
+        car_paperwork_file = request.FILES.get('carPaperworkFile')
+        license_files = request.FILES.getlist('licenseFiles')
+        images = request.FILES.getlist('images')
+        emp_number = request.POST.get('empNumber')
+        car_number = request.POST.get('carNumber')
+
+        if report_pdf_file:
+            accident.report_pdf_file = report_pdf_file
+        if car_paperwork_file:
+            accident.car_paperwork_file = car_paperwork_file
+
+        for image in images:
+            FinesAccidentsImage.objects.create(accidents_record=accident, image=image)
+
+        for license_file in license_files:
+            LicenseFile.objects.create(accidents_record=accident, file=license_file)
+
+        if emp_number:
+            try:
+                emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number)
+                accident.employees.clear()
+                accident.employees.add(emp_instance)
+            except EmployesInfo.DoesNotExist:
+                pass
+
+        if car_number:
+            try:
+                car_instance = RegistredCars.objects.get(carNumber=car_number)
+                accident.car = car_instance
+            except RegistredCars.DoesNotExist:
+                pass
+
+        accident.save()
+
+    license_files = []
+    license_images = []
+    for license_file in accident.license_files.all():
+        if is_pdf(license_file.file):
+            license_files.append(license_file)
+        else:
+            license_images.append(license_file)
+    return render(request, 'logsApp/accidentDetails.html', {
+        'accident': accident,
+        'license_files': license_files,
+        'license_images': license_images,
+        'employees': employees,
+        'cars': cars
+    })
+
+def markasfixed(request, fine_id):
+    fine = get_object_or_404(AccidentsRecord, id=fine_id)
+    fine.fixin_date = timezone.now()
+    fine.save()
+    return redirect('logsApp:carddetails', fine_id=fine_id)
+
+# حذف صورة الدفع او الملف اذا كانت مورفقه
+# def deleteFineImage(request, fine_id):
+#     fine = get_object_or_404(FinesRecord, id=fine_id)
+#     if fine.paid_fine_image:
+#         # Get the directory path
+#         directory = os.path.dirname(fine.paid_fine_image.path)
+#         # Delete the entire directory
+#         shutil.rmtree(directory)
+#         # Clear the fields in the database
+#         fine.paid_fine_image = None
+#         fine.paidDate = None
+#         fine.save()
+#     return redirect('logsApp:fineDetails', fine_id=fine_id)
 
 
 

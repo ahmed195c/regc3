@@ -55,15 +55,16 @@
 
       <div class="accident-form-group">
         <label for="text" class="accident-form-label">وصف الحادث</label>
+        
         <textarea id="text" name="text" class="accident-textarea">
-{{ text }}</textarea
-        ><br />
+{{ text }}</textarea>
+      <br />
       </div>
-
       <div class="accident-form-group">
         <label for="reportPdfFile" class="accident-form-label"
           >تحميل تقرير (PDF)</label
         >
+
         <input
           type="file"
           id="reportPdfFile"
@@ -124,14 +125,9 @@
       <div class="accident-id-box">
           <p><strong>رقم البطاقه :</strong> {{ fine.id }}</p>
         </div>
-      <div
-        class="accident-card-header"
-        style="background-color: {% if fine.fixin_date %}green{% elif fine.report_pdf_file %}lightblue{% else %}red{% endif %};"
-      >
+      <div class="accident-card-header" style="background-color: {% if fine.fixin_date %}green{% elif fine.report_pdf_file %}lightblue{% else %}red{% endif %};">
         <p>
-          {% if fine.fixin_date %} السيارة تم إصلاحها {% elif
-          fine.report_pdf_file %} السيارة في انتظار الإصلاح {% else %} الشخص
-          الذي تسبب في الحادث غير محدد {% endif %}
+          {% if fine.fixin_date %} السيارة تم إصلاحها {% elif fine.report_pdf_file %} السيارة في انتظار الإصلاح {% else %} الشخص  الذي تسبب في الحادث غير محدد {% endif %}
         </p>
       </div>
       <div class="accident-card-body">

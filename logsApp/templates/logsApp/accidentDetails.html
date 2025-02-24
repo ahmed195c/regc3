@@ -1,12 +1,10 @@
-{% extends "logsApp/layout.html" %}
-{% load static %}
-{% block css %} {{block.super }}
+{% extends "logsApp/layout.html" %} {% load static %} {% block css %}
+ {{block.super }}
 <link
   href="{% static 'logsApp/accidentDetailsPageStyles.css' %}"
   rel="stylesheet"
 />
-{% endblock %} 
-{% block body %}
+{% endblock %} {% block body %}
 <div class="A-D-card-main">
   <!-- prettier-ignore -->
   <div
@@ -14,7 +12,7 @@
     style="background-color: {% if accident.fixin_date %}green{% elif accident.report_pdf_file %}lightblue{% else %}red{% endif %}; width: 100%;"
   >
     <p class="A-D-card-header-text">
-      {% if accident.fixin_date %} المركبة تم إصلاحها {% elif accident.report_pdf_file %} السيارة في انتظار الإصلاح {% else %} الشخص الذي تسبب في الحادث غير محدد
+      {% if accident.fixin_date %} المركبة تم إصلاحها {% elif accident.report_pdf_file %} حالة المركبة: قيد الإصلاح {% else %} الشخص الذي تسبب في الحادث غير محدد
       {% endif %}
     </p>
   </div>
@@ -24,72 +22,88 @@
       <strong> {{ accident.id }} </strong>
     </div>
     <!-- prettier-ignore -->
-    <div>
-      المسؤل عن الحدث {% for emp in accident.employees.all %} {% if emp.ceoNumber %}
+    <div class="A-D-card-groupinfo">
+    <h2>
+      المسؤل عن الحدث</h2>
+      {% for emp in accident.employees.all %} {% if emp.ceoNumber %}
       <p><strong>الاسم:</strong> {{ emp.ceoName }}</p>
       <p><strong>الرقم الاداري:</strong> {{ emp.ceoNumber }}</p>
       {% else %}
-      <p>المتسبب بل حادث غير مجهول</p>
+      <p>المتسبب بل حادث غير محدد </p>
       {% endif %} {% endfor %}
     </div>
-    <div>
-      <p><strong>وصف الحادث:</strong> {{ accident.text }}</p>
+    {% if accident.text %} {% comment %} تفاصيل الحادث {% endcomment %}
+    <div class="A-D-card-groupinfo flex-container">
+      <p>{{ accident.text }}</p>
+      <strong> : تفاصيل عن الحادث</strong>
     </div>
-    <div class="A-D-carPlate">
-      <h2><strong> رقم اللوحة : </strong> {{ accident.car.carNumber }}</h2>
+    {% endif %} {% comment %} رقم اللوحه {% endcomment %}
+    <div class="A-D-carPlate flex-container">
+      <strong class="space-to-right"> shj </strong>
+      <p>{{ accident.car.carNumber }}</p>
+      <strong> : رقم اللوحة </strong>
     </div>
-    <div>
-      <p>
-        <!-- prettier-ignore-start -->
-        <strong>تاريخ تسجيل الحادث : </strong>
-        {{accident.created_at|date:"Y-m-d"}}
-        <!-- prettier-ignore-end -->
-      </p>
-      <p>
-        <strong>وقت تسجيل الحادث:</strong> {{ accident.created_at|time:"h:i A"}}
-      </p>
+    {% comment %} تاريخ ووقت الحادث {% endcomment %}
+    <div class="A-D-card-groupinfo">
+      <div><h3>تاريخ ووقت تسجيل الحادث</h3></div>
+      <div>
+        <p>
+          <!-- prettier-ignore-start -->
+          <strong>تاريخ تسجيل الحادث : </strong>
+          {{accident.created_at|date:"Y-m-d"}}
+          <!-- prettier-ignore-end -->
+          {% comment %} وقت تسجيل الحادث {% endcomment %}
+        </p>
+        <div class="flex-container">
+          <p>
+            {{ accident.created_at|time:"h:i A"}}
+            <strong>: وقت تسجيل الحادث </strong>
+          </p>
+        </div>
+      </div>
     </div>
+    {% comment %} تاكد اذا كان هناك وقت {% endcomment %} 
     {% if accident.fixin_date %}
-    <div>
-      <p><strong>تاريخ الإصلاح:</strong> {{ accident.fixin_date }}</p>
+    <div class="flex-container ">
+       <p>{{ accident.fixin_date }}</p>  <strong> : تاريخ عودة المركبه من الكراج  </strong> 
     </div>
-    {% endif %} {% if accident.report_pdf_file %}
-    <div>
-      <p class="downladbtn">
-        <a
-          class="downladbtn"
-          target="_blank"
-          href="{{ accident.report_pdf_file.url }}"
-          >عرض التقرير</a
+    {% endif %} {% comment %} عرض تقرير الحادث اذا كان متوفر {% endcomment %} 
+    {% if accident.report_pdf_file %}
+    <div A-D-card-groupinfo>
+      <button class="A-D-fileShow-btn">
+        <a target="_blank" href="{{ accident.report_pdf_file.url }}"
+          >عرض تقرير الحادث</a
         >
-      </p>
+      </button>
     </div>
-    {% endif %} {% if accident.car_paperwork_file %}
-    <div>
-      <p class="downladbtn">
-        <a
-          class="downladbtn"
-          target="_blank"
-          href="{{ accident.car_paperwork_file.url }}"
+    {% endif %} {% comment %} عرض رخصة السياره اذا كانت متوفره {% endcomment %}
+    {% if accident.car_paperwork_file %}
+    <div class="A-D-card-groupinfo">
+      <button class="A-D-fileShow-btn">
+        <a target="_blank" href="{{ accident.car_paperwork_file.url }}"
           >عرض أوراق السيارة</a
         >
-      </p>
+      </button>
     </div>
-    {% endif %}
-
-    <div class="images">
+    {% endif %} {% comment %} عرض صورة الحادث اذا كانت متوفره {% endcomment %}
+    {% if accident.images.all %}
+    <div class="images A-D-card-groupinfo">
       {% for image in accident.images.all %}
       <img src="{{ image.image.url }}" alt="صورة الحادث" class="large-image" />
       {% endfor %}
     </div>
-    <div class="license-files">
+    {% endif %} {% comment %} عرضة صورة رخصه القياده او الملف {% endcomment %}
+    {% if license_files or license_images %}
+    <div class="license-files A-D-card-groupinfo">
       {% for license_file in license_files %}
-      <p class="downladbtn">
+      <button class="A-D-fileShow-btn">
         <a class="downladbtn" target="_blank" href="{{ license_file.file.url }}"
           >تحميل رخصة القيادة (PDF)</a
         >
-      </p>
-      {% endfor %} {% for license_image in license_images %}
+      </button>
+      {% endfor %} {% if license_file or license_image %}
+      <h2><strong>رخصة القيادة</strong></h2>
+      {% endif %} {% for license_image in license_images %}
       <img
         src="{{ license_image.file.url }}"
         alt="صورة الرخصة"
@@ -97,7 +111,9 @@
       />
       {% endfor %}
     </div>
+    {% endif %}
     <!-- prettier-ignore -->
+    {% comment %} اضافة الملفات الناقصه  {% endcomment %}
     {% if not accident.report_pdf_file or not accident.car_paperwork_file or not accident.images.exists or not accident.license_files.exists or not accident.employees.exists %}
     <div>
       <form
@@ -107,16 +123,21 @@
         id="addEventForm"
       >
         {% csrf_token %} {% if not accident.report_pdf_file %}
-        <label for="reportPdfFile">تحميل تقرير (PDF)</label>
+        <label class="A-D-Form-label" for="reportPdfFile"
+          >اضافة تقرير الحادث
+        </label>
         <input
           class="input-hide"
           type="file"
           id="reportPdfFile"
           name="reportPdfFile"
           accept="application/pdf"
-        /><br />
+        />
+        <br />
         {% endif %} {% if not accident.license_files.exists %}
-        <label for="licenseFiles">تحميل رخصة القيادة (PDF أو صورة)</label>
+        <label class="A-D-Form-label" for="licenseFiles"
+          >اضافة رخصة القيادة للسائق
+        </label>
         <input
           class="input-hide"
           type="file"
@@ -124,9 +145,12 @@
           name="licenseFiles"
           accept="application/pdf,image/*"
           multiple
-        /><br />
+        />
+        <br />
         {% endif %} {% if not accident.car_paperwork_file %}
-        <label for="carPaperworkFile">تحميل أوراق السيارة (PDF أو صورة)</label>
+        <label class="A-D-Form-label" for="carPaperworkFile"
+          >اضافة رخصة المركبه
+        </label>
         <input
           class="input-hide"
           type="file"
@@ -134,9 +158,10 @@
           name="carPaperworkFile"
           accept="application/pdf,image/*"
           multiple
-        /><br />
+        />
+        <br />
         {% endif %} {% if not accident.images.exists %}
-        <label for="images">تحميل الصور</label>
+        <label class="A-D-Form-label" for="images">اضافة صور الحادث </label>
         <input
           class="input-hide"
           type="file"
@@ -144,22 +169,28 @@
           name="images"
           accept="image/*"
           multiple
-        /><br />
+        />
+        <br />
         {% endif %} {% if not accident.employees.exists %}
-        <label for="empNumber">إضافة موظف (الرقم الإداري)</label>
-        <input
-          type="text"
-          id="empNumber"
-          name="empNumber"
-          placeholder="الرقم الإداري"
-        /><br />
+        <label class="A-D-Form-label" for="empNumber"
+          >اضافة الموظف بينات الموظف</label
+        >
+        <select id="empNumber" name="empNumber">
+          {% for emp in employees %}
+          <option value="{{ emp.ceoNumber }}">
+            {{ emp.ceoName }} - {{ emp.ceoNumber }}
+          </option>
+          {% endfor %}
+        </select>
+        <br />
         {% endif %}
 
-        <button type="submit">إرسال</button>
+        <button class="A-D-Form-btn" type="submit">حفظ</button>
       </form>
     </div>
     {% endif %} {% if accident.report_pdf_file and not accident.fixin_date %}
     <button
+      class="A-D-fileShow-btn width90"
       onclick="location.href='{% url 'logsApp:markasfixed' accident.id %}'"
     >
       تم الإصلاح المركبة
@@ -167,4 +198,5 @@
     {% endif %}
   </div>
 </div>
+
 {% endblock %}
