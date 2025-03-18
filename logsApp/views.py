@@ -65,8 +65,8 @@ def registerCar(request):
     dubai_tz = pytz.timezone('Asia/Dubai')
     current_time = timezone.now().astimezone(dubai_tz)
     if request.method == "POST":
-        ceo_number = request.POST.get("ceoNumber")
-        car_number = request.POST.get("carNumber")
+        ceo_number = request.POST.get("ceoNumber").strip()
+        car_number = request.POST.get("carNumber").strip()
         car_number = car_number.replace("/", "-")
        # تاكد اذا كان الرقم الاداري مستعمل 
         try:
