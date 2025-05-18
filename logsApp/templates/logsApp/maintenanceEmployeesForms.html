@@ -1,0 +1,115 @@
+{% extends "logsApp/layout.html" %} 
+{% load static %} 
+
+{% block css %} 
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'logsApp/maintenanceEmployeesForms.css' %}" />
+{% endblock %}
+
+{% block title %}
+  <title>موظفي الصيانه</title>
+{% endblock %} 
+
+{% block body %}
+  <!-- عنوان الصفحة -->
+  <div class="maintaince-page">
+    <div class="maintaince-page-header-card">
+      <h1>فريق الصيانة</h1>
+    </div>
+  </div>
+
+  <div class="mainCont">
+    <!-- Display Messages -->
+    {% if success_message %}
+      <div class="success-message">{{ success_message }}</div>
+    {% endif %}
+    
+    {% if error_message %}
+      <div class="error-message">{{ error_message }}</div>
+    {% endif %}
+    
+    <!-- Forms Section -->
+    <div class="maintaince-form-cont">
+      <!-- Register Car Form -->
+      <div class="maintaince-form-card">
+        <div class="maintaince-form-header">تسجيل مركبة للصيانة</div>
+        <form action="{% url 'logsApp:maintainceRegisterCar' %}" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="form-label" for="empNumber">الرقم الاداري</label>
+            <input class="form-input" type="text" id="empNumber" value="{{empNumberErr}}" name="empNumber" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="carNumber">رقم المركبة</label>
+            <input class="form-input" type="text" id="carNumber" value="{{car_number_err}}" name="carNumber" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reason">سبب الاستلام من المواقف</label>
+            <input class="form-input" type="text" name="reason" id="reason" value="{{reasonErr}}" />
+          </div>
+          <button class="form-submit" type="submit">تسجيل المركبة</button>
+        </form>
+      </div>
+      
+      <!-- Return Car Form -->
+      <div class="maintaince-form-card">
+        <div class="maintaince-form-header">إعادة مركبة من الصيانة</div>
+        <form action="{% url 'logsApp:returnCarFromGarage' %}" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="form-label" for="empNumberReturn">الرقم الاداري</label>
+            <input class="form-input" type="text" id="empNumberReturn" name="empNumber" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="carNumberReturn">رقم المركبة</label>
+            <input class="form-input" type="text" id="carNumberReturn" name="carNumber" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reasonReturn">سبب الإعادة من الجراج</label>
+            <input class="form-input" type="text" name="reason" id="reasonReturn" />
+          </div>
+          <button class="form-submit" type="submit">إعادة المركبة</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Cars In Garage Section -->
+    <div class="inGarageCarsCont">
+      <div class="garage-cars-header">المركبات في الصيانة</div>
+      <div class="card-cont">
+        {% if AllInGarageCars %}
+          {% for car in AllInGarageCars %}
+            <div class="garage-card">
+              <div class="card-header">
+                <h4>رقم المركبة: {{ car.car.carNumber }}</h4>
+              </div>
+              <div class="card-body">
+                <p><strong>مستلم المركبة: </strong>{{ car.maintance_emp_send_to_garage.ceoName }}</p>
+                <p><strong>تاريخ الاستلام: </strong>{{ car.maintance_emp_send_to_garage_date }}</p>
+                <p><strong>وقت الاستلام: </strong>{{ car.maintance_emp_send_to_garage_time|time:"h:i A" }}</p>
+                <p><strong>سبب الصيانة: </strong>{{ car.maintance_emp_send_to_garage_reason }}</p>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p style="text-align: center; font-size: 18px; grid-column: 1/-1;">لا توجد مركبات في الصيانة حالياً</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Auto-hide messages after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+      const messages = document.querySelectorAll('.success-message, .error-message');
+      messages.forEach(function(message) {
+        setTimeout(function() {
+          message.style.opacity = '0';
+          setTimeout(function() {
+            message.style.display = 'none';
+          }, 1000);
+        }, 5000);
+      });
+    });
+  </script>
+{% endblock %}

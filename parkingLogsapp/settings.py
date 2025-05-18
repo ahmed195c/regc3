@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-cnmdbsktx*k=t7nyg3&p4ea9qujux3vy949cyr^*gga4%($pn5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']  # Allow all hosts in development
 
 
 # Application definition
@@ -38,11 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware must be before CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -125,3 +128,42 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
     )
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CORS settings - Enhanced for React frontend
+CORS_ALLOW_ALL_ORIGINS = True  # Allow API access from all domains
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies in cross-origin requests
+CORS_ORIGIN_ALLOW_ALL = True   # More explicit setting
+
+
+# Additional CORS settings
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "cache-control",
+    "pragma",
+]
+
+# For development - expose all headers and cookies
+CORS_EXPOSE_HEADERS = ['*']
+
+# REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100,
+}

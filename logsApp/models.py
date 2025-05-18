@@ -16,16 +16,17 @@ def paid_fine_image_upload_to(instance, filename):
     return f'paid_fines/{instance.id}_{instance.car.carNumber}/{filename}'
 
 class RegistredCars(models.Model):
-    carYear = models.IntegerField(null=True)
-    cownerEmpNumber = models.CharField(max_length=100,null=True)
-    cownerName= models.CharField(max_length=100,null=True)
-    cownerPhone = models.CharField(max_length=100,null=True)
-    section = models.CharField(max_length=100,null=True)
-    carNumber = models.CharField(max_length=100,default='0')
-    vType = models.CharField(max_length=100,null=True)
+    carYear = models.IntegerField(null=True, blank=True)
+    cownerEmpNumber = models.CharField(max_length=100, null=True, blank=True)
+    cownerName = models.CharField(max_length=100, null=True, blank=True)
+    cownerPhone = models.CharField(max_length=100, null=True, blank=True)
+    section = models.CharField(max_length=100, null=True, blank=True)
+    carNumber = models.CharField(max_length=100, default='0')
+    vType = models.CharField(max_length=100, null=True, blank=True)
     carIsInparking = models.BooleanField(default=True)
+
     def __str__(self):
-        return str(f" رقم المركبه: {self.carNumber} ID : {self.pk} ")    
+        return str(f" رقم المركبه: {self.carNumber} ID : {self.pk} ")
 
 class GivenCarsToOtherAdminstrations(models.Model):
     car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, related_name='given_cars')
@@ -40,22 +41,25 @@ class GivenCarsToOtherAdminstrations(models.Model):
     ended_at = models.DateTimeField(null=True, blank=True)
     return_date = models.DateField(null=True, blank=True)
     retern_time = models.TimeField(null=True, blank=True)
+    note = models.TextField(null=True, blank=True)
+
     def __str__(self):
-        return str(f" {self.car.carNumber} ID: {self.pk} " )
+        return str(f" {self.car.carNumber} ID: {self.pk} ")
 
 class EmployesInfo(models.Model):
     EmpHaveCar = models.BooleanField(default=False)
     ceoNumber = models.CharField(default='0', max_length=100, unique=True)
-    ceoName = models.CharField(max_length=100,default="الاسم")
+    ceoName = models.CharField(max_length=100, default="الاسم")
     phoneNumber = models.CharField(max_length=100, default='0000000000')
-    jobTtile = models.CharField(max_length=100,default="المسمى الوظيفي")
-    department = models.CharField(max_length=100,default="الشعبه")
-    unit = models.CharField(max_length=100,default="الوحده")
-    nationality = models.CharField(max_length=100,default="الجنسيه")
+    jobTtile = models.CharField(max_length=100, default="المسمى الوظيفي")
+    department = models.CharField(max_length=100, default="الشعبه")
+    unit = models.CharField(max_length=100, default="الوحده")
+    nationality = models.CharField(max_length=100, default="الجنسيه")
     email = models.EmailField(default='example@example.com')
+    MaintenanceEmp = models.BooleanField(default=False)
+
     def __str__(self):
         return str(f"  الرقم الاداري: {self.ceoNumber}  :الاسم {self.ceoName} ID: {self.pk} ")
-
 
 class InUseCars(models.Model):
     car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE)
@@ -63,10 +67,10 @@ class InUseCars(models.Model):
     created_at = models.DateTimeField(auto_now=True)
     create_date = models.DateField(null=True, blank=True)
     create_time = models.TimeField(null=True, blank=True)
-    logsc_ley = models.ForeignKey('LogsC', on_delete=models.CASCADE,null=True)
+    logsc_ley = models.ForeignKey('LogsC', on_delete=models.CASCADE, null=True)
+
     def __str__(self):
         return str(f"مستخدم المركبه : {self.employee.ceoName} |||  رقم المركبه : {self.car.carNumber} ||| ID : {self.pk} ")
-
 
 class LogsC(models.Model):
     Logs_employee_ins = models.ForeignKey(EmployesInfo, on_delete=models.CASCADE)
@@ -90,7 +94,7 @@ class LogsC(models.Model):
 
     def __str__(self):
         return str(f" name: {self.Logs_car_ins.carNumber}  ceo nam: {self.Logs_employee_ins.ceoName} carIsINuSE: {self.carIsInUse}")
-# سجل الحوادث
+
 class AccidentsRecord(models.Model):
     car = models.ForeignKey(RegistredCars, related_name="accidents", on_delete=models.CASCADE, null=True)
     employees = models.ManyToManyField(EmployesInfo, blank=True)
@@ -100,24 +104,38 @@ class AccidentsRecord(models.Model):
     fixin_date = models.DateField(null=True, blank=True)
     report_pdf_file = models.FileField(upload_to=fines_accident_pdf_upload_to, null=True, blank=True, max_length=500)
     car_paperwork_file = models.FileField(upload_to=fines_accident_pdf_upload_to, null=True, blank=True, max_length=500)
+
     def __str__(self):
-        return str(f" {self.pk} " )
-# صور الحوادث
+        return str(f" {self.pk} ")
+
+    def delete(self, *args, **kwargs):
+        if self.report_pdf_file:
+            directory = os.path.dirname(self.report_pdf_file.path)
+            if os.path.exists(directory):
+                shutil.rmtree(directory)
+        if self.car_paperwork_file:
+            directory = os.path.dirname(self.car_paperwork_file.path)
+            if os.path.exists(directory):
+                shutil.rmtree(directory)
+        super().delete(*args, **kwargs)
+
 class FinesAccidentsImage(models.Model):
-    accidents_record = models.ForeignKey(AccidentsRecord, related_name='images', on_delete=models.CASCADE,default=None)
-    image = models.ImageField(upload_to=fines_accident_file_upload_to,default=None)
+    accidents_record = models.ForeignKey(AccidentsRecord, related_name='images', on_delete=models.CASCADE, default=None)
+    image = models.ImageField(upload_to=fines_accident_file_upload_to, default=None)
+
     def __str__(self):
-        return str(f" {self.accidents_record.pk} " )
-# رخصة القياده للحادث
+        return str(f" {self.accidents_record.pk} ")
+
 class LicenseFile(models.Model):
-    accidents_record = models.ForeignKey(AccidentsRecord, related_name='license_files', on_delete=models.CASCADE,default=None)
-    file = models.FileField(upload_to=fines_accident_file_upload_to,default=None)
+    accidents_record = models.ForeignKey(AccidentsRecord, related_name='license_files', on_delete=models.CASCADE, default=None)
+    file = models.FileField(upload_to=fines_accident_file_upload_to, default=None)
+
     def __str__(self):
-        return str(f" {self.accidents_record.pk} " )
-# سجل المخالفات
+        return str(f" {self.accidents_record.pk} ")
+
 class FinesRecord(models.Model):
     car = models.ForeignKey(RegistredCars, on_delete=models.CASCADE, null=True, related_name="fines")
-    employe = models.ForeignKey(EmployesInfo, blank=True,on_delete=models.CASCADE, null=True)
+    employe = models.ForeignKey(EmployesInfo, blank=True, on_delete=models.CASCADE, null=True)
     unRegistredEmpName = models.CharField(max_length=100, null=True, blank=True)
     unRegistredEmpCeoNumber = models.CharField(max_length=100, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -126,8 +144,9 @@ class FinesRecord(models.Model):
     fine_date = models.DateField(null=True, blank=True)
     fine_time = models.TimeField(null=True, blank=True)
     fine_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
     def __str__(self):
-        return str(f" {self.pk} " )
+        return str(f" {self.pk} ")
 
     def delete(self, *args, **kwargs):
         if self.paid_fine_image:
@@ -136,10 +155,45 @@ class FinesRecord(models.Model):
                 shutil.rmtree(directory)
         super().delete(*args, **kwargs)
 
-    def __str__(self):
-        return str(f" {self.pk} ")
+class MaintanceLogs(models.Model):
+    car = models.ForeignKey('RegistredCars', on_delete=models.CASCADE, null=True)
     
+    # Details for sending car to garage
+    maintance_emp_send_to_garage = models.ForeignKey(
+        'EmployesInfo', related_name='sent_maintenances',
+        on_delete=models.CASCADE, null=True
+    )
+    maintance_emp_send_to_garage_time = models.TimeField(default=None,null=True)
+    maintance_emp_send_to_garage_date = models.DateField(default=None,null=True)
+    maintance_emp_send_to_garage_reason = models.CharField(max_length=150)
+    maintance_emp_send_to_garage_arriving_time_date = models.DateTimeField(default=None,null=True)
+    car_is_in_garage = models.BooleanField(default=True)
 
+    # Details for returning car from garage
+    maintance_emp_return_from_garage = models.ForeignKey(
+        'EmployesInfo', related_name='returned_maintenances',
+        on_delete=models.CASCADE, null=True
+    )
+    maintance_emp_return_from_garage_time = models.TimeField(null=True, blank=True)
+    maintance_emp_return_from_garage_date = models.DateField(null=True, blank=True)
+    maintance_emp_return_from_garage_reason = models.CharField(max_length=150, null=True, blank=True)
+    maintance_emp_return_from_garage_arriving_time_date = models.DateTimeField(default=None,null=True)
+    
+    def __str__(self):
+        return f"Maintenance log for {self.car} on {self.maintance_emp_send_to_garage_date}"
+
+class InGarageCars(models.Model):
+    car = models.ForeignKey('RegistredCars', on_delete=models.CASCADE, null=True)
+ 
+    maintance_emp_send_to_garage = models.ForeignKey(
+        'EmployesInfo', related_name='sent_maintenances2',
+        on_delete=models.CASCADE, null=True
+    )
+    maintance_emp_send_to_garage_time = models.TimeField(default=None,null=True)
+    maintance_emp_send_to_garage_date = models.DateField(default=None,null=True)
+    maintance_emp_send_to_garage_reason = models.CharField(max_length=150)
+    def __str__(self):
+        return f"card ID {self.pk}"
 
 # حذف صورة الحادث المحدده من سجل صور الحوادث
 @receiver(post_delete, sender=FinesAccidentsImage)

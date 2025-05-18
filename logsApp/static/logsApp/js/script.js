@@ -1,3 +1,18 @@
+function toggleDownloadFilters() {
+  const filtersContainer = document.getElementById("downloadFiltersMain");
+  if (!filtersContainer.classList.contains("show")) {
+    filtersContainer.style.display = "block";
+    setTimeout(() => {
+      filtersContainer.classList.add("show");
+    }, 10);
+  } else {
+    filtersContainer.classList.remove("show");
+    setTimeout(() => {
+      filtersContainer.style.display = "none";
+    }, 500); // Match the transition duration in CSS
+  }
+}
+
 function fadeOutMessage(id) {
   var message = document.getElementById(id);
   if (message) {

@@ -19,6 +19,11 @@ urlpatterns = [
     # path('fine/<int:fine_id>/delete-image/', views.deleteFineImage, name='deleteFineImage'),
     path('fines/', views.fineC, name='finespage'),
     path('gctoa/', views.gCTOA, name='gctoa'),
-    # path('q', views.seedemp, name='seedemp'),
+    path('q', views.seedemp, name='seedemp'),
     path('return_car/<int:car_id>/', views.return_car, name='return_car'),
+    path('maintaince/', views.maintaincePage, name='maintaincePage'),
+    path('maintainceRegisterCar/', views.maintainceRegisterCar, name='maintainceRegisterCar'),
+    path('returnCarFromGarage/', views.returnCarFromGarage, name='returnCarFromGarage'),
+    path('maintenanceLogs/', views.maintenanceLogs, name='maintenanceLogs'),
+    path('api/logs/', views.logs_api, name='logs_api'),
 ]

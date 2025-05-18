@@ -5,17 +5,122 @@
 {% endblock %} {% block body %}
 
 <div class="logs-btns">
-  {% comment %}
+<h1 class="logs-page-title">سجل الاستلام والتسليم</h1>
   <div class="logs-dbtn-cont">
     <button
-      class="logs-nav-link-btn"
-      onclick="window.location='{% url 'logsApp:export_to_excel' %}'"
+      class="logs-nav-link-btn logs-show-hide-btn"
+      onclick="toggleDownloadFilters()"
     >
       تحميل السجل
     </button>
   </div>
-  {% endcomment %}
-  <h1 class="logs-page-title">سجل الاستلام والتسليم</h1>
+<!-- Replace the existing downloadFiltersMain div with this updated version -->
+<div class="logs-filtersMain" id="downloadFiltersMain" style="display: none;">
+  <div class="logs-filtersDw">
+    <div class="logs-filters-cont">
+      <form 
+        class="logs-filtersForm" 
+        action="{% url 'logsApp:export_to_excel' %}" 
+        method="get"
+      >
+        {% csrf_token %}
+        <div class="logs-filter-cont">
+          <div>
+            <h1>تحميل السجل</h1>
+          </div>
+          <div class="logs-form-group">
+            <label for="carNumbersDownload" class="logs-form-label"
+              >رقــــــــم المركبه</label
+            >
+            <input
+              type="text"
+              id="carNumbersDownload"
+              name="carNumper"
+              class="logs-input"
+              placeholder="ادخل رقم المركبه هنا "
+            />
+          </div>
+          <div class="logs-form-group">
+            <label for="ceoNDownload" class="logs-form-label"
+              >الــــــرقم الاداري</label
+            >
+            <input
+              type="text"
+              name="ceoN"
+              class="logs-input"
+              placeholder="ادخل الرقم الاداري هنا"
+            />
+          </div>
+          <div class="logs-form-group">
+            <label for="dateTypeDownload" class="logs-form-label"> الــــتاريخ</label>
+            <select
+              id="dateTypeDownload"
+              name="dateType"
+              class="logs-input"
+              onchange="toggleDownloadDateInput()"
+            >
+              <option value="day">يوم</option>
+              <option value="month">شهر</option>
+              <option value="year">سنة</option>
+            </select>
+          </div>
+          <div class="logs-form-group" id="dayInputDownload">
+            <label for="dateDownload" class="logs-form-label"
+              >تاريخ استلام المركبه</label
+            >
+            <input type="date" id="dateDownload" name="date" class="logs-input" />
+          </div>
+          <div class="logs-form-group" id="monthInputDownload" style="display: none">
+            <label for="yearDownload" class="logs-form-label">السنة</label>
+            <select id="yearDownload" name="year" class="logs-input">
+              {% for year in years %}
+              <option value="{{ year }}">{{ year }}</option>
+              {% endfor %}
+            </select>
+            <label for="monthDownload" class="logs-form-label">الشهر</label>
+            <select id="monthDownload" name="month" class="logs-input">
+              <option value="1">يناير</option>
+              <option value="2">فبراير</option>
+              <option value="3">مارس</option>
+              <option value="4">أبريل</option>
+              <option value="5">مايو</option>
+              <option value="6">يونيو</option>
+              <option value="7">يوليو</option>
+              <option value="8">أغسطس</option>
+              <option value="9">سبتمبر</option>
+              <option value="10">أكتوبر</option>
+              <option value="11">نوفمبر</option>
+              <option value="12">ديسمبر</option>
+            </select>
+          </div>
+          <div class="logs-form-group" id="yearInputDownload" style="display: none">
+            <label for="yearOnlyDownload" class="logs-form-label">السنة</label>
+            <select id="yearOnlyDownload" name="yearOnly" class="logs-input">
+              {% for year in years %}
+              <option value="{{ year }}">{{ year }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <input class="logs-nav-link-btn" type="submit" value="تحميل" />
+      </form>
+      <div>
+        <form action="{% url 'logsApp:export_to_excel' %}" method="get">
+          {% csrf_token %}
+          <input type="hidden" value="showall" id="showAllDownload" name="showAll" />
+          <input
+            class="logs-nav-link-btn"
+            type="submit"
+            value="تحميل كامل السجل"
+          />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+  
   <button
     class="logs-nav-link-btn logs-show-hide-btn"
     onclick="toggleFilters()"
@@ -128,6 +233,7 @@
     </div>
   </div>
 </div>
+
 
 <div class="logs-mainlog">
   <div class="logs-table-container" id="tableContainer">

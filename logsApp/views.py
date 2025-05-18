@@ -1,4 +1,4 @@
-from logsApp.models import RegistredCars, EmployesInfo, InUseCars, LogsC, AccidentsRecord, FinesAccidentsImage, LicenseFile, FinesRecord, GivenCarsToOtherAdminstrations
+from logsApp.models import MaintanceLogs, InGarageCars, RegistredCars, EmployesInfo, InUseCars, LogsC, AccidentsRecord, FinesAccidentsImage, LicenseFile, FinesRecord, GivenCarsToOtherAdminstrations
 from django.shortcuts import render, redirect, get_object_or_404
 from openpyxl.styles import Font, Alignment, PatternFill
 from django.core.paginator import Paginator
@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.utils import timezone
+from django.urls import reverse
 from django.db.models import Q
 from .newempData import newemp
 from .empinfo import empInfo
@@ -16,34 +17,39 @@ import pytz
 import os
 import re
 
+# REST Framework imports
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+from .serializers import LogsCSerializer
 
 
-# def seedemp(request):
-#     for i in newemp:
-#         emp, created = EmployesInfo.objects.update_or_create(
-#             ceoNumber=i["empId"],
-#             defaults={
-#                 'ceoName': i["empName"],
-#                 'phoneNumber': i["tel"],
-#                 'jobTtile': i["jobTitle"],
-#                 'department': i["department"],
-#                 'unit': i["unit"],
-#                 'nationality': i["nationality"]
-#             }
-#         )
+def seedemp(request):
+    for i in newemp:
+        emp, created = EmployesInfo.objects.update_or_create(
+            ceoNumber=i["empId"],
+            defaults={
+                'ceoName': i["empName"],
+                'phoneNumber': i["tel"],
+                'jobTtile': i["jobTitle"],
+                'department': i["department"],
+                'unit': i["unit"],
+                'nationality': i["nationality"]
+            }
+        )
 
-#     for q in carsList:
-#         car, created = RegistredCars.objects.update_or_create(
-#             carNumber=q["vnumber"],
-#             defaults={
-#                 'vType': q["vType"],
-#                 'carYear': q['Myear'],
-#                 'cownerEmpNumber': q['empid'],
-#                 'cownerName': q['empName'],          
-#             }
-#         )
+    for q in carsList:
+        car, created = RegistredCars.objects.update_or_create(
+            carNumber=q["vnumber"],
+            defaults={
+                'vType': q["vType"],
+                'carYear': q['Myear'],
+                'cownerEmpNumber': q['empid'],
+                'cownerName': q['empName'],
+            }
+        )
 
-#     return HttpResponse("done")
+    return HttpResponse("done")
 
 
 def remove_non_numeric(s):
@@ -137,6 +143,10 @@ def registerCar(request):
         car_exists.save()
 
         success_message = "تم التسجيل بنجاح"
+        return redirect("/add/")
+
+
+    
         return render(request, "logsApp/registerCar.html", {
             "sucssuMessge": success_message,
             "l": all_in_use_cars
@@ -311,58 +321,97 @@ def AccidentsRecords(request):
 def export_to_excel(request):
     dubai_tz = pytz.timezone('Asia/Dubai')
     
-    data = LogsC.objects.select_related('Logs_employee_ins', 'Logs_car_ins').all().order_by('-id')
+    # Initialize base queryset
+    data = LogsC.objects.select_related('Logs_employee_ins', 'Logs_car_ins').all()
+    
+    # Get filter parameters
+    car_number = request.GET.get('carNumper')
+    ceo_number = request.GET.get('ceoN')
+    date_filter = request.GET.get('date')
+    month_filter = request.GET.get('month')
+    year_filter = request.GET.get('year')
+    year_only_filter = request.GET.get('yearOnly')
+    date_type = request.GET.get('dateType')
+    show_all = request.GET.get('showAll')
 
+    # Apply filters
+    if not show_all:
+        filters = Q()
+        
+        # Date type filters
+        if date_type == "day" and date_filter:
+            filters &= Q(taken_date=date_filter)
+        elif date_type == "month" and month_filter and year_filter:
+            month_start = datetime(year=int(year_filter), month=int(month_filter), day=1)
+            month_end = (month_start + timedelta(days=32)).replace(day=1) - timedelta(seconds=1)
+            filters &= Q(taken_date__range=(month_start, month_end))
+        elif date_type == "year" and year_only_filter:
+            year_start = datetime(year=int(year_only_filter), month=1, day=1)
+            year_end = datetime(year=int(year_only_filter), month=12, day=31, hour=23, minute=59, second=59)
+            filters &= Q(taken_date__range=(year_start, year_end))
+
+        # Car number and CEO number filters
+        if ceo_number:
+            filters &= Q(Logs_employee_ins__ceoNumber=ceo_number.strip())
+        if car_number:
+            filters &= Q(Logs_car_ins__carNumber=car_number.strip())
+
+        # Apply all filters
+        data = data.filter(filters)
+
+    # Order the data
+    data = data.order_by('-id')
+
+    # Prepare data for Excel
     export_data = []
     for log in data:
-        created_at_dubai = log.created_at.astimezone(dubai_tz)
-        taken_time_dubai = (log.taken_time.replace(tzinfo=dubai_tz) if log.taken_time else None)
-        ended_at_dubai = log.ended_at.astimezone(dubai_tz) if log.ended_at else None
-        return_time_dubai = (log.return_time.replace(tzinfo=dubai_tz) if return_time_dubai else None)
+        taken_time_dubai = log.taken_time.replace(tzinfo=dubai_tz) if log.taken_time else None
+        return_time_dubai = log.return_time.replace(tzinfo=dubai_tz) if log.return_time else None
 
         export_data.append({
             'ID': log.id,
             'رقم السياره': log.Logs_car_ins.carNumber,
             'الاسم': log.Logs_employee_ins.ceoName,
             'الرقم الاداري': log.Logs_employee_ins.ceoNumber,
-            'تاريخ ووقت الاستلام': created_at_dubai.strftime('%Y-%m-%d %I:%M %p'),
             'تاريخ الاستلام': log.taken_date,
             'وقت الاستلام': taken_time_dubai.strftime('%I:%M %p') if taken_time_dubai else None,
-            'تاريخ و وقت التسليم': ended_at_dubai.strftime('%Y-%m-%d %I:%M %p') if ended_at_dubai else None,
             'تاريخ التسليم': log.return_date,
             'وقت التسليم': return_time_dubai.strftime('%I:%M %p') if return_time_dubai else None,
             'ملاحظه على المركبه': log.carNote,
-            'قسم الموظف': log.Logs_employee_ins.section
+            'قسم الموظف': log.Logs_employee_ins.department
         })
-    
+
     df = pd.DataFrame(export_data)
 
+    # Prepare response
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="logs_data.xlsx"'
 
+    # Create Excel file
     with pd.ExcelWriter(response, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Logs Data')
 
-        workbook = writer.book
         worksheet = writer.sheets['Logs Data']
-       
         worksheet.sheet_view.rightToLeft = True
-       
+
         header_font = Font(size=16, bold=True, color='000000')
         header_fill = PatternFill(start_color='B7E1A1', end_color='B7E1A1', fill_type='solid')
         cell_font = Font(size=16)
         center_alignment = Alignment(horizontal='center')
 
+        # Style header row
         for cell in worksheet[1]:
             cell.font = header_font
             cell.fill = header_fill
             cell.alignment = center_alignment
-       
+
+        # Style data rows
         for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
             for cell in row:
                 cell.font = cell_font
                 cell.alignment = center_alignment
-       
+
+        # Adjust column widths
         for column in worksheet.columns:
             max_length = 0
             column_letter = column[0].column_letter
@@ -467,7 +516,26 @@ def fineC(request):
             return redirect('logsApp:finespage')
         except GivenCarsToOtherAdminstrations.DoesNotExist:
             pass
-        
+
+        try:
+            finon = GivenCarsToOtherAdminstrations.objects.get(car=car_ins,
+                                      created_at__lte=combined_fine_datetime,
+                                      ended_at__isnull=True
+                                      )
+            
+            FinesRecord.objects.create(
+                car=car_ins,
+                unRegistredEmpCeoNumber=finon.empNumber,
+                unRegistredEmpName=finon.empName,
+                created_at=combined_fine_datetime,
+                fine_date=fine_date,
+                fine_time=fine_time,
+                fine_amount=fine_amount
+            )
+            return redirect('logsApp:finespage')
+        except GivenCarsToOtherAdminstrations.DoesNotExist:
+            pass
+
         return render(request, "logsApp/finespage.html", {'finon': finon})
     return render(request, "logsApp/finespage.html", {'allFines': allFines, 'finon': finon})
 
@@ -583,6 +651,7 @@ def gCTOA(request):
         emp_number = request.POST.get("emp_number")
         emp_name = request.POST.get("emp_name")
         telephone = request.POST.get("telephone")
+        note = request.POST.get("note")
         #تاكد اذا كانت المركبه قيد الاستخدام من قبل ادارتنا 
         try:
             ourAdmin = LogsC.objects.get(Logs_car_ins__carNumber=carNumberq, carIsInUse=True)
@@ -627,6 +696,7 @@ def gCTOA(request):
                 telephone=telephone,
                 taken_date=current_time.date(),
                 taken_time=current_time.time(),
+                note=note,
                 carIsInUse=True
             )
             car_instance.carIsInparking = False
@@ -636,6 +706,7 @@ def gCTOA(request):
             return render(request, "logsApp/gctoa.html", {"cgtoa": cgtoa, "success_message": success_message})
         except RegistredCars.DoesNotExist:
             error_message = "رقم السيارة غير صحيح او المركبه قيد الاستخدام"
+            print("رقم السيارة غير صحيح او المركبه قيد الاستخدام")
             return render(request, "logsApp/gctoa.html", {
                 "cgtoa": cgtoa,
                 "error_message": error_message,
@@ -643,7 +714,8 @@ def gCTOA(request):
                 "other_adminstration": other_adminstration,
                 "emp_number": emp_number,
                 "emp_name": emp_name,
-                "telephone": telephone
+                "telephone": telephone,
+                "note":note
             })
 
     return render(request, "logsApp/gctoa.html", {"cgtoa": cgtoa})
@@ -666,3 +738,319 @@ def return_car(request, car_id):
     success_message = "تم تسجيل عودة المركبة بنجاح"
     cgtoa = GivenCarsToOtherAdminstrations.objects.all()
     return render(request, "logsApp/gctoa.html", {"cgtoa": cgtoa, "success_message": success_message})
+
+
+
+def maintaincePage(request):
+    AllInGarageCars = InGarageCars.objects.all().order_by('-id')
+    return render(request,"logsApp/maintenanceEmployeesForms.html",
+                          {
+                            "AllInGarageCars":AllInGarageCars,
+                        } )
+
+
+def maintainceRegisterCar(request):
+    
+    if request.method == "POST":
+        AllInGarageCars = InGarageCars.objects.all().order_by('-id')
+        dubai_tz = pytz.timezone('Asia/Dubai')
+        current_time = timezone.now().astimezone(dubai_tz)
+        emp_number = request.POST.get("empNumber").strip()
+        car_number = request.POST.get("carNumber").strip()
+        reason = request.POST.get("reason")
+        car_number = car_number.replace("/", "-")
+        print("formAceepted")
+        
+        # تاكد اذا كان الرقم الاداري صحيح لاكن ليس من فريق الصيانة 
+        try:
+            emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number , MaintenanceEmp=False)
+            print("الرقم الاداري المدخل ليس من ضمن فريق الصيانة")
+            empNotInMaintance = "الرقم الاداري المدخل ليس من ضمن فريق الصيانة"
+            return render(request,"logsApp/maintenanceEmployeesForms.html",
+                          {"car_number_err":car_number,
+                           "empNumberErr":emp_number,
+                           "reasonErr":reason,
+                           "AllInGarageCars": AllInGarageCars,
+                           "error_message": empNotInMaintance})
+      
+        except EmployesInfo.DoesNotExist:
+            pass
+            
+        # تاكد اذا كان الرقم الاداري صحيح و لفريق الصيانة
+        try:
+            emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number , MaintenanceEmp=True)
+        except EmployesInfo.DoesNotExist:
+            error_message = "الرقم الاداري المدخل غير صحيح"
+            print("الرقم الاداري المدخل غير صحيح")
+            return render(request,"logsApp/maintenanceEmployeesForms.html",
+                          {"car_number_err":car_number,
+                           "empNumberErr":emp_number,
+                           "reasonErr":reason,
+                           "AllInGarageCars": AllInGarageCars,
+                           "error_message": error_message})
+        
+        # تاكد اذا كان رقم المركبة المدخل صحيح
+        try:
+            car_instance = RegistredCars.objects.get(carNumber=car_number)
+        except RegistredCars.DoesNotExist:
+            print("رقم المركبة المدخل غير صحيح")
+            error_message = "رقم المركبة المدخل غير صحيح"
+            return render(request,"logsApp/maintenanceEmployeesForms.html",
+                          {"AllInGarageCars": AllInGarageCars,
+                           "car_number_err":car_number,
+                           "empNumberErr":emp_number,
+                           "reasonErr":reason,
+                           "error_message": error_message})
+        
+        # تاكد اذا كانت المركبة قيد الاستخدام من قبل ادارتنا
+        try:
+            car_in_use = LogsC.objects.get(Logs_car_ins__carNumber=car_number, carIsInUse=True)
+            print("المركبة قيد الاستخدام من قبل موظف")
+            error_message = "المركبة قيد الاستخدام من قبل موظف"
+            return render(request,"logsApp/maintenanceEmployeesForms.html",
+                          {"AllInGarageCars": AllInGarageCars,
+                           "car_number_err":car_number,
+                           "empNumberErr":emp_number,
+                           "reasonErr":reason,
+                           "error_message": error_message,
+                           "car_in_use": car_in_use})
+        except LogsC.DoesNotExist:
+            pass
+        
+        # تاكد اذا كانت المركبة معطاه لادارة اخرى   
+        try:
+            car_in_other_admin = GivenCarsToOtherAdminstrations.objects.get(car__carNumber=car_number, carIsInUse=True)
+            error_message = "المركبة معطاه لادارة اخرى"
+            print("المركبة معطاه لادارة اخرى")
+            return render(request,"logsApp/maintenanceEmployeesForms.html",
+                          {"AllInGarageCars": AllInGarageCars,
+                           "car_number_err":car_number,
+                           "empNumberErr":emp_number,
+                           "reasonErr":reason,
+                           "error_message": error_message,
+                           "car_in_other_admin": car_in_other_admin})
+        except GivenCarsToOtherAdminstrations.DoesNotExist:
+            pass
+            
+        # تاكد اذا كانت المركبة موجودة في الجراج بالفعل
+        try:
+            car_in_garage = InGarageCars.objects.get(car__carNumber=car_number)
+            print("المركبة موجودة بالفعل في الجراج")
+            maintenance_log = MaintanceLogs.objects.filter(
+                car__carNumber=car_number, 
+                car_is_in_garage=True
+            ).latest('maintance_emp_send_to_garage_date')
+            
+            error_message = "المركبة موجودة بالفعل في الجراج"
+            return render(request,"logsApp/maintenanceEmployeesForms.html",
+                          {
+                           "AllInGarageCars": AllInGarageCars,
+                           "car_number_err":car_number,
+                           "empNumberErr":emp_number,
+                           "reasonErr":reason,
+                           "error_message": error_message,
+                           "maintenance_log": maintenance_log})
+        except (InGarageCars.DoesNotExist, MaintanceLogs.DoesNotExist):
+            pass
+
+        # تاكد اذا كانت المركبة في الباركنج
+        if not car_instance.carIsInparking:
+            print("المركبة ليست موجودة في الباركنج")
+            error_message = "المركبة ليست موجودة في الباركنج"
+            return render(request,"logsApp/maintenanceEmployeesForms.html",
+                          {
+                           "AllInGarageCars": AllInGarageCars,
+                           "car_number_err":car_number,
+                           "empNumberErr":emp_number,
+                           "reasonErr":reason,
+                           "error_message": error_message})
+
+        #تسجيل مركبه باسم سائق الصيانه من الباركن الى الجراج 
+        maintenance_log = MaintanceLogs.objects.create(
+            car=car_instance,
+            maintance_emp_send_to_garage=emp_instance,
+            maintance_emp_send_to_garage_time=current_time.time(),
+            maintance_emp_send_to_garage_date=current_time.date(),
+            maintance_emp_send_to_garage_reason=reason,
+        )
+
+        # Create InGarageCars record
+        InGarageCars.objects.create(
+            car=car_instance,
+            maintance_emp_send_to_garage=emp_instance,
+            maintance_emp_send_to_garage_time=current_time.time(),
+            maintance_emp_send_to_garage_date=current_time.date(),
+            maintance_emp_send_to_garage_reason=reason
+        )
+        
+        # Update car status 
+        car_instance.carIsInparking = False
+        car_instance.save()
+
+        AllInGarageCars = InGarageCars.objects.all().order_by('-id')
+        return render(request,"logsApp/maintenanceEmployeesForms.html",
+                      {
+                        "AllInGarageCars": AllInGarageCars,
+                        "success_message": "تم تسجيل المركبة في الصيانة بنجاح"
+                      })
+                      
+    AllInGarageCars = InGarageCars.objects.all().order_by('-id')
+    return render(request,"logsApp/maintenanceEmployeesForms.html",
+                  {
+                    "AllInGarageCars": AllInGarageCars,
+                  })
+
+
+def returnCarFromGarage(request):
+    if request.method == "POST":
+        dubai_tz = pytz.timezone('Asia/Dubai')
+        current_time = timezone.now().astimezone(dubai_tz)
+        
+        emp_number = request.POST.get("empNumber").strip()
+        car_number = request.POST.get("carNumber").strip()
+        reason = request.POST.get("reason")
+        car_number = car_number.replace("/", "-")
+        
+        # Get all cars in garage for rendering the template
+        AllInGarageCars = InGarageCars.objects.all().order_by('-id')
+        
+        # Validate employee
+        try:
+            emp_instance = EmployesInfo.objects.get(ceoNumber=emp_number, MaintenanceEmp=True)
+        except EmployesInfo.DoesNotExist:
+            return render(request, "logsApp/maintenanceEmployeesForms.html",
+                        {
+                            "AllInGarageCars": AllInGarageCars,
+                            "car_number_err": car_number,
+                            "empNumberErr": emp_number,
+                            "reasonErr": reason,
+                            "error_message": "الرقم الاداري المدخل غير صحيح أو ليس من فريق الصيانة"
+                        })
+        
+        # Validate car
+        try:
+            car_instance = RegistredCars.objects.get(carNumber=car_number)
+        except RegistredCars.DoesNotExist:
+            return render(request, "logsApp/maintenanceEmployeesForms.html",
+                        {
+                            "AllInGarageCars": AllInGarageCars,
+                            "car_number_err": car_number,
+                            "empNumberErr": emp_number,
+                            "reasonErr": reason,
+                            "error_message": "رقم المركبة المدخل غير صحيح"
+                        })
+        
+        # Check if the car is actually in the garage
+        try:
+            in_garage_car = InGarageCars.objects.get(car=car_instance)
+        except InGarageCars.DoesNotExist:
+            return render(request, "logsApp/maintenanceEmployeesForms.html",
+                        {
+                            "AllInGarageCars": AllInGarageCars,
+                            "car_number_err": car_number,
+                            "empNumberErr": emp_number,
+                            "reasonErr": reason,
+                            "error_message": "المركبة ليست موجودة في الجراج"
+                        })
+                        
+        # Get the maintenance log record
+        try:
+            maintenance_log = MaintanceLogs.objects.filter(
+                car=car_instance,
+                car_is_in_garage=True
+            ).latest('maintance_emp_send_to_garage_date')
+            
+            # Calculate arrival times
+            arrival_time_from_garage = current_time - timedelta(hours=1, minutes=30)
+            
+            # Get the original date and time from the model
+            date = maintenance_log.maintance_emp_send_to_garage_date
+            time = maintenance_log.maintance_emp_send_to_garage_time
+            
+            # Combine date and time into datetime, then add 1h30m for garage arrival time
+            combined_datetime = datetime.combine(date, time)
+            new_datetime = combined_datetime + timedelta(hours=1, minutes=30)
+            
+            # Update the maintenance log with all the required information
+            maintenance_log.maintance_emp_send_to_garage_arriving_time_date = new_datetime
+            maintenance_log.maintance_emp_return_from_garage_arriving_time_date = arrival_time_from_garage
+            maintenance_log.maintance_emp_return_from_garage = emp_instance
+            maintenance_log.maintance_emp_return_from_garage_time = current_time.time()
+            maintenance_log.maintance_emp_return_from_garage_date = current_time.date()
+            maintenance_log.maintance_emp_return_from_garage_reason = reason
+            maintenance_log.car_is_in_garage = False
+            maintenance_log.save()
+            
+            # Remove car from InGarageCars
+            in_garage_car.delete()
+            
+            # Update car status to indicate it's back in parking
+            car_instance.carIsInparking = True
+            car_instance.save()
+            
+            # Get updated list of cars in garage
+            AllInGarageCars = InGarageCars.objects.all().order_by('-id')
+            return render(request, "logsApp/maintenanceEmployeesForms.html",
+                        {
+                            "AllInGarageCars": AllInGarageCars,
+                            "success_message": "تم إرجاع المركبة من الصيانة بنجاح"
+                        })
+                        
+        except MaintanceLogs.DoesNotExist:
+            return render(request, "logsApp/maintenanceEmployeesForms.html",
+                        {
+                            "AllInGarageCars": AllInGarageCars,
+                            "car_number_err": car_number,
+                            "empNumberErr": emp_number,
+                            "reasonErr": reason,
+                            "error_message": "لا يوجد سجل صيانة لهذه المركبة"
+                        })
+    
+    # For GET requests, just render the template with the list of cars in garage
+    AllInGarageCars = InGarageCars.objects.all().order_by('-id')
+    return render(request, "logsApp/maintenanceEmployeesForms.html",
+                {
+                    "AllInGarageCars": AllInGarageCars,
+                })
+
+def maintenanceLogs(request):
+    all_maintenance_logs = MaintanceLogs.objects.all().order_by('-id')
+
+    return render(request, "logsApp/maintenanceLogs.html", {"all_maintenance_logs": all_maintenance_logs})
+
+@api_view(['GET', 'OPTIONS'])
+def logs_api(request):
+    """
+    API endpoint that returns the latest 3500 car logs (LogsC) data.
+    Optional query parameters:
+    - in_use: Filter by carIsInUse (true/false)
+    """
+    # Handle preflight OPTIONS request for CORS
+    if request.method == 'OPTIONS':
+        response = Response()
+        response['Access-Control-Allow-Origin'] = '*'
+        response['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+        response['Access-Control-Allow-Headers'] = 'Accept, Accept-Encoding, Authorization, Content-Type, DNT, Origin, User-Agent, X-Requested-With, Cache-Control, Pragma'
+        return response
+    
+    # Get query parameters
+    in_use_param = request.query_params.get('in_use', None)
+    
+    # Base queryset - limit to the latest 3500 records
+    queryset = LogsC.objects.all().order_by('-created_at')[:3500]
+    
+    # Apply filters if provided
+    if in_use_param is not None:
+        in_use = in_use_param.lower() == 'true'
+        queryset = LogsC.objects.filter(carIsInUse=in_use).order_by('-created_at')[:3500]
+    
+    # Serialize the data
+    serializer = LogsCSerializer(queryset, many=True)
+    
+    # Create response with explicit CORS headers
+    response = Response(serializer.data)
+    response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+    response['Cache-Control'] = 'no-cache'
+    
+    return response

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API CORS Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 0 20px;
+      }
+      h1,
+      h2 {
+        color: #333;
+      }
+      .result {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 5px;
+      }
+      .success {
+        color: green;
+      }
+      .error {
+        color: red;
+      }
+      pre {
+        background: #f5f5f5;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+      button {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      button:hover {
+        background: #45a049;
+      }
+      input {
+        padding: 8px;
+        margin: 10px 0;
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Parking Management System API Test</h1>
+    <p>This page tests if the API supports CORS requests from any domain.</p>
+
+    <div>
+      <label for="apiUrl">API URL:</label>
+      <input
+        type="text"
+        id="apiUrl"
+        value="http://192.168.50.6:8000/api/logs/"
+      />
+      <p>
+        <small
+          >Change the IP address if needed. You can use localhost if testing on
+          the same machine.</small
+        >
+      </p>
+    </div>
+
+    <div>
+      <button onclick="testFetch()">Test with Fetch</button>
+      <button onclick="testXhr()">Test with XMLHttpRequest</button>
+    </div>
+
+    <div class="result" id="result">
+      <p>Results will appear here...</p>
+    </div>
+
+    <script>
+      function testFetch() {
+        const resultDiv = document.getElementById("result");
+        const apiUrl = document.getElementById("apiUrl").value;
+
+        resultDiv.innerHTML = "<p>Testing connection with Fetch API...</p>";
+
+        fetch(apiUrl, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            const recordCount = Array.isArray(data)
+              ? data.length
+              : data.results
+              ? data.results.length
+              : "unknown";
+            let html = `
+                    <h2 class="success">Connection Successful!</h2>
+                    <p>The API responded with ${recordCount} records.</p>
+                    <p>This means CORS is properly configured to allow requests from this domain.</p>
+                `;
+
+            // Show sample of the data
+            if (
+              data &&
+              (data.length > 0 || (data.results && data.results.length > 0))
+            ) {
+              const sampleData = data.results ? data.results[0] : data[0];
+              html += `<h3>Sample Data:</h3><pre>${JSON.stringify(
+                sampleData,
+                null,
+                2
+              )}</pre>`;
+            }
+
+            resultDiv.innerHTML = html;
+          })
+          .catch((error) => {
+            resultDiv.innerHTML = `
+                    <h2 class="error">Error!</h2>
+                    <p>${error.message}</p>
+                    <p>This might be a CORS issue. Check that:</p>
+                    <ul>
+                        <li>The API server is running</li>
+                        <li>The URL is correct</li>
+                        <li>CORS is properly configured on the server</li>
+                    </ul>
+                    <p>Check the browser console for more details.</p>
+                `;
+            console.error("Fetch error:", error);
+          });
+      }
+
+      function testXhr() {
+        const resultDiv = document.getElementById("result");
+        const apiUrl = document.getElementById("apiUrl").value;
+
+        resultDiv.innerHTML =
+          "<p>Testing connection with XMLHttpRequest...</p>";
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", apiUrl, true);
+        xhr.setRequestHeader("Accept", "application/json");
+
+        xhr.onload = function () {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              const recordCount = Array.isArray(data)
+                ? data.length
+                : data.results
+                ? data.results.length
+                : "unknown";
+
+              let html = `
+                            <h2 class="success">Connection Successful!</h2>
+                            <p>The API responded with ${recordCount} records.</p>
+                            <p>This means CORS is properly configured to allow requests from this domain.</p>
+                        `;
+
+              // Show sample of the data
+              if (
+                data &&
+                (data.length > 0 || (data.results && data.results.length > 0))
+              ) {
+                const sampleData = data.results ? data.results[0] : data[0];
+                html += `<h3>Sample Data:</h3><pre>${JSON.stringify(
+                  sampleData,
+                  null,
+                  2
+                )}</pre>`;
+              }
+
+              resultDiv.innerHTML = html;
+            } catch (e) {
+              resultDiv.innerHTML = `
+                            <h2 class="error">Error parsing response!</h2>
+                            <p>${e.message}</p>
+                            <p>Response received but could not be parsed as JSON.</p>
+                        `;
+            }
+          } else {
+            resultDiv.innerHTML = `
+                        <h2 class="error">HTTP Error: ${xhr.status}</h2>
+                        <p>The server responded with an error status.</p>
+                        <p>Response: ${xhr.responseText}</p>
+                    `;
+          }
+        };
+
+        xhr.onerror = function () {
+          resultDiv.innerHTML = `
+                    <h2 class="error">Network Error!</h2>
+                    <p>Could not connect to the API. This might be a CORS issue.</p>
+                    <p>Check that:</p>
+                    <ul>
+                        <li>The API server is running</li>
+                        <li>The URL is correct</li>
+                        <li>CORS is properly configured on the server</li>
+                    </ul>
+                    <p>Check the browser console for more details.</p>
+                `;
+        };
+
+        xhr.send();
+      }
+    </script>
+  </body>
+</html>

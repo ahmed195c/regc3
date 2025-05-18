@@ -85,6 +85,21 @@
       />
     </div>
 
+     <div class="gctoa-form-group">
+      <label for="telephone" class="form-label gctoa-form-label"
+        > ملاحظة على المركبة</label
+      >
+      <input
+        type="text"
+        id="note"
+        name="note"
+        class="input gctoa-input"
+        value="{{ note|default_if_none:'' }}"
+        required
+      />
+    </div>
+
+
     <button type="submit" class="nav-link-btn gctoa-nav-link-btn">حفظ</button>
   </form>
 </div>
@@ -171,10 +186,13 @@
   </div>
   {%endif%}
 </div>
+
+
 <div class="gctoa-card-title">
   <h1>معلومات المركباة المسلمه لاداراة اخرى</h1>
 </div>
 
+{% comment %} عرض المركبات المسلمة لاداراة اخرى  {% endcomment %}
 <div class="card-container gctoa-card-container">
   {% for car in cgtoa %}
   <div class="card gctoa-card" dir="rtl">
@@ -204,6 +222,11 @@
     <div class="gctoa-group-info-display">
       <p>
         <strong>وقت تسليم المركبه:</strong> {{ car.taken_time|time:"h:i A" }}
+      </p>
+    </div>
+    <div class="gctoa-group-info-display">
+      <p>
+        <strong> ملاحظة على المركبة  :</strong> {{ car.note }}
       </p>
     </div>
     {% if car.carIsInUse %}

@@ -22,7 +22,7 @@
         </div>
         <div class="navs-cont">
           <ul class="nav-links">
-            {% comment %}
+            {% comment %} 
             <li>
               <button
                 class="nav-link-btn-unique"
@@ -54,6 +54,22 @@
                 onclick="window.location='{% url 'logsApp:AccidentsRecords' %}'"
               >
                 سجل الحوادث
+              </button>
+            </li>
+            <li>
+              <button
+                class="nav-link-btn-unique"
+                onclick="window.location='{% url 'logsApp:maintaincePage' %}'"
+              >
+                موظفي الصيانه 
+              </button>
+            </li>
+            <li>
+              <button
+                class="nav-link-btn-unique"
+                onclick="window.location='{% url 'logsApp:maintenanceLogs' %}'"
+              >
+             سجل فريق الصيانة
               </button>
             </li>
             <li>

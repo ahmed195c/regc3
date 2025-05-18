@@ -1,0 +1,76 @@
+{% extends "logsApp/layout.html" %} {% load static %} {% block css %} 
+{{block.super }}
+<link
+  rel="stylesheet"
+  href="{% static 'logsApp/maintenanceEmployeesForms.css' %}"
+/>
+{% endblock %} {% block title %}
+<title>سجلات الصيانة</title>
+{% endblock %} {% block body %}
+<!-- عنوان الصفحة -->
+<div class="maintaince-page">
+  <div class="maintaince-page-header-card">
+    <h1>سجلات الصيانة</h1>
+  </div>
+</div>
+
+<div class="mainCont">
+  <div class="maintaince-table">
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="table-header" data-tooltip="Car Number">رقم المركبة</th>
+          <th class="table-header" data-tooltip="Employee ID">الرقم الاداري</th>
+          <th class="table-header" data-tooltip="Employee Name">الاسم</th>
+          <th class="table-header" data-tooltip="Date of Receipt from Parking">
+            تاريخ الاستلام من المواقف
+          </th>
+          <th class="table-header" data-tooltip="Time of Receipt from Parking">
+            وقت الاستلام من المواقف
+          </th>
+          <th
+            class="table-header"
+            data-tooltip="Reason for Receipt from Parking"
+          >
+            سبب الاستلام من المواقف
+          </th>
+          <th class="table-header" data-tooltip="Divider">|</th>
+          <th class="table-header" data-tooltip="Employee ID for Return">
+            معرف موظف الإعادة
+          </th>
+          <th class="table-header" data-tooltip="Return Reason">سبب الإعادة</th>
+          <th class="table-header" data-tooltip="Return Date">تاريخ الإعادة</th>
+          <th class="table-header" data-tooltip="Return Time">وقت الإعادة</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if all_maintenance_logs %} {% for log in all_maintenance_logs %}
+        <tr>
+          <td>{{ log.car.carNumber }}</td>
+          <td>{{ log.maintance_emp_send_to_garage.ceoNumber }}</td>
+          <td>{{ log.maintance_emp_send_to_garage.ceoName }}</td>
+          <td>{{ log.maintance_emp_send_to_garage_date }}</td>
+          <td>{{ log.maintance_emp_send_to_garage_time|time:"h:i A" }}</td>
+          <td>{{ log.maintance_emp_send_to_garage_reason }}</td>
+          <td style="background-color: #eee">|</td>
+          <td>
+            {{ log.maintance_emp_return_from_garage.ceoNumber|default:"--" }}
+          </td>
+          <td>
+            {{ log.maintance_emp_return_from_garage_reason|default:"--" }}
+          </td>
+          <td>{{ log.maintance_emp_return_from_garage_date|default:"--" }}</td>
+          <td>
+            {{ log.maintance_emp_return_from_garage_time|time:"h:i A"|default:"--" }}
+          </td>
+        </tr>
+        {% endfor %} {% else %}
+        <tr>
+          <td colspan="11" style="text-align: center">لا توجد سجلات صيانة</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
