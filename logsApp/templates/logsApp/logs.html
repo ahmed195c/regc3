@@ -52,46 +52,48 @@
             />
           </div>
           <div class="logs-form-group">
-            <label for="dateTypeDownload" class="logs-form-label"> الــــتاريخ</label>
+            <label for="dateTypeDownload" class="logs-form-label"> نوع التاريخ</label>
             <select
               id="dateTypeDownload"
               name="dateType"
               class="logs-input"
               onchange="toggleDownloadDateInput()"
             >
-              <option value="day">يوم</option>
-              <option value="month">شهر</option>
-              <option value="year">سنة</option>
+              <option value="">بدون تاريخ</option>
+              <option value="day">يوم محدد</option>
+              <option value="month">شهر محدد</option>
+              <option value="year">سنة محدده</option>
             </select>
           </div>
-          <div class="logs-form-group" id="dayInputDownload">
+          <div class="logs-form-group" id="dayInputDownload" style="display: none;">
             <label for="dateDownload" class="logs-form-label"
               >تاريخ استلام المركبه</label
             >
             <input type="date" id="dateDownload" name="date" class="logs-input" />
           </div>
           <div class="logs-form-group" id="monthInputDownload" style="display: none">
-            <label for="yearDownload" class="logs-form-label">السنة</label>
-            <select id="yearDownload" name="year" class="logs-input">
-              {% for year in years %}
-              <option value="{{ year }}">{{ year }}</option>
-              {% endfor %}
-            </select>
-            <label for="monthDownload" class="logs-form-label">الشهر</label>
-            <select id="monthDownload" name="month" class="logs-input">
-              <option value="1">يناير</option>
-              <option value="2">فبراير</option>
-              <option value="3">مارس</option>
-              <option value="4">أبريل</option>
-              <option value="5">مايو</option>
-              <option value="6">يونيو</option>
-              <option value="7">يوليو</option>
-              <option value="8">أغسطس</option>
-              <option value="9">سبتمبر</option>
-              <option value="10">أكتوبر</option>
-              <option value="11">نوفمبر</option>
-              <option value="12">ديسمبر</option>
-            </select>
+            <label for="monthYearDownload" class="logs-form-label">اختر الشهر والسنة</label>
+            <div class="month-year-selector">
+              <select id="monthDownload" name="month" class="logs-input month-select">
+                <option value="1"> 1 - يناير</option>
+                <option value="2">2 - فبراير </option>
+                <option value="3">3 - مارس</option>
+                <option value="4">4 - أبريل</option>
+                <option value="5">5 - مايو</option>
+                <option value="6">6 - يونيو</option>
+                <option value="7">7 - يوليو</option>
+                <option value="8">8 - أغسطس</option>
+                <option value="9">9 - سبتمبر</option>
+                <option value="10">10 - أكتوبر</option>
+                <option value="11">11 - نوفمبر</option>
+                <option value="12">12 - ديسمبر</option>
+              </select>
+              <select id="yearDownload" name="year" class="logs-input year-select">
+                {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+                {% endfor %}
+              </select>
+            </div>
           </div>
           <div class="logs-form-group" id="yearInputDownload" style="display: none">
             <label for="yearOnlyDownload" class="logs-form-label">السنة</label>
@@ -103,7 +105,7 @@
           </div>
         </div>
 
-        <input class="logs-nav-link-btn" type="submit" value="تحميل" />
+        <input class="logs-nav-link-btn" type="submit" value="تحميل البيانات المحددة" />
       </form>
       <div>
         <form action="{% url 'logsApp:export_to_excel' %}" method="get">
@@ -269,7 +271,7 @@
           {% else %}
           <td></td>
           {% endif %} {% if k.return_time %}
-          <td>{{k.return_time}}</td>
+          <td>{{k.return_time|time:"h:i A"}}</td>
           {% else %}
           <td></td>
           {% endif %} {% if k.carNote %}
@@ -303,5 +305,48 @@
     </span>
   </div>
 </div>
+
+<script>
+  // Function to toggle date input fields in download form
+  function toggleDownloadDateInput() {
+    const dateType = document.getElementById("dateTypeDownload").value;
+    
+    // Hide all input groups first
+    document.getElementById("dayInputDownload").style.display = "none";
+    document.getElementById("monthInputDownload").style.display = "none";
+    document.getElementById("yearInputDownload").style.display = "none";
+    
+    // Show the selected input group
+    if (dateType === "day") {
+      document.getElementById("dayInputDownload").style.display = "block";
+    } else if (dateType === "month") {
+      document.getElementById("monthInputDownload").style.display = "block";
+    } else if (dateType === "year") {
+      document.getElementById("yearInputDownload").style.display = "block";
+    }
+  }
+
+  // Function to toggle filters visibility
+  function toggleFilters() {
+    var filtersMain = document.getElementById("filtersMain");
+    filtersMain.classList.toggle("show");
+  }
+
+  // Function to toggle download filters visibility
+  function toggleDownloadFilters() {
+    var filtersMain = document.getElementById("downloadFiltersMain");
+    filtersMain.classList.toggle("show");
+    
+    // Initialize the date input fields when shown
+    if (filtersMain.classList.contains("show")) {
+      toggleDownloadDateInput();
+    }
+  }
+
+  // Initialize the date fields on page load
+  document.addEventListener("DOMContentLoaded", function() {
+    toggleDateInput();
+  });
+</script>
 
 {% endblock %}

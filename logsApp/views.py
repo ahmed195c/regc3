@@ -359,6 +359,7 @@ def export_to_excel(request):
         # Apply all filters
         data = data.filter(filters)
 
+
     # Order the data
     data = data.order_by('-id')
 
@@ -921,9 +922,9 @@ def returnCarFromGarage(request):
             return render(request, "logsApp/maintenanceEmployeesForms.html",
                         {
                             "AllInGarageCars": AllInGarageCars,
-                            "car_number_err": car_number,
-                            "empNumberErr": emp_number,
-                            "reasonErr": reason,
+                            "Rcar_number_err": car_number,
+                            "RempNumberErr": emp_number,
+                            "RreasonErr": reason,
                             "error_message": "الرقم الاداري المدخل غير صحيح أو ليس من فريق الصيانة"
                         })
         
@@ -934,9 +935,9 @@ def returnCarFromGarage(request):
             return render(request, "logsApp/maintenanceEmployeesForms.html",
                         {
                             "AllInGarageCars": AllInGarageCars,
-                            "car_number_err": car_number,
-                            "empNumberErr": emp_number,
-                            "reasonErr": reason,
+                            "Rcar_number_err": car_number,
+                            "RempNumberErr": emp_number,
+                            "RreasonErr": reason,
                             "error_message": "رقم المركبة المدخل غير صحيح"
                         })
         
@@ -947,9 +948,9 @@ def returnCarFromGarage(request):
             return render(request, "logsApp/maintenanceEmployeesForms.html",
                         {
                             "AllInGarageCars": AllInGarageCars,
-                            "car_number_err": car_number,
-                            "empNumberErr": emp_number,
-                            "reasonErr": reason,
+                            "Rcar_number_err": car_number,
+                            "RempNumberErr": emp_number,
+                            "RreasonErr": reason,
                             "error_message": "المركبة ليست موجودة في الجراج"
                         })
                         
@@ -1000,9 +1001,9 @@ def returnCarFromGarage(request):
             return render(request, "logsApp/maintenanceEmployeesForms.html",
                         {
                             "AllInGarageCars": AllInGarageCars,
-                            "car_number_err": car_number,
-                            "empNumberErr": emp_number,
-                            "reasonErr": reason,
+                            "Rcar_number_err": car_number,
+                            "RempNumberErr": emp_number,
+                            "RreasonErr": reason,
                             "error_message": "لا يوجد سجل صيانة لهذه المركبة"
                         })
     
@@ -1014,9 +1015,69 @@ def returnCarFromGarage(request):
                 })
 
 def maintenanceLogs(request):
-    all_maintenance_logs = MaintanceLogs.objects.all().order_by('-id')
+    # Initialize years range for the date filters
+    years = range(2020, 2040)
+    
+    # Get filter parameters
+    car_number = request.GET.get('carNumber')
+    emp_number = request.GET.get('empNumber')
+    date_filter = request.GET.get('date')
+    month_filter = request.GET.get('month')
+    year_filter = request.GET.get('year')
+    year_only_filter = request.GET.get('yearOnly')
+    date_type = request.GET.get('dateType')
+    status_filter = request.GET.get('status')
+    show_all = request.GET.get('showAll')
+    
+    # Initialize base queryset
+    queryset = MaintanceLogs.objects.all()
+    
+    # Apply filters
+    if not show_all:
+        filters = Q()
+        
+        # Date filters
+        if date_type == "day" and date_filter:
+            filters &= Q(maintance_emp_send_to_garage_date=date_filter)
+        elif date_type == "month" and month_filter and year_filter:
+            month_start = datetime(year=int(year_filter), month=int(month_filter), day=1)
+            month_end = (month_start + timedelta(days=32)).replace(day=1) - timedelta(seconds=1)
+            filters &= Q(maintance_emp_send_to_garage_date__range=(month_start, month_end))
+        elif date_type == "year" and year_only_filter:
+            year_start = datetime(year=int(year_only_filter), month=1, day=1)
+            year_end = datetime(year=int(year_only_filter), month=12, day=31)
+            filters &= Q(maintance_emp_send_to_garage_date__range=(year_start, year_end))
+            
+        # Car number filter
+        if car_number:
+            filters &= Q(car__carNumber__icontains=car_number.strip())
+            
+        # Employee number filter
+        if emp_number:
+            filters &= Q(maintance_emp_send_to_garage__ceoNumber=emp_number.strip())
+            
+        # Status filter
+        if status_filter == "in_garage":
+            filters &= Q(car_is_in_garage=True)
+        elif status_filter == "returned":
+            filters &= Q(car_is_in_garage=False)
+            
+        # Apply all filters
+        queryset = queryset.filter(filters)
+    
+    # Order logs by most recent first
+    all_maintenance_logs = queryset.order_by('-maintance_emp_send_to_garage_date')
+    
+    # Paginate the results
+    paginator = Paginator(all_maintenance_logs, 20)  # Show 20 logs per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
-    return render(request, "logsApp/maintenanceLogs.html", {"all_maintenance_logs": all_maintenance_logs})
+    return render(request, "logsApp/maintenanceLogs.html", {
+        "all_maintenance_logs": page_obj,
+        "years": years,
+        "page_obj": page_obj
+    })
 
 @api_view(['GET', 'OPTIONS'])
 def logs_api(request):
@@ -1053,4 +1114,159 @@ def logs_api(request):
     response['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
     response['Cache-Control'] = 'no-cache'
     
+    return response
+
+def export_maintenance_to_excel(request):
+    dubai_tz = pytz.timezone('Asia/Dubai')
+    
+    # Initialize base queryset
+    data = MaintanceLogs.objects.all()
+    
+    # Get filter parameters
+    car_number = request.GET.get('carNumber')
+    emp_number = request.GET.get('empNumber')
+    date_filter = request.GET.get('date')
+    month_filter = request.GET.get('month')
+    year_filter = request.GET.get('year')
+    year_only_filter = request.GET.get('yearOnly')
+    date_type = request.GET.get('dateType')
+    status_filter = request.GET.get('status')
+    show_all = request.GET.get('showAll')
+
+    # Apply filters
+    if not show_all:
+        filters = Q()
+        
+        # Date type filters
+        if date_type == "day" and date_filter:
+            filters &= Q(maintance_emp_send_to_garage_date=date_filter)
+            filename_suffix = f"day_{date_filter}"
+        elif date_type == "month" and month_filter and year_filter:
+            month_start = datetime(year=int(year_filter), month=int(month_filter), day=1)
+            month_end = (month_start + timedelta(days=32)).replace(day=1) - timedelta(seconds=1)
+            filters &= Q(maintance_emp_send_to_garage_date__range=(month_start, month_end))
+            
+            # Get the month name in Arabic
+            month_names = {
+                '1': 'يناير', '2': 'فبراير', '3': 'مارس', '4': 'أبريل',
+                '5': 'مايو', '6': 'يونيو', '7': 'يوليو', '8': 'أغسطس',
+                '9': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'
+            }
+            month_name = month_names.get(month_filter, month_filter)
+            filename_suffix = f"month_{month_name}_{year_filter}"
+        elif date_type == "year" and year_only_filter:
+            year_start = datetime(year=int(year_only_filter), month=1, day=1)
+            year_end = datetime(year=int(year_only_filter), month=12, day=31, hour=23, minute=59, second=59)
+            filters &= Q(maintance_emp_send_to_garage_date__range=(year_start, year_end))
+            filename_suffix = f"year_{year_only_filter}"
+        else:
+            filename_suffix = "filtered_maintenance"
+
+        # Car number and Employee number filters
+        if car_number:
+            filters &= Q(car__carNumber__icontains=car_number.strip())
+            if 'filename_suffix' not in locals():
+                filename_suffix = f"car_{car_number.strip()}"
+                
+        if emp_number:
+            filters &= Q(maintance_emp_send_to_garage__ceoNumber=emp_number.strip())
+            if 'filename_suffix' not in locals():
+                filename_suffix = f"emp_{emp_number.strip()}"
+        
+        # Status filter
+        if status_filter == "in_garage":
+            filters &= Q(car_is_in_garage=True)
+            if 'filename_suffix' not in locals():
+                filename_suffix = "in_garage"
+        elif status_filter == "returned":
+            filters &= Q(car_is_in_garage=False)
+            if 'filename_suffix' not in locals():
+                filename_suffix = "returned"
+
+        # Apply all filters
+        data = data.filter(filters)
+    else:
+        filename_suffix = "all_maintenance"
+
+    # Order the data
+    data = data.order_by('-maintance_emp_send_to_garage_date')
+
+    # Prepare data for Excel - updated to match table fields exactly
+    export_data = []
+    for log in data:
+        send_time = log.maintance_emp_send_to_garage_time.replace(tzinfo=dubai_tz) if log.maintance_emp_send_to_garage_time else None
+        return_time = log.maintance_emp_return_from_garage_time.replace(tzinfo=dubai_tz) if log.maintance_emp_return_from_garage_time else None
+
+        export_data.append({
+            'رقم المركبة': log.car.carNumber if log.car else "غير متوفر",
+            'الرقم الاداري': log.maintance_emp_send_to_garage.ceoNumber if log.maintance_emp_send_to_garage else "غير متوفر",
+            'اسم السائق': log.maintance_emp_send_to_garage.ceoName if log.maintance_emp_send_to_garage else "غير متوفر",
+            'تاريخ الاستلام': log.maintance_emp_send_to_garage_date,
+            'وقت الاستلام': send_time.strftime('%I:%M %p') if send_time else "غير متوفر",
+            'سبب الصيانة': log.maintance_emp_send_to_garage_reason or "غير متوفر",
+            'الرقم الاداري للمعيد': log.maintance_emp_return_from_garage.ceoNumber if log.maintance_emp_return_from_garage else "--",
+            'اسم المعيد': log.maintance_emp_return_from_garage.ceoName if log.maintance_emp_return_from_garage else "--",
+            'نتيجة الصيانة': log.maintance_emp_return_from_garage_reason or "--",
+            'تاريخ الإرجاع': log.maintance_emp_return_from_garage_date or "--",
+            'وقت الإرجاع': return_time.strftime('%I:%M %p') if return_time else "--",
+        })
+    
+    df = pd.DataFrame(export_data)
+
+    # Generate current_time for filename
+    current_time = timezone.now().strftime('%Y%m%d%H%M%S')
+    
+    # Prepare response
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    filename = f"maintenance_logs_{filename_suffix}_{current_time}.xlsx" if 'filename_suffix' in locals() else f"maintenance_logs_{current_time}.xlsx"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Create Excel file - SIMPLIFIED VERSION WITHOUT HEADER ROWS
+    with pd.ExcelWriter(response, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Maintenance Logs')
+
+        worksheet = writer.sheets['Maintenance Logs']
+        worksheet.sheet_view.rightToLeft = True
+
+        # Style the table - starting with header row
+        header_font = Font(size=16, bold=True, color='000000')
+        header_fill = PatternFill(start_color='B7E1A1', end_color='B7E1A1', fill_type='solid')
+        cell_font = Font(size=16)
+        center_alignment = Alignment(horizontal='center')
+
+        # Style header row (first row)
+        for cell in worksheet[1]:
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = center_alignment
+
+        # Style data rows
+        for row in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row):
+            for cell in row:
+                cell.font = cell_font
+                cell.alignment = center_alignment
+
+        # Adjust column widths - improved to avoid merged cells issues
+        for column in worksheet.columns:
+            max_length = 0
+            column_letter = None
+            
+            # Find the first cell with a column_letter (not a merged cell)
+            for cell in column:
+                if hasattr(cell, 'column_letter'):
+                    column_letter = cell.column_letter
+                    break
+                    
+            if column_letter:
+                for cell in column:
+                    if cell.value:
+                        try:
+                            cell_length = len(str(cell.value))
+                            max_length = max(max_length, cell_length)
+                        except:
+                            pass
+                            
+                adjusted_width = (max_length + 4)
+                worksheet.column_dimensions[column_letter].width = adjusted_width
+
     return response

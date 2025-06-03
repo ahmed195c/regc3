@@ -26,4 +26,5 @@ urlpatterns = [
     path('returnCarFromGarage/', views.returnCarFromGarage, name='returnCarFromGarage'),
     path('maintenanceLogs/', views.maintenanceLogs, name='maintenanceLogs'),
     path('api/logs/', views.logs_api, name='logs_api'),
+    path("export_maintenance_to_excel/", views.export_maintenance_to_excel, name="export_maintenance_to_excel"),
 ]

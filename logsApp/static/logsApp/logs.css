@@ -27,8 +27,8 @@
 .logs-table-container {
   height: 100%;
   overflow-y: auto;
-  overflow-x: auto;
-  scroll-snap-type: y mandatory;
+  width: 100%; /* Ensure full width */
+  /* Removed scroll-snap-type property */
 }
 
 .logs-logtr {
@@ -44,12 +44,16 @@
   width: 100%;
   margin: 0 auto;
   border-collapse: collapse;
+  table-layout: auto; /* Changed from fixed to auto for better column width distribution */
 }
 
 .logs-headtr th {
   background-color: #4e6b31;
   color: white;
   font-weight: bold;
+  max-width: 150px; /* Default max width */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .logs-headtr {
@@ -61,8 +65,75 @@
   padding: 10px;
   border: 1px solid #ccc;
   transition: background-color 0.3s ease;
-  text-align: center;
+  text-align: center; /* Already had this */
+  word-wrap: break-word; /* Allow words to be broken */
+  word-break: break-word; /* Break words to prevent overflow */
+  max-width: 150px; /* Default max width */
+  white-space: normal; /* Enable text wrapping */
+  vertical-align: middle; /* Changed from top to middle for vertical centering */
+  display: table-cell; /* Ensures proper table cell behavior */
 }
+
+/* Add additional style for text centering in cells */
+.logs-logs-table td {
+  text-align: center !important; /* Force center alignment with !important */
+}
+
+/* Specific column widths */
+.logs-logs-table th:nth-child(1), .logs-logs-table td:nth-child(1) { 
+    min-width: 80px;
+    max-width: 120px;
+    width: auto; /* Let the browser determine optimal width */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+} /* Car Number - optimized for no extra space */
+
+.logs-logs-table th:nth-child(2), .logs-logs-table td:nth-child(2) { 
+    min-width: 80px;
+    max-width: 120px;
+    width: auto;
+} /* Employee ID */
+
+.logs-logs-table th:nth-child(3), .logs-logs-table td:nth-child(3) { 
+    max-width: 200px;
+    min-width: 150px;
+    width: auto;
+} /* Employee Name */
+
+.logs-logs-table th:nth-child(4), .logs-logs-table td:nth-child(4) { 
+    min-width: 90px;
+    max-width: 100px;
+    width: auto;
+    white-space: nowrap;
+} /* Receipt Date */
+
+.logs-logs-table th:nth-child(5), .logs-logs-table td:nth-child(5) { 
+    min-width: 90px;
+    max-width: 100px;
+    width: auto;
+    white-space: nowrap;
+} /* Receipt Time */
+
+.logs-logs-table th:nth-child(6), .logs-logs-table td:nth-child(6) { 
+    min-width: 90px;
+    max-width: 100px;
+    width: auto;
+    white-space: nowrap;
+} /* Return Date */
+
+.logs-logs-table th:nth-child(7), .logs-logs-table td:nth-child(7) { 
+    min-width: 90px;
+    max-width: 100px;
+    width: auto;
+    white-space: nowrap;
+} /* Return Time */
+
+.logs-logs-table th:nth-child(8), .logs-logs-table td:nth-child(8) { 
+    max-width: 250px;
+    min-width: 150px;
+    width: auto;
+} /* Notes - WIDER */
 
 .logs-logtr:nth-child(even) td {
   background-color: #e3e3e3;
@@ -115,6 +186,13 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1em;
+  text-align: center;
+}
+
+.logs-input::placeholder {
+  color: #999;
+  opacity: 0.8;
+  font-style: italic;
 }
 
 .logs-search-input-conts {
@@ -141,6 +219,8 @@
   word-wrap: break-word;
   word-break: break-word;
   max-width: 220px;
+  text-align: center !important; /* Ensure centered text */
+  margin: 0 auto; /* Help with centering content */
 }
 
 .logs-nav-link-btn {
@@ -154,9 +234,9 @@
   border-radius: 8px;
   transition: all 0.4s ease-in-out, transform 0.2s ease;
   margin: 10px auto;
-  text-align: center;
-  display: block;
-  line-height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .logs-nav-link-btn.logs-show-hide-btn {
@@ -166,6 +246,7 @@
 .logs-nav-link-btn:hover {
   background-color: #b59958;
   transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #date,
@@ -247,4 +328,24 @@ select:focus {
 .logs-filtersMain.show {
   display: block;
   opacity: 1;
+}
+
+/* New styles for month-year selector */
+.month-year-selector {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.month-select {
+  flex: 2;
+}
+
+.year-select {
+  flex: 1;
+}
+
+/* Modified styles for date selectors */
+#dateTypeDownload {
+  font-weight: bold;
 }

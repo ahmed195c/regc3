@@ -158,7 +158,9 @@ CORS_ALLOW_HEADERS = [
     "cache-control",
     "pragma",
 ]
-
+CORS_ALLOWED_ORIGINS = [
+    "https://logsc-api.vercel.app"
+]
 # For development - expose all headers and cookies
 CORS_EXPOSE_HEADERS = ['*']
 

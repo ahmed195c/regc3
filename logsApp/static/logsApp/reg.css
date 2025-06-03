@@ -59,10 +59,13 @@
 }
 
 .reg-card-info-group {
+  height: 45px;
   display: flex;
+  justify-content: flex-start;
+  align-items: center;
   gap: 5px;
   padding: 5px;
-  background-color: #f0f8f0;
+  background-color: #f0f5f8;
   border-radius: 8px;
   margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -302,17 +305,21 @@
 }
 
 .submit-btn {
-  margin-top: 10px;
   width: 100%;
-  padding: 15px;
-  font-size: 18px;
-  color: #fff;
-  background-color: #4e6b31;
-  border: none;
+  height: 50px;
+  padding: 10px;
   border-radius: 8px;
-  cursor: pointer;
+  border: none;
+  background-color: #3498db;
+  color: white;
+  font-size: 16px;
   font-weight: bold;
-  transition: all 0.5s ease-in-out, transform 0.3s ease-in-out;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .submit-btn:hover {
@@ -467,14 +474,12 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 5px;
 }
 
-.reg-car-number {
-  display: flex;
-
-  background-color: #eae6e6;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-size: 1.2em;
-  color: #333;
+.reg-car-number div {
+  background-color: #5b7e8e;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  display: inline-block;
+  margin-right: 5px;
 }

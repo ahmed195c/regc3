@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import MaintanceLogs, RegistredCars,GivenCarsToOtherAdminstrations, EmployesInfo, InUseCars, LogsC, AccidentsRecord, FinesAccidentsImage, LicenseFile, FinesRecord
+from .models import InGarageCars, MaintanceLogs, RegistredCars,GivenCarsToOtherAdminstrations, EmployesInfo, InUseCars, LogsC, AccidentsRecord, FinesAccidentsImage, LicenseFile, FinesRecord
 
 class LogsCAdmin(admin.ModelAdmin):
     list_display = ('id','Logs_employee_ins', 'taken_date','taken_time','return_date', 'return_time','Logs_car_ins')
@@ -25,3 +25,4 @@ admin.site.register(AccidentsRecord)
 admin.site.register(FinesAccidentsImage)
 admin.site.register(GivenCarsToOtherAdminstrations)
 admin.site.register(MaintanceLogs)
+admin.site.register(InGarageCars)

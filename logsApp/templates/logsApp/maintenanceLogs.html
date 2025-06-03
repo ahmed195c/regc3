@@ -1,4 +1,4 @@
-{% extends "logsApp/layout.html" %} {% load static %} {% block css %} 
+{% extends "logsApp/layout.html" %} {% load static %} {% block css %}
 {{block.super }}
 <link
   rel="stylesheet"
@@ -15,32 +15,378 @@
 </div>
 
 <div class="mainCont">
+  <!-- Add Filter and Download Buttons -->
+  <div class="maintenance-logs-btns">
+    <button
+      class="maintenance-nav-btn maintenance-show-hide-btn"
+      onclick="toggleDownloadFilters()"
+    >
+      تحميل السجل
+    </button>
+
+    <button
+      class="maintenance-nav-btn maintenance-show-hide-btn"
+      onclick="toggleFilters()"
+    >
+      بحث
+    </button>
+  </div>
+
+  <!-- Download Filters Section -->
+  <div
+    class="maintenance-filtersMain"
+    id="downloadFiltersMain"
+    style="display: none"
+  >
+    <div class="maintenance-filtersDw">
+      <div class="maintenance-filters-cont">
+        <form
+          class="maintenance-filtersForm"
+          action="{% url 'logsApp:export_maintenance_to_excel' %}"
+          method="get"
+        >
+          {% csrf_token %}
+          <div class="maintenance-filter-cont">
+            <div>
+              <h1>تحميل سجلات الصيانة</h1>
+            </div>
+            <div class="maintenance-form-group">
+              <label for="carNumberDownload" class="maintenance-form-label"
+                >رقــــــــم المركبه</label
+              >
+              <input
+                type="text"
+                id="carNumberDownload"
+                name="carNumber"
+                class="maintenance-input"
+                placeholder="ادخل رقم المركبه هنا "
+              />
+            </div>
+            <div class="maintenance-form-group">
+              <label for="empNumberDownload" class="maintenance-form-label"
+                >الــــــرقم الاداري</label
+              >
+              <input
+                type="text"
+                name="empNumber"
+                id="empNumberDownload"
+                class="maintenance-input"
+                placeholder="ادخل الرقم الاداري هنا"
+              />
+            </div>
+            <div class="maintenance-form-group">
+              <label for="dateTypeDownload" class="maintenance-form-label"
+                >نوع التاريخ</label
+              >
+              <select
+                id="dateTypeDownload"
+                name="dateType"
+                class="maintenance-input"
+                onchange="toggleDownloadDateInput()"
+              >
+                <option value="">بدون تاريخ</option>
+                <option value="day">يوم محدد</option>
+                <option value="month">شهر محدد</option>
+                <option value="year">سنة محددة</option>
+              </select>
+            </div>
+            <div
+              class="maintenance-form-group"
+              id="dayInputDownload"
+              style="display: none"
+            >
+              <label for="dateDownload" class="maintenance-form-label"
+                >التاريخ</label
+              >
+              <input
+                type="date"
+                id="dateDownload"
+                name="date"
+                class="maintenance-input"
+              />
+            </div>
+            <div
+              class="maintenance-form-group"
+              id="monthInputDownload"
+              style="display: none"
+            >
+              <label for="monthYearDownload" class="maintenance-form-label"
+                >اختر الشهر والسنة</label
+              >
+              <div class="month-year-selector">
+                <select
+                  id="monthDownload"
+                  name="month"
+                  class="maintenance-input month-select"
+                >
+                  <option value="1">يناير</option>
+                  <option value="2">فبراير</option>
+                  <option value="3">مارس</option>
+                  <option value="4">أبريل</option>
+                  <option value="5">مايو</option>
+                  <option value="6">يونيو</option>
+                  <option value="7">يوليو</option>
+                  <option value="8">أغسطس</option>
+                  <option value="9">سبتمبر</option>
+                  <option value="10">أكتوبر</option>
+                  <option value="11">نوفمبر</option>
+                  <option value="12">ديسمبر</option>
+                </select>
+                <select
+                  id="yearDownload"
+                  name="year"
+                  class="maintenance-input year-select"
+                >
+                  {% for year in years %}
+                  <option value="{{ year }}">{{ year }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div
+              class="maintenance-form-group"
+              id="yearInputDownload"
+              style="display: none"
+            >
+              <label for="yearOnlyDownload" class="maintenance-form-label"
+                >السنة</label
+              >
+              <select
+                id="yearOnlyDownload"
+                name="yearOnly"
+                class="maintenance-input"
+              >
+                {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="maintenance-form-group">
+              <label for="statusDownload" class="maintenance-form-label"
+                >حالة السجل</label
+              >
+              <select
+                id="statusDownload"
+                name="status"
+                class="maintenance-input"
+              >
+                <option value="all">الكل</option>
+                <option value="in_garage">في الصيانة حالياً</option>
+                <option value="returned">تم إرجاعها</option>
+              </select>
+            </div>
+          </div>
+
+          <input
+            class="maintenance-nav-btn"
+            type="submit"
+            value="تحميل البيانات المحددة"
+          />
+        </form>
+        <div>
+          <form
+            action="{% url 'logsApp:export_maintenance_to_excel' %}"
+            method="get"
+          >
+            {% csrf_token %}
+            <input
+              type="hidden"
+              value="showall"
+              id="showAllDownload"
+              name="showAll"
+            />
+            <input
+              class="maintenance-nav-btn"
+              type="submit"
+              value="تحميل كامل السجل"
+            />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Filters Section -->
+  <div class="maintenance-filtersMain" id="filtersMain" style="display: none">
+    <div class="maintenance-filtersDw">
+      <div class="maintenance-filters-cont">
+        <form
+          class="maintenance-filtersForm"
+          action="{% url 'logsApp:maintenanceLogs' %}"
+          method="get"
+        >
+          {% csrf_token %}
+          <div class="maintenance-filter-cont">
+            <div>
+              <h1>بحث عن طريق</h1>
+            </div>
+            <div class="maintenance-form-group">
+              <label for="carNumber" class="maintenance-form-label"
+                >رقــــــــم المركبه</label
+              >
+              <input
+                type="text"
+                id="carNumber"
+                name="carNumber"
+                class="maintenance-input"
+                placeholder="ادخل رقم المركبه هنا "
+              />
+            </div>
+            <div class="maintenance-form-group">
+              <label for="empNumber" class="maintenance-form-label"
+                >الــــــرقم الاداري</label
+              >
+              <input
+                type="text"
+                name="empNumber"
+                id="empNumber"
+                class="maintenance-input"
+                placeholder="ادخل الرقم الاداري هنا"
+              />
+            </div>
+            <div class="maintenance-form-group">
+              <label for="dateType" class="maintenance-form-label"
+                >نوع التاريخ</label
+              >
+              <select
+                id="dateType"
+                name="dateType"
+                class="maintenance-input"
+                onchange="toggleDateInput()"
+              >
+                <option value="">بدون تاريخ</option>
+                <option value="day">يوم محدد</option>
+                <option value="month">شهر محدد</option>
+                <option value="year">سنة محددة</option>
+              </select>
+            </div>
+            <div
+              class="maintenance-form-group"
+              id="dayInput"
+              style="display: none"
+            >
+              <label for="date" class="maintenance-form-label">التاريخ</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                class="maintenance-input"
+              />
+            </div>
+            <div
+              class="maintenance-form-group"
+              id="monthInput"
+              style="display: none"
+            >
+              <label for="monthYear" class="maintenance-form-label"
+                >اختر الشهر والسنة</label
+              >
+              <div class="month-year-selector">
+                <select
+                  id="month"
+                  name="month"
+                  class="maintenance-input month-select"
+                >
+                  <option value="1">يناير</option>
+                  <option value="2">فبراير</option>
+                  <option value="3">مارس</option>
+                  <option value="4">أبريل</option>
+                  <option value="5">مايو</option>
+                  <option value="6">يونيو</option>
+                  <option value="7">يوليو</option>
+                  <option value="8">أغسطس</option>
+                  <option value="9">سبتمبر</option>
+                  <option value="10">أكتوبر</option>
+                  <option value="11">نوفمبر</option>
+                  <option value="12">ديسمبر</option>
+                </select>
+                <select
+                  id="year"
+                  name="year"
+                  class="maintenance-input year-select"
+                >
+                  {% for year in years %}
+                  <option value="{{ year }}">{{ year }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div
+              class="maintenance-form-group"
+              id="yearInput"
+              style="display: none"
+            >
+              <label for="yearOnly" class="maintenance-form-label">السنة</label>
+              <select id="yearOnly" name="yearOnly" class="maintenance-input">
+                {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="maintenance-form-group">
+              <label for="status" class="maintenance-form-label"
+                >حالة السجل</label
+              >
+              <select id="status" name="status" class="maintenance-input">
+                <option value="all">الكل</option>
+                <option value="in_garage">في الصيانة حالياً</option>
+                <option value="returned">تم إرجاعها</option>
+              </select>
+            </div>
+          </div>
+
+          <input class="maintenance-nav-btn" type="submit" value="بحث" />
+        </form>
+        <div>
+          <form action="{% url 'logsApp:maintenanceLogs' %}" method="get">
+            {% csrf_token %}
+            <input type="hidden" value="showall" id="showAll" name="showAll" />
+            <input
+              class="maintenance-nav-btn"
+              type="submit"
+              value="عرض كل السجلات"
+            />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Maintenance Logs Table -->
   <div class="maintaince-table">
     <table class="table">
       <thead>
         <tr>
+          <th class="section-divider" colspan="6">بيانات استلام المركبه من المواقف</th>
+          <th class="section-divider" colspan="5">بيانات إرجاع المركبه للمواقف</th>
+        </tr>
+        <tr>
           <th class="table-header" data-tooltip="Car Number">رقم المركبة</th>
           <th class="table-header" data-tooltip="Employee ID">الرقم الاداري</th>
-          <th class="table-header" data-tooltip="Employee Name">الاسم</th>
+          <th class="table-header" data-tooltip="Employee Name">الاسم </th>
           <th class="table-header" data-tooltip="Date of Receipt from Parking">
-            تاريخ الاستلام من المواقف
+            تاريخ الاستلام
           </th>
           <th class="table-header" data-tooltip="Time of Receipt from Parking">
-            وقت الاستلام من المواقف
+            وقت الاستلام
           </th>
           <th
             class="table-header"
             data-tooltip="Reason for Receipt from Parking"
           >
-            سبب الاستلام من المواقف
+            سبب الصيانة
           </th>
-          <th class="table-header" data-tooltip="Divider">|</th>
           <th class="table-header" data-tooltip="Employee ID for Return">
-            معرف موظف الإعادة
+            الرقم الاداري 
           </th>
-          <th class="table-header" data-tooltip="Return Reason">سبب الإعادة</th>
-          <th class="table-header" data-tooltip="Return Date">تاريخ الإعادة</th>
-          <th class="table-header" data-tooltip="Return Time">وقت الإعادة</th>
+          <th class="table-header" data-tooltip="Employee Name for Return">
+            الاسم
+          </th>
+          <th class="table-header" data-tooltip="Return Reason">
+            نتيجة الصيانة
+          </th>
+          <th class="table-header" data-tooltip="Return Date">تاريخ الإرجاع</th>
+          <th class="table-header" data-tooltip="Return Time">وقت الإرجاع</th>
         </tr>
       </thead>
       <tbody>
@@ -49,17 +395,19 @@
           <td>{{ log.car.carNumber }}</td>
           <td>{{ log.maintance_emp_send_to_garage.ceoNumber }}</td>
           <td>{{ log.maintance_emp_send_to_garage.ceoName }}</td>
-          <td>{{ log.maintance_emp_send_to_garage_date }}</td>
+          <td>{{ log.maintance_emp_send_to_garage_date|date:"Y-m-d" }}</td>
           <td>{{ log.maintance_emp_send_to_garage_time|time:"h:i A" }}</td>
           <td>{{ log.maintance_emp_send_to_garage_reason }}</td>
-          <td style="background-color: #eee">|</td>
           <td>
             {{ log.maintance_emp_return_from_garage.ceoNumber|default:"--" }}
           </td>
           <td>
+            {{ log.maintance_emp_return_from_garage.ceoName|default:"--" }}
+          </td>
+          <td>
             {{ log.maintance_emp_return_from_garage_reason|default:"--" }}
           </td>
-          <td>{{ log.maintance_emp_return_from_garage_date|default:"--" }}</td>
+          <td>{{ log.maintance_emp_return_from_garage_date|date:"Y-m-d"|default:"--" }}</td>
           <td>
             {{ log.maintance_emp_return_from_garage_time|time:"h:i A"|default:"--" }}
           </td>
@@ -72,5 +420,112 @@
       </tbody>
     </table>
   </div>
+
+  <!-- Pagination Section -->
+  {% if all_maintenance_logs %}
+  <div class="maintenance-pagination-container">
+    <div class="maintenance-pagination">
+      <span class="maintenance-step-links">
+        {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; الأول</a>
+        <a href="?page={{ page_obj.previous_page_number }}">السابق</a>
+        {% endif %}
+
+        <span class="maintenance-current">
+          صفحة {{ page_obj.number }} من {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">التالي</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">الأخير &raquo;</a>
+        {% endif %}
+      </span>
+    </div>
+  </div>
+  {% endif %}
 </div>
+
+<!-- JavaScript for filters -->
+<script>
+  // Function to toggle date input fields in filter form
+  function toggleDateInput() {
+    const dateType = document.getElementById("dateType").value;
+
+    // Hide all input groups first
+    document.getElementById("dayInput").style.display = "none";
+    document.getElementById("monthInput").style.display = "none";
+    document.getElementById("yearInput").style.display = "none";
+
+    // Show the selected input group
+    if (dateType === "day") {
+      document.getElementById("dayInput").style.display = "block";
+    } else if (dateType === "month") {
+      document.getElementById("monthInput").style.display = "block";
+    } else if (dateType === "year") {
+      document.getElementById("yearInput").style.display = "block";
+    }
+  }
+
+  // Function to toggle date input fields in download form
+  function toggleDownloadDateInput() {
+    const dateType = document.getElementById("dateTypeDownload").value;
+
+    // Hide all input groups first
+    document.getElementById("dayInputDownload").style.display = "none";
+    document.getElementById("monthInputDownload").style.display = "none";
+    document.getElementById("yearInputDownload").style.display = "none";
+
+    // Show the selected input group
+    if (dateType === "day") {
+      document.getElementById("dayInputDownload").style.display = "block";
+    } else if (dateType === "month") {
+      document.getElementById("monthInputDownload").style.display = "block";
+    } else if (dateType === "year") {
+      document.getElementById("yearInputDownload").style.display = "block";
+    }
+  }
+
+  // Function to toggle filter visibility
+  function toggleFilters() {
+    var filtersMain = document.getElementById("filtersMain");
+    if (filtersMain.style.display === "none") {
+      filtersMain.style.display = "block";
+      setTimeout(function () {
+        filtersMain.classList.add("show");
+      }, 10);
+    } else {
+      filtersMain.classList.remove("show");
+      setTimeout(function () {
+        filtersMain.style.display = "none";
+      }, 500);
+    }
+  }
+
+  // Function to toggle download filters visibility
+  function toggleDownloadFilters() {
+    var downloadFilters = document.getElementById("downloadFiltersMain");
+    if (downloadFilters.style.display === "none") {
+      downloadFilters.style.display = "block";
+      setTimeout(function () {
+        downloadFilters.classList.add("show");
+      }, 10);
+
+      // Initialize the date input fields when shown
+      toggleDownloadDateInput();
+    } else {
+      downloadFilters.classList.remove("show");
+      setTimeout(function () {
+        downloadFilters.style.display = "none";
+      }, 500);
+    }
+  }
+
+  // Initialize the date fields on page load
+  document.addEventListener("DOMContentLoaded", function () {
+    if (document.getElementById("dateType")) {
+      toggleDateInput();
+    }
+  });
+</script>
+
 {% endblock %}

@@ -20,12 +20,20 @@
     </div>
     <div class="fineDetail-card-detail">
       <p class="fine-detail-item">
+       {% if i.employe.ceoName %}
         <strong>اسم الموظف:</strong> {{ fine.employe.ceoName }}
+        {% else %}
+        <strong>الاسم :</strong> {{ fine.unRegistredEmpName }} 
+        {% endif %}
       </p>
     </div>
     <div class="fineDetail-card-detail">
       <p class="fine-detail-item">
+        {% if i.employe.ceoNumber %}
         <strong>الرقم الإداري:</strong> {{ fine.employe.ceoNumber }}
+        {% else %}
+        <strong>الرقم الإداري:</strong> {{ fine.unRegistredEmpCeoNumber }} 
+        {% endif%}
       </p>
     </div>
     <div class="fineDetail-card-detail">

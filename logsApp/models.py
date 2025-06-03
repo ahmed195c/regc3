@@ -156,42 +156,43 @@ class FinesRecord(models.Model):
         super().delete(*args, **kwargs)
 
 class MaintanceLogs(models.Model):
-    car = models.ForeignKey('RegistredCars', on_delete=models.CASCADE, null=True)
-    
-    # Details for sending car to garage
+    car = models.ForeignKey('RegistredCars', on_delete=models.CASCADE, null=True, blank=True)
+
+    # Sending to garage
     maintance_emp_send_to_garage = models.ForeignKey(
         'EmployesInfo', related_name='sent_maintenances',
-        on_delete=models.CASCADE, null=True
+        on_delete=models.CASCADE, null=True, blank=True
     )
-    maintance_emp_send_to_garage_time = models.TimeField(default=None,null=True)
-    maintance_emp_send_to_garage_date = models.DateField(default=None,null=True)
-    maintance_emp_send_to_garage_reason = models.CharField(max_length=150)
-    maintance_emp_send_to_garage_arriving_time_date = models.DateTimeField(default=None,null=True)
+    maintance_emp_send_to_garage_time = models.TimeField(null=True, blank=True)
+    maintance_emp_send_to_garage_date = models.DateField(null=True, blank=True)
+    maintance_emp_send_to_garage_reason = models.CharField(max_length=150, null=True, blank=True)
+    maintance_emp_send_to_garage_arriving_time_date = models.DateTimeField(null=True, blank=True)
     car_is_in_garage = models.BooleanField(default=True)
 
-    # Details for returning car from garage
+    # Returning from garage
     maintance_emp_return_from_garage = models.ForeignKey(
         'EmployesInfo', related_name='returned_maintenances',
-        on_delete=models.CASCADE, null=True
+        on_delete=models.CASCADE, null=True, blank=True
     )
     maintance_emp_return_from_garage_time = models.TimeField(null=True, blank=True)
     maintance_emp_return_from_garage_date = models.DateField(null=True, blank=True)
     maintance_emp_return_from_garage_reason = models.CharField(max_length=150, null=True, blank=True)
-    maintance_emp_return_from_garage_arriving_time_date = models.DateTimeField(default=None,null=True)
-    
+    maintance_emp_return_from_garage_arriving_time_date = models.DateTimeField(null=True, blank=True)
+
     def __str__(self):
         return f"Maintenance log for {self.car} on {self.maintance_emp_send_to_garage_date}"
 
 class InGarageCars(models.Model):
-    car = models.ForeignKey('RegistredCars', on_delete=models.CASCADE, null=True)
+    car = models.ForeignKey('RegistredCars', on_delete=models.CASCADE, null=True, blank=True)
  
     maintance_emp_send_to_garage = models.ForeignKey(
         'EmployesInfo', related_name='sent_maintenances2',
-        on_delete=models.CASCADE, null=True
+        on_delete=models.CASCADE, null=True, blank=True
     )
-    maintance_emp_send_to_garage_time = models.TimeField(default=None,null=True)
-    maintance_emp_send_to_garage_date = models.DateField(default=None,null=True)
-    maintance_emp_send_to_garage_reason = models.CharField(max_length=150)
+    maintance_emp_send_to_garage_time = models.TimeField(default=None, null=True, blank=True)
+    maintance_emp_send_to_garage_date = models.DateField(default=None, null=True, blank=True)
+    maintance_emp_send_to_garage_reason = models.CharField(max_length=150, null=True, blank=True)
+    
     def __str__(self):
         return f"card ID {self.pk}"
 

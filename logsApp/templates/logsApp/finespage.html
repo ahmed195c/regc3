@@ -103,13 +103,13 @@
         {% if i.employe.ceoName %}
         <p><strong>اسم الموظف:</strong> {{ i.employe.ceoName }}</p>
         {% else %}
-        
+        <p><strong>الاسم :</strong> {{ i.unRegistredEmpName }}</p> 
         {% endif %}
         {% comment %} تاكيد الرقم الاداري {% endcomment %}
         {% if i.employe.ceoNumber %}
         <p><strong>الرقم الإداري:</strong> {{ i.employe.ceoNumber }}</p>
         {% else %}
-        {% comment %} <p><strong>الرقم الإداري:</strong> {{ i.unRegistredEmpCeoNumber }}</p> {% endcomment %}
+        <p><strong>الرقم الإداري:</strong> {{ i.unRegistredEmpCeoNumber }}</p> 
         {% endif%}
         <p><strong>تاريخ المخالفة:</strong> {{ i.fine_date }}</p>
         <p><strong>وقت المخالفة:</strong> {{ i.fine_time|time:"h:i A" }}</p>
