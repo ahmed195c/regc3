@@ -169,7 +169,7 @@ def returnCar(request):
                 "retErrm": ret_err_msg,
                 "l": all_in_use_cars,
                 "ceonumber": "",
-                "empnote": "emp_note",
+                "empnote": emp_note,
                 "form_open": True
             })
 
@@ -181,7 +181,7 @@ def returnCar(request):
                 "retCarErr": ret_car_err,
                 "l": all_in_use_cars,
                 "ceonumber": "",
-                "empnote": "emp_note",
+                "empnote": emp_note,
                 "form_open": True})
 
         ret_success_msg = "تم اعاده المركبه بنجاح"
